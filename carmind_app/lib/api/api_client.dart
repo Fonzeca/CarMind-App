@@ -1,0 +1,5 @@
+
+@RestApi
+abstract class ApiClient{
+
+}
