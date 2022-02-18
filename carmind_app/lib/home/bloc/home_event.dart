@@ -8,6 +8,6 @@ abstract class HomeEvent extends Equatable {
 }
 
 class HomeNavigationEvent extends HomeEvent {
-  final int newIndex;
-  const HomeNavigationEvent(this.newIndex);
+  final int buttonId;
+  const HomeNavigationEvent(this.buttonId);
 }

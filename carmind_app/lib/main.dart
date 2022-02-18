@@ -1,4 +1,5 @@
 import 'package:carmind_app/home/bloc/home_bloc.dart';
+import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,13 +24,15 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          fontFamily: "Roboto"
         ),
-        home: const Scaffold(
+        home: Scaffold(
           body: LoginScreen(),
         ),
       ),
       providers: [
-        BlocProvider(create: (context) => HomeBloc(),)
+        BlocProvider(create: (context) => HomeBloc()),
+        BlocProvider(create: (context) => LoginBlocBloc()),
       ],
     );
   }

@@ -1,20 +1,22 @@
 part of 'home_bloc.dart';
 
 class HomeState extends Equatable {
-  final int selectedIndex;
-  
-  const HomeState(this.selectedIndex);
+  final int selectedPageView;
+  final int selectedNavButton;
 
-  HomeState copyWith(int selectedIndex){
-    return HomeState(
-      selectedIndex
-    );
+  const HomeState(
+    this.selectedPageView,
+    this.selectedNavButton,
+  );
+
+  HomeState copyWith(int selectedIndex, int selectedNavButton) {
+    return HomeState(selectedIndex, selectedNavButton);
   }
-  
+
   @override
-  List<Object> get props => [selectedIndex];
+  List<Object> get props => [selectedPageView, selectedNavButton];
 }
 
 class HomeInitial extends HomeState {
-  const HomeInitial() : super(0);
+  const HomeInitial() : super(0, 0);
 }
