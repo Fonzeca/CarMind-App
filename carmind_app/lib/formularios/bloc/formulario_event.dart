@@ -6,3 +6,11 @@ abstract class FormularioEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class FormularioBuscarDataEvent extends FormularioEvent{
+
+}
+
+class FormularioDataLoadedEvent extends FormularioEvent{
+
+}

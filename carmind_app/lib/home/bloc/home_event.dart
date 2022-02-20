@@ -9,5 +9,6 @@ abstract class HomeEvent extends Equatable {
 
 class HomeNavigationEvent extends HomeEvent {
   final int buttonId;
-  const HomeNavigationEvent(this.buttonId);
+  dynamic data;
+  HomeNavigationEvent(this.buttonId, {this.data});
 }

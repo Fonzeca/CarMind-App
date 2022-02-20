@@ -119,7 +119,7 @@ class LoginScreen extends StatelessWidget {
                   backgroundColor: MaterialStateProperty.all(carMindTopBar),
                   textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 ),
-                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text, _checkBoxChecked.value)),
+                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin("alexisfonzos@gmail.com", "123", _checkBoxChecked.value)),
                 child: const Text("Iniciar sesión"),
               ),
             ),
@@ -128,7 +128,7 @@ class LoginScreen extends StatelessWidget {
                 onPressed: () {},
                 child: const Text(
                   "Olvidé mi contraseña",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                 ))
           ],
         ),

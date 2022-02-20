@@ -5,9 +5,9 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  List<int> pageHistorial = [0];
 
   HomeBloc() : super(HomeInitial()) {
-
     on<HomeNavigationEvent>((event, emit) {
       int indexPageView = 0;
       int indexNavButton = 0;
@@ -24,12 +24,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         case 3:
           indexNavButton = 1;
           break;
+        case 4:
+          indexNavButton = 0;
+          break;
       }
       indexPageView = event.buttonId;
+      pageHistorial.add(indexPageView);
 
-
-      emit(state.copyWith(indexPageView, indexNavButton));
+      emit(state.copyWith(indexPageView, indexNavButton, event.data));
     });
   }
-
 }

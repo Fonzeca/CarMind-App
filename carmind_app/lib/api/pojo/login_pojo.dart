@@ -6,7 +6,6 @@ part 'login_pojo.g.dart';
 class TokenLogin {
   String? token;
   
-  
   TokenLogin();
 
   factory TokenLogin.fromJson(Map<String, dynamic> json) => _$TokenLoginFromJson(json);

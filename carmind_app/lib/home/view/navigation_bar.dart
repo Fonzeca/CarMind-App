@@ -1,6 +1,8 @@
 import 'package:carmind_app/formularios/view/content_main.dart';
+import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/profile/view/profile_content.dart';
 import 'package:carmind_app/vehiculo/view/vehiculo_especifico.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,66 +12,58 @@ import 'package:flutter_svg/svg.dart';
 class CarMindNavigationBar extends StatelessWidget {
   CarMindNavigationBar({Key? key}) : super(key: key);
 
-  final FormuarioContent formularios = FormuarioContent();
-
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   int selectedIndex = 0;
-  PageController controller = PageController(initialPage: 0);
 
   BuildContext? context;
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    VehiculoEspecifico vehiculoEspecifico = VehiculoEspecifico();
-
     return Scaffold(
-        bottomNavigationBar: BlocListener<HomeBloc, HomeState>(
-          listener: (context, state) {
-            controller.jumpToPage(state.selectedPageView);
+        bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return BottomNavigationBar(
+              items: [
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset("assets/formulario.svg", color: Colors.white),
+                    activeIcon: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor),
+                    label: "Formularios"),
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white),
+                    activeIcon: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor),
+                    label: "Vehículos"),
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset("assets/profile.svg", color: Colors.white),
+                    activeIcon: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor),
+                    label: "Perfil")
+              ],
+              currentIndex: state.selectedNavButton,
+              selectedItemColor: carMindAccentColor,
+              unselectedItemColor: Colors.white,
+              backgroundColor: Colors.black,
+              onTap: (value) {
+                BlocProvider.of<HomeBloc>(context).add(HomeNavigationEvent(value));
+              },
+            );
           },
-          child: BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) {
-              return BottomNavigationBar(
-                items: [
-                  BottomNavigationBarItem(
-                      icon: SvgPicture.asset("assets/formulario.svg", color: Colors.white),
-                      activeIcon: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor),
-                      label: "Formularios"),
-                  BottomNavigationBarItem(
-                      icon: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white),
-                      activeIcon: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor),
-                      label: "Vehículos"),
-                  BottomNavigationBarItem(
-                      icon: SvgPicture.asset("assets/profile.svg", color: Colors.white),
-                      activeIcon: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor),
-                      label: "Perfil")
-                ],
-                currentIndex: state.selectedNavButton,
-                selectedItemColor: carMindAccentColor,
-                unselectedItemColor: Colors.white,
-                backgroundColor: Colors.black,
-                onTap: (value) {
-                  BlocProvider.of<HomeBloc>(context).add(HomeNavigationEvent(value));
-                },
-              );
-            },
-          ),
         ),
-        body: PageView(
-          controller: controller,
-          allowImplicitScrolling: false,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            formularios,
-            Container(
-              color: Colors.deepOrange,
-            ),
-            Container(
-              color: Colors.greenAccent,
-            ),
-            vehiculoEspecifico,
-          ],
+        body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            switch (state.selectedPageView) {
+              case 0:
+                return FormuarioContent();
+              case 1:
+                return Container(color: Colors.deepOrange);
+              case 2:
+                return ProfileContent();
+              case 3:
+                return VehiculoEspecifico();
+              case 4:
+                return FormularioPreguntas(evalua: state.data);
+            }
+            return Container();
+          },
         ),
         floatingActionButton: SpeedDial(
           openCloseDial: isDialOpen,
@@ -146,7 +140,7 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapQr() async {
-    BlocProvider.of<HomeBloc>(context!).add(const HomeNavigationEvent(3));
+    BlocProvider.of<HomeBloc>(context!).add(HomeNavigationEvent(3));
     // String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.QR);
   }
 }

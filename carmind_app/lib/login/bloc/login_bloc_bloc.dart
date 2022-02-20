@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -12,7 +11,6 @@ part 'login_bloc_state.dart';
 
 class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
   LoginBlocBloc() : super(LoginBlocInitial()) {
-
     final client = ApiClient(Dio());
 
     on<LoginBlocEvent>((event, emit) {
@@ -22,28 +20,24 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
     on<AttemptToLogin>((event, emit) async {
       emit(LoginLoading());
 
-      await client.login(event.email, event.password)
-      .then((value) {
-
+      await client.login(event.email, event.password).then((value) {
         saveToken(value.token!);
 
         emit(LoginOk());
-      })
-      .onError((error, stackTrace) {
+      }).onError((error, stackTrace) {
         removeToken();
         log("HUBO UN ERROR");
-        emit(const LoginError("Ocurrio un error"));
+        emit(const LoginError("Completa la información"));
       });
-
     });
   }
 
-  saveToken(String token) async{
+  saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("token", token);
   }
 
-  removeToken() async{
+  removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove("token");
   }

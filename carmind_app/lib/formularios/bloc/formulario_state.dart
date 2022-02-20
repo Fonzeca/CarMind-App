@@ -7,4 +7,8 @@ abstract class FormularioState extends Equatable {
   List<Object> get props => [];
 }
 
-class FormularioInitial extends FormularioState {}
+class FormularioDataLoadedState extends FormularioState {}
+
+class FormularioLoadingState extends FormularioState{}
+
+

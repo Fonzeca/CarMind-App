@@ -1,3 +1,4 @@
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/login_pojo.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -10,4 +11,7 @@ abstract class ApiClient{
 
   @POST("/login")
   Future<TokenLogin> login(@Query("username") String email, @Query("password") String password);
+
+  @GET("/evaluacion/{id}")
+  Future<Evaluacion> getEvaluacionById(@Path("id") int idEvaluacion);
 }
