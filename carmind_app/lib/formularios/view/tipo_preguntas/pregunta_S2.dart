@@ -51,22 +51,29 @@ class PreguntaS2 extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 20 - 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      preguntaFinalizada ? "assets/tick_fill.svg" : "assets/tick_empty.svg",
-                      color: preguntaEnabled! ? null : const Color(0xFF6F6F6F),
-                    ),
-                    padding: EdgeInsets.zero,
-                    iconSize: 23,
-                    onPressed: preguntaEnabled! ? () {
-                      BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
-                      preguntaFinalizada = true;
-                    }:null,
-                  ),
-                ],
+              ValueListenableBuilder(
+                valueListenable: reconstruye,
+                builder: (context, value, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: SvgPicture.asset(
+                          preguntaFinalizada ? "assets/tick_fill.svg" : "assets/tick_empty.svg",
+                          color: listIds.isNotEmpty ? null : const Color(0xFF6F6F6F),
+                        ),
+                        padding: EdgeInsets.zero,
+                        iconSize: 23,
+                        onPressed: listIds.isNotEmpty
+                            ? () {
+                                BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                                preguntaFinalizada = true;
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 17 - 12),
             ],

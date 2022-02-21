@@ -1,5 +1,7 @@
+
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_F.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S1.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S2.dart';
@@ -7,6 +9,7 @@ import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S3.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_TX.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class seccion_formulario extends StatelessWidget {
   final SeccionPojo seccion;
@@ -14,12 +17,13 @@ class seccion_formulario extends StatelessWidget {
   ValueNotifier<bool> abierto = ValueNotifier(true);
 
   seccion_formulario({Key? key, required this.seccion}) : super(key: key);
+  AutoScrollController? controller;
 
   @override
   Widget build(BuildContext context) {
+
     return BlocListener<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
       listener: (context, state) {
-        // TODO: implement listener
       },
       child: ValueListenableBuilder(
         valueListenable: abierto,
@@ -92,19 +96,51 @@ class seccion_formulario extends StatelessWidget {
 
       switch (pregunta.tipo!) {
         case "TX":
-          list.add(PreguntaTX(pregunta: pregunta));
+          list.add(
+            AutoScrollTag(
+              index: pregunta.id!,
+              controller: FormularioPreguntas.controller!,
+              key: ValueKey(pregunta.id!),
+              child: PreguntaTX(pregunta: pregunta),
+              highlightColor: Colors.black.withOpacity(0.1),
+            ),
+          );
           break;
         case "F":
-          list.add(PreguntaF(pregunta: pregunta));
+          list.add(AutoScrollTag(
+            index: pregunta.id!,
+            controller: FormularioPreguntas.controller!,
+            key: ValueKey(pregunta.id!),
+            child: PreguntaF(pregunta: pregunta),
+            highlightColor: Colors.black.withOpacity(0.1),
+          ));
           break;
         case "S1":
-          list.add(PreguntaS1(pregunta: pregunta));
+          list.add(AutoScrollTag(
+            index: pregunta.id!,
+            controller: FormularioPreguntas.controller!,
+            key: ValueKey(pregunta.id!),
+            child: PreguntaS1(pregunta: pregunta),
+            highlightColor: Colors.black.withOpacity(0.1),
+          ));
           break;
         case "S2":
-          list.add(PreguntaS2(pregunta: pregunta));
+          list.add(AutoScrollTag(
+            index: pregunta.id!,
+            controller: FormularioPreguntas.controller!,
+            key: ValueKey(pregunta.id!),
+            child: PreguntaS2(pregunta: pregunta),
+            highlightColor: Colors.black.withOpacity(0.1),
+          ));
           break;
         case "S3":
-          list.add(PreguntaS3(pregunta: pregunta));
+          list.add(AutoScrollTag(
+            index: pregunta.id!,
+            controller: FormularioPreguntas.controller!,
+            key: ValueKey(pregunta.id!),
+            child: PreguntaS3(pregunta: pregunta),
+            highlightColor: Colors.black.withOpacity(0.1),
+          ));
           break;
         default:
           list.add(Text("Error, pregunta no implementada."));

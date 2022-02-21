@@ -3,21 +3,36 @@ import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 import 'seccion_formulario.dart';
 
 class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
-  ScrollController controller = ScrollController();
 
   FormularioPreguntas({Key? key, required dynamic evalua})
       : assert(evalua is Evaluacion),
         evaluacion = evalua,
         super(key: key);
 
+  static AutoScrollController? controller;
+
   @override
   Widget build(BuildContext context) {
+    controller = AutoScrollController(
+      //add this for advanced viewport boundary. e.g. SafeArea
+      viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+
+      //choose vertical/horizontal
+      axis: Axis.vertical,
+
+      //this given value will bring the scroll offset to the nearest position in fixed row height case.
+      //for variable row height case, you can still set the average height, it will try to get to the relatively closer offset
+      //and then start searching.
+      suggestedRowHeight: 200,
+    );
+
     BlocProvider.of<RealiazarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion));
     return Scaffold(
       appBar: PreferredSize(
@@ -46,6 +61,8 @@ class FormularioPreguntas extends StatelessWidget {
             const SizedBox(height: 34 - 8),
             Expanded(
               child: SingleChildScrollView(
+                controller: controller,
+                scrollDirection: Axis.vertical,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: listSecciones(),

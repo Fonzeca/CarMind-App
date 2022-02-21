@@ -125,6 +125,7 @@ class PreguntaS3 extends StatelessWidget {
                   );
                 },
               ),
+              const SizedBox(height: 16-10),
             ],
           ),
         );

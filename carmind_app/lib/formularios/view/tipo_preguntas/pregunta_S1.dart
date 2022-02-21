@@ -89,67 +89,68 @@ class PreguntaS1 extends StatelessWidget {
     );
   }
 
-  List<int> idsNoChecked = [];
-  List<int> idsSiChecked = [];
 
   Map<int, bool?> checkeds = Map();
 
   List<Widget> _buildOptions() {
     List<Widget> list = [];
     list.add(Row(
-      children: const [SizedBox(width: 14), Text("Si"), SizedBox(width: 26), Text("No")],
+      children: const [SizedBox(width: 23), Text("Si"), SizedBox(width: 26), Text("No")],
     ));
     pregunta.opciones!.asMap().forEach((index, option) {
-      list.add(Row(
-        children: [
-          Checkbox(
-            visualDensity: VisualDensity.compact,
-            value: checkeds[option.id] == true,
-            fillColor: MaterialStateProperty.resolveWith((states) {
-              if (states.isNotEmpty && states.first == MaterialState.disabled) {
-                return const Color(0xFF6F6F6F);
-              }
-              return carMindAccent2Color;
-            }),
-            onChanged: preguntaEnabled!
-                ? (value) {
-                    if (checkeds[option.id!] == true) {
-                      checkeds.remove(option.id!);
-                    } else {
-                      checkeds[option.id!] = value;
+      list.add(Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Row(
+          children: [
+            Checkbox(
+              visualDensity: VisualDensity.compact,
+              value: checkeds[option.id] == true,
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.isNotEmpty && states.first == MaterialState.disabled) {
+                  return const Color(0xFF6F6F6F);
+                }
+                return carMindAccent2Color;
+              }),
+              onChanged: preguntaEnabled!
+                  ? (value) {
+                      if (checkeds[option.id!] == true) {
+                        checkeds.remove(option.id!);
+                      } else {
+                        checkeds[option.id!] = value;
+                      }
+                      reconstruye.value = !reconstruye.value;
                     }
-                    reconstruye.value = !reconstruye.value;
-                  }
-                : null,
-          ),
-          CustomCheckbox(
-            value: checkeds[option.id] == false,
-            visualDensity: VisualDensity.compact,
-            fillColor: MaterialStateProperty.resolveWith((states) {
-              if (states.isNotEmpty && states.first == MaterialState.disabled) {
-                return const Color(0xFF6F6F6F);
-              }
-              if (states.isNotEmpty && states.first == MaterialState.selected) {
-                return const Color(0xFFFF0202);
-              }
-              return carMindAccent2Color;
-            }),
-            onChanged: preguntaEnabled!
-                ? (value) {
-                    if (checkeds[option.id!] == false) {
-                      checkeds.remove(option.id!);
-                    } else {
-                      checkeds[option.id!] = !value!;
+                  : null,
+            ),
+            CustomCheckbox(
+              value: checkeds[option.id] == false,
+              visualDensity: VisualDensity.compact,
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.isNotEmpty && states.first == MaterialState.disabled) {
+                  return const Color(0xFF6F6F6F);
+                }
+                if (states.isNotEmpty && states.first == MaterialState.selected) {
+                  return const Color(0xFFFF0202);
+                }
+                return carMindAccent2Color;
+              }),
+              onChanged: preguntaEnabled!
+                  ? (value) {
+                      if (checkeds[option.id!] == false) {
+                        checkeds.remove(option.id!);
+                      } else {
+                        checkeds[option.id!] = !value!;
+                      }
+                      reconstruye.value = !reconstruye.value;
                     }
-                    reconstruye.value = !reconstruye.value;
-                  }
-                : null,
-          ),
-          Text(
-            option.texto!,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-          )
-        ],
+                  : null,
+            ),
+            Text(
+              option.texto!,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            )
+          ],
+        ),
       ));
     });
     return list;

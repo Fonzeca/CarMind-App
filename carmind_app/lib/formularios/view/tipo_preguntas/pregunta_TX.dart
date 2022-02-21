@@ -29,7 +29,7 @@ class PreguntaTX extends StatelessWidget {
                 const SizedBox(height: 20),
                 Text(
                   pregunta.descripcion!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20),

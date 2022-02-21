@@ -105,7 +105,7 @@ class PreguntaF extends StatelessWidget {
                       : const SizedBox();
                 },
               ),
-              const SizedBox(height: 15 - 10),
+              const SizedBox(height: 12),
             ],
           ),
         );
