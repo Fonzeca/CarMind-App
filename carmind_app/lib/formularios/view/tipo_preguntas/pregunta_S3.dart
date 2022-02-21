@@ -29,7 +29,7 @@ class PreguntaS3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
       builder: (context, state) {
-        preguntaEnabled = true;
+        preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
 
         return Material(
           child: Column(
@@ -66,6 +66,7 @@ class PreguntaS3 extends StatelessWidget {
                                     await Future.delayed(const Duration(milliseconds: 200));
 
                                     preguntaFinalizada = true;
+                                    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
                                     reconstruye.value = !reconstruye.value;
                                   }
                                 : null,
@@ -108,7 +109,8 @@ class PreguntaS3 extends StatelessWidget {
                               ? () {
                                   tickCorrecto = true;
                                   muestraNota = false;
-                                  preguntaFinalizada = false;
+                                  preguntaFinalizada = true;
+                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
                                   reconstruye.value = !reconstruye.value;
                                 }
                               : null,

@@ -61,10 +61,10 @@ class PreguntaS2 extends StatelessWidget {
                     ),
                     padding: EdgeInsets.zero,
                     iconSize: 23,
-                    onPressed: () {
+                    onPressed: preguntaEnabled! ? () {
                       BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
                       preguntaFinalizada = true;
-                    },
+                    }:null,
                   ),
                 ],
               ),
