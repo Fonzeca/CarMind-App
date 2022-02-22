@@ -7,8 +7,7 @@ abstract class RealiazarEvaluacionEvent extends Equatable {
   List<Object> get props => [];
 }
 
-
-class IniciarEvaluacionEvent extends RealiazarEvaluacionEvent{
+class IniciarEvaluacionEvent extends RealiazarEvaluacionEvent {
   final Evaluacion evaluacion;
 
   const IniciarEvaluacionEvent(this.evaluacion);
@@ -17,11 +16,19 @@ class IniciarEvaluacionEvent extends RealiazarEvaluacionEvent{
   List<Object> get props => [evaluacion];
 }
 
-class FinalizarPreguntaEvent extends RealiazarEvaluacionEvent{
+class FinalizarPreguntaEvent extends RealiazarEvaluacionEvent {
   final int preguntaId;
+  final RespuestaPojo respuesta;
 
-  const FinalizarPreguntaEvent(this.preguntaId);
+  const FinalizarPreguntaEvent(this.preguntaId, this.respuesta);
 
   @override
-  List<Object> get props => [preguntaId];
+  List<Object> get props => [preguntaId, respuesta];
+}
+
+class FinalizarEvaluacionEvent extends RealiazarEvaluacionEvent {
+  const FinalizarEvaluacionEvent();
+
+  @override
+  List<Object> get props => [];
 }

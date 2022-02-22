@@ -1,12 +1,14 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/CustomRadio.dart';
+import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PreguntaS2 extends StatelessWidget {
+class PreguntaS2 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
 
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
@@ -66,7 +68,7 @@ class PreguntaS2 extends StatelessWidget {
                         iconSize: 23,
                         onPressed: listIds.isNotEmpty
                             ? () {
-                                BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                                BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                 preguntaFinalizada = true;
                               }
                             : null,
@@ -122,5 +124,22 @@ class PreguntaS2 extends StatelessWidget {
     });
     list.removeAt(0);
     return list;
+  }
+
+  @override
+  RespuestaPojo setearRespuesta() {
+    RespuestaPojo res = RespuestaPojo();
+    res.pregunta_id = pregunta.id;
+
+    List<RespuestaOpcionPojo> list = [];
+    for (var opcion in pregunta.opciones!) {
+      RespuestaOpcionPojo resOpcion = RespuestaOpcionPojo();
+      resOpcion.opcion_id = opcion.id;
+      resOpcion.tick_correcto = listIds.contains(opcion.id!);
+      list.add(resOpcion);
+    }
+
+    res.opciones = list;
+    return res;
   }
 }

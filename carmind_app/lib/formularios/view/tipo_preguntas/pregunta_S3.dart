@@ -1,11 +1,13 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PreguntaS3 extends StatelessWidget {
+class PreguntaS3 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
 
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
@@ -66,7 +68,7 @@ class PreguntaS3 extends StatelessWidget {
                                     await Future.delayed(const Duration(milliseconds: 200));
 
                                     preguntaFinalizada = true;
-                                    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                                    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                     reconstruye.value = !reconstruye.value;
                                   }
                                 : null,
@@ -110,7 +112,7 @@ class PreguntaS3 extends StatelessWidget {
                                   tickCorrecto = true;
                                   muestraNota = false;
                                   preguntaFinalizada = true;
-                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                   reconstruye.value = !reconstruye.value;
                                 }
                               : null,
@@ -125,7 +127,7 @@ class PreguntaS3 extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 16-10),
+              const SizedBox(height: 16 - 10),
             ],
           ),
         );
@@ -165,5 +167,16 @@ class PreguntaS3 extends StatelessWidget {
         }
       },
     );
+  }
+
+  @override
+  RespuestaPojo setearRespuesta() {
+    RespuestaPojo res = RespuestaPojo();
+    res.pregunta_id = pregunta.id;
+    res.tick_correcto = tickCorrecto;
+    if (!tickCorrecto!) {
+      res.texto = controller.text;
+    }
+    return res;
   }
 }

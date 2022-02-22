@@ -29,10 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: "Roboto"
-        ),
+        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(
           body: LoginScreen(),
         ),
@@ -46,14 +43,14 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  configDio(){
+  configDio() {
     staticDio = Dio();
     staticDio?.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
-        if(!options.uri.path.contains("login") && !options.uri.path.contains("public")){
+        if (!options.uri.path.contains("login") && !options.uri.path.contains("public")) {
           var prefs = await SharedPreferences.getInstance();
           String? token = prefs.getString("token");
-          options.headers.addAll({'Authorization' : "Bearer $token"});
+          options.headers.addAll({'Authorization': "Bearer $token"});
         }
         handler.next(options);
       },

@@ -1,4 +1,3 @@
-
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
@@ -19,11 +18,15 @@ class seccion_formulario extends StatelessWidget {
   seccion_formulario({Key? key, required this.seccion}) : super(key: key);
   AutoScrollController? controller;
 
+  List<Widget>? listPreguntas;
+
   @override
   Widget build(BuildContext context) {
-
     return BlocListener<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
       listener: (context, state) {
+        if (state.seccionesTerminadas.contains(seccion.id)) {
+          abierto.value = false;
+        }
       },
       child: ValueListenableBuilder(
         valueListenable: abierto,
@@ -33,7 +36,7 @@ class seccion_formulario extends StatelessWidget {
             alignment: Alignment.topCenter,
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
+                color: Colors.transparent,
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: Color(0xFFBDAAFF)),
               ),
@@ -52,6 +55,8 @@ class seccion_formulario extends StatelessWidget {
     Widget? content;
 
     if (abierto.value) {
+      listPreguntas ??= listWidget();
+
       content = Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +65,7 @@ class seccion_formulario extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 9),
             child: Column(
-              children: listWidget(),
+              children: listPreguntas!,
             ),
           ),
         ],
@@ -75,7 +80,7 @@ class seccion_formulario extends StatelessWidget {
     return Container(
       child: GestureDetector(
         onTap: () {
-          abierto.value = !abierto.value;
+          abierto.value = true;
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -102,7 +107,7 @@ class seccion_formulario extends StatelessWidget {
               controller: FormularioPreguntas.controller!,
               key: ValueKey(pregunta.id!),
               child: PreguntaTX(pregunta: pregunta),
-              highlightColor: Colors.black.withOpacity(0.1),
+              highlightColor: Colors.black,
             ),
           );
           break;
@@ -112,7 +117,7 @@ class seccion_formulario extends StatelessWidget {
             controller: FormularioPreguntas.controller!,
             key: ValueKey(pregunta.id!),
             child: PreguntaF(pregunta: pregunta),
-            highlightColor: Colors.black.withOpacity(0.1),
+            highlightColor: Colors.black,
           ));
           break;
         case "S1":
@@ -121,7 +126,7 @@ class seccion_formulario extends StatelessWidget {
             controller: FormularioPreguntas.controller!,
             key: ValueKey(pregunta.id!),
             child: PreguntaS1(pregunta: pregunta),
-            highlightColor: Colors.black.withOpacity(0.1),
+            highlightColor: Colors.black,
           ));
           break;
         case "S2":
@@ -130,7 +135,7 @@ class seccion_formulario extends StatelessWidget {
             controller: FormularioPreguntas.controller!,
             key: ValueKey(pregunta.id!),
             child: PreguntaS2(pregunta: pregunta),
-            highlightColor: Colors.black.withOpacity(0.1),
+            highlightColor: Colors.black,
           ));
           break;
         case "S3":
@@ -139,7 +144,7 @@ class seccion_formulario extends StatelessWidget {
             controller: FormularioPreguntas.controller!,
             key: ValueKey(pregunta.id!),
             child: PreguntaS3(pregunta: pregunta),
-            highlightColor: Colors.black.withOpacity(0.1),
+            highlightColor: Colors.black,
           ));
           break;
         default:

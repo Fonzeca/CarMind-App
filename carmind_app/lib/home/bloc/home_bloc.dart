@@ -9,29 +9,46 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc() : super(HomeInitial()) {
     on<HomeNavigationEvent>((event, emit) {
-      int indexPageView = 0;
-      int indexNavButton = 0;
-      switch (event.buttonId) {
-        case 0:
-          indexNavButton = 0;
-          break;
-        case 1:
-          indexNavButton = 1;
-          break;
-        case 2:
-          indexNavButton = 2;
-          break;
-        case 3:
-          indexNavButton = 1;
-          break;
-        case 4:
-          indexNavButton = 0;
-          break;
-      }
-      indexPageView = event.buttonId;
-      pageHistorial.add(indexPageView);
+      int indexPageView = event.buttonId;
+      int indexNavButton = resolveNavButton(event.buttonId);
 
-      emit(state.copyWith(indexPageView, indexNavButton, event.data));
+      if (pageHistorial.isNotEmpty && pageHistorial.last != indexPageView) {
+        pageHistorial.add(indexPageView);
+      }
+
+      emit(state.copyWith(pageHistorial.last, indexNavButton, event.data));
     });
+
+    on<PopEvent>((event, emit) {
+      pageHistorial.removeLast();
+      int currentPage = 0;
+      if (pageHistorial.isNotEmpty) {
+        currentPage = pageHistorial.last;
+      }
+
+      add(HomeNavigationEvent(currentPage));
+    });
+  }
+
+  int resolveNavButton(int buttonId) {
+    var indexNavButton = 0;
+    switch (buttonId) {
+      case 0:
+        indexNavButton = 0;
+        break;
+      case 1:
+        indexNavButton = 1;
+        break;
+      case 2:
+        indexNavButton = 2;
+        break;
+      case 3:
+        indexNavButton = 1;
+        break;
+      case 4:
+        indexNavButton = 0;
+        break;
+    }
+    return indexNavButton;
   }
 }

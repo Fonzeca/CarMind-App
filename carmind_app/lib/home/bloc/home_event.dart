@@ -12,3 +12,7 @@ class HomeNavigationEvent extends HomeEvent {
   dynamic data;
   HomeNavigationEvent(this.buttonId, {this.data});
 }
+
+class PopEvent extends HomeEvent {
+  const PopEvent();
+}

@@ -1,11 +1,13 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PreguntaTX extends StatelessWidget {
+class PreguntaTX extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
   final TextEditingController controller = TextEditingController();
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
@@ -51,10 +53,11 @@ class PreguntaTX extends StatelessWidget {
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                     expands: true,
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        hintText: "Añadir nota..."),
+                      border: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                      hintText: "Añadir nota...",
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20 - 12),
@@ -69,7 +72,7 @@ class PreguntaTX extends StatelessWidget {
                               ? () {
                                   preguntaFinalizada = true;
                                   reconstruye.value = !reconstruye.value;
-                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                 }
                               : null,
                           icon: SvgPicture.asset(
@@ -90,5 +93,13 @@ class PreguntaTX extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  RespuestaPojo setearRespuesta() {
+    RespuestaPojo res = RespuestaPojo();
+    res.pregunta_id = pregunta.id;
+    res.texto = controller.text;
+    return res;
   }
 }

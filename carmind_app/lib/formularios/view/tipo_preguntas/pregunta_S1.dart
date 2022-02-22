@@ -1,14 +1,15 @@
-
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/CustomCheckBox.dart';
+import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class PreguntaS1 extends StatelessWidget {
+class PreguntaS1 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
 
@@ -53,12 +54,12 @@ class PreguntaS1 extends StatelessWidget {
               ValueListenableBuilder(
                 valueListenable: reconstruye,
                 builder: (context, value, child) {
-                  if(checkeds.length == pregunta.opciones!.length){
+                  if (checkeds.length == pregunta.opciones!.length) {
                     buttonEnabled = true;
-                  }else{
+                  } else {
                     buttonEnabled = false;
                   }
-                  
+
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -69,13 +70,15 @@ class PreguntaS1 extends StatelessWidget {
                         ),
                         padding: EdgeInsets.zero,
                         iconSize: 23,
-                        onPressed: buttonEnabled ? () {
-                          if(!preguntaFinalizada){
-                            preguntaFinalizada = true;
-                            reconstruye.value = !reconstruye.value;
-                            BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
-                          }
-                        } : null,
+                        onPressed: buttonEnabled
+                            ? () {
+                                if (!preguntaFinalizada) {
+                                  preguntaFinalizada = true;
+                                  reconstruye.value = !reconstruye.value;
+                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                }
+                              }
+                            : null,
                       ),
                     ],
                   );
@@ -88,7 +91,6 @@ class PreguntaS1 extends StatelessWidget {
       },
     );
   }
-
 
   Map<int, bool?> checkeds = Map();
 
@@ -154,5 +156,22 @@ class PreguntaS1 extends StatelessWidget {
       ));
     });
     return list;
+  }
+
+  @override
+  RespuestaPojo setearRespuesta() {
+    RespuestaPojo res = RespuestaPojo();
+    res.pregunta_id = pregunta.id;
+
+    List<RespuestaOpcionPojo> list = [];
+    for (var opcion in pregunta.opciones!) {
+      RespuestaOpcionPojo resOpcion = RespuestaOpcionPojo();
+      resOpcion.opcion_id = opcion.id;
+      resOpcion.tick_correcto = checkeds[opcion.id!];
+      list.add(resOpcion);
+    }
+
+    res.opciones = list;
+    return res;
   }
 }

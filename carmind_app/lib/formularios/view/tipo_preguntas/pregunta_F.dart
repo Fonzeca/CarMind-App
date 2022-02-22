@@ -1,7 +1,9 @@
-import 'dart:developer';
+import 'dart:convert';
 
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PreguntaF extends StatelessWidget {
+class PreguntaF extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
 
@@ -21,6 +23,7 @@ class PreguntaF extends StatelessWidget {
   bool preguntaFinalizada = false;
 
   String? photoName;
+  String? photoBase64;
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +53,16 @@ class PreguntaF extends StatelessWidget {
                 child: GestureDetector(
                   onTap: preguntaEnabled!
                       ? () async {
-                          final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+                          final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
                           if (photo != null) {
                             photoName = photo.name;
-                            log("$photoName");
+
+                            var imageBytes = await photo.readAsBytes();
+                            photoBase64 = base64Encode(imageBytes);
+
                             preguntaFinalizada = true;
                             reconstruye.value = !reconstruye.value;
-                            BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!));
+                            BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                           }
                         }
                       : null,
@@ -111,5 +117,13 @@ class PreguntaF extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  RespuestaPojo setearRespuesta() {
+    RespuestaPojo res = RespuestaPojo();
+    res.pregunta_id = pregunta.id;
+    res.base64_image = photoBase64;
+    return res;
   }
 }
