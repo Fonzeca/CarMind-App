@@ -1,5 +1,6 @@
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,9 @@ import 'card_vehiculo.dart';
 
 class VehiculoEspecifico extends StatelessWidget {
   BuildContext? context;
+  Vehiculo vehiculo;
 
-  VehiculoEspecifico({Key? key}) : super(key: key);
+  VehiculoEspecifico({Key? key, required this.vehiculo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,9 @@ class VehiculoEspecifico extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 24),
-          card_vehiculo(),
+          card_vehiculo(
+            vehiculo: vehiculo,
+          ),
           const SizedBox(height: 44),
           const SizedBox(
             height: 34,
@@ -97,7 +101,7 @@ class VehiculoEspecifico extends StatelessWidget {
     );
   }
 
-  buscarEvaluacion() async{
+  buscarEvaluacion() async {
     ApiClient api = ApiClient(staticDio!);
     Evaluacion ev = await api.getEvaluacionById(196);
     BlocProvider.of<HomeBloc>(context!).add(HomeNavigationEvent(4, data: ev));

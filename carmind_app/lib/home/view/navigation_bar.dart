@@ -2,9 +2,10 @@ import 'package:carmind_app/formularios/view/content_main.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
-import 'package:carmind_app/profile/view/profile_content.dart';
+import 'package:carmind_app/vehiculo/view/qr_scanner.dart';
 import 'package:carmind_app/vehiculo/view/vehiculo_especifico.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
@@ -56,9 +57,9 @@ class CarMindNavigationBar extends StatelessWidget {
               case 1:
                 return Container(color: Colors.deepOrange);
               case 2:
-                return ProfileContent();
+                return QrVehiculoScanner();
               case 3:
-                return VehiculoEspecifico();
+                return VehiculoEspecifico(vehiculo: state.data);
               case 4:
                 return FormularioPreguntas(evalua: state.data);
             }
@@ -141,6 +142,11 @@ class CarMindNavigationBar extends StatelessWidget {
 
   onTapQr() async {
     BlocProvider.of<HomeBloc>(context!).add(HomeNavigationEvent(3));
-    // String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.QR);
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+      "#ff6666",
+      "Cancelar",
+      false,
+      ScanMode.QR,
+    );
   }
 }

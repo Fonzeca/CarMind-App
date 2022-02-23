@@ -1,10 +1,13 @@
+import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../main.dart';
 
 class card_vehiculo extends StatelessWidget {
-  const card_vehiculo({Key? key}) : super(key: key);
+  final Vehiculo vehiculo;
+
+  const card_vehiculo({Key? key, required this.vehiculo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +43,19 @@ class card_vehiculo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Vehículo 1",
+                    Text(
+                      "${vehiculo.nombre}",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 15),
                     Row(
-                      children: const [
+                      children: [
                         Text(
-                          "Activo",
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                          vehiculo.en_uso! ? "En uso" : "Disponible",
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         ),
-                        SizedBox(width: 8),
-                        Icon(Icons.circle, color: Color(0xFF36A900), size: 14)
+                        const SizedBox(width: 8),
+                        Icon(Icons.circle, color: vehiculo.en_uso! ? const Color(0xFFDC0404) : const Color(0xFF36A900), size: 14)
                       ],
                     )
                   ],
