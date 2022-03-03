@@ -1,14 +1,18 @@
 part of 'formulario_bloc.dart';
 
-abstract class FormularioState extends Equatable {
-  const FormularioState();
-  
+class FormularioState extends Equatable {
+  final List<LogEvaluacion> logs;
+  final bool loading;
+
+  const FormularioState({required this.loading, required this.logs});
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [logs];
+
+  FormularioState copyWith({bool? loading, List<LogEvaluacion>? logs}) {
+    return FormularioState(
+      loading: loading ?? this.loading,
+      logs: logs ?? this.logs,
+    );
+  }
 }
-
-class FormularioDataLoadedState extends FormularioState {}
-
-class FormularioLoadingState extends FormularioState{}
-
-

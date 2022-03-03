@@ -1,11 +1,13 @@
 import 'package:carmind_app/formularios/view/content_main.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
+import 'package:carmind_app/formularios/view/util/check_animation.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/profile/view/profile_content.dart';
+import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:carmind_app/vehiculo/view/qr_scanner.dart';
 import 'package:carmind_app/vehiculo/view/vehiculo_especifico.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
@@ -53,59 +55,65 @@ class CarMindNavigationBar extends StatelessWidget {
           builder: (context, state) {
             switch (state.selectedPageView) {
               case 0:
-                return FormuarioContent();
+                return FormuarioContent(context);
               case 1:
-                return Container(color: Colors.deepOrange);
+                return VehiculoEspecifico();
               case 2:
-                return QrVehiculoScanner();
+                return ProfileContent();
               case 3:
-                return VehiculoEspecifico(vehiculo: state.data);
+                return Container();
               case 4:
                 return FormularioPreguntas(evalua: state.data);
             }
             return Container();
           },
         ),
-        floatingActionButton: SpeedDial(
-          openCloseDial: isDialOpen,
-          icon: Icons.qr_code_2,
-          activeIcon: Icons.close,
-          direction: SpeedDialDirection.up,
-          onPress: () {
-            isDialOpen.value = true;
+        floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
+          buildWhen: (previous, current) => previous.showFab != current.showFab,
+          builder: (context, state) {
+            return SpeedDial(
+              openCloseDial: isDialOpen,
+              icon: Icons.qr_code_2,
+              activeIcon: Icons.close,
+              direction: SpeedDialDirection.up,
+              onPress: () {
+                isDialOpen.value = true;
+              },
+              visible: state.showFab,
+              overlayColor: const Color(0xA6292929),
+              backgroundColor: carMindPrimaryButton,
+              foregroundColor: carMindGrey,
+              iconTheme: const IconThemeData(size: 32),
+              childMargin: const EdgeInsets.all(29),
+              childPadding: const EdgeInsets.all(0),
+              buttonSize: const Size(49, 49),
+              childrenButtonSize: const Size(49, 49),
+              spaceBetweenChildren: 19,
+              children: [
+                SpeedDialChild(
+                  child: const Icon(
+                    Icons.qr_code_2,
+                    size: 24,
+                  ),
+                  backgroundColor: carMindGrey,
+                  foregroundColor: carMindPrimaryButton,
+                  labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
+                  onTap: () => onTapDialChild(0),
+                ),
+                SpeedDialChild(
+                  child: SvgPicture.asset(
+                    "assets/logout_vehicle.svg",
+                    width: 18,
+                    height: 18,
+                  ),
+                  backgroundColor: carMindGrey,
+                  foregroundColor: carMindPrimaryButton,
+                  labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
+                  onTap: () => onTapDialChild(1),
+                )
+              ],
+            );
           },
-          overlayColor: const Color(0xA6292929),
-          backgroundColor: carMindPrimaryButton,
-          foregroundColor: carMindGrey,
-          iconTheme: const IconThemeData(size: 32),
-          childMargin: const EdgeInsets.all(29),
-          childPadding: const EdgeInsets.all(0),
-          buttonSize: const Size(49, 49),
-          childrenButtonSize: const Size(49, 49),
-          spaceBetweenChildren: 19,
-          children: [
-            SpeedDialChild(
-              child: const Icon(
-                Icons.qr_code_2,
-                size: 24,
-              ),
-              backgroundColor: carMindGrey,
-              foregroundColor: carMindPrimaryButton,
-              labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
-              onTap: () => onTapDialChild(0),
-            ),
-            SpeedDialChild(
-              child: SvgPicture.asset(
-                "assets/logout_vehicle.svg",
-                width: 18,
-                height: 18,
-              ),
-              backgroundColor: carMindGrey,
-              foregroundColor: carMindPrimaryButton,
-              labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
-              onTap: () => onTapDialChild(1),
-            )
-          ],
         ));
   }
 
@@ -132,6 +140,9 @@ class CarMindNavigationBar extends StatelessWidget {
       case 0:
         onTapQr();
         break;
+      case 1:
+        onTapLogoutVehicle();
+        break;
       default:
     }
 
@@ -141,12 +152,11 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapQr() async {
-    BlocProvider.of<HomeBloc>(context!).add(HomeNavigationEvent(3));
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-      "#ff6666",
-      "Cancelar",
-      false,
-      ScanMode.QR,
-    );
+    Navigator.push(context!, MaterialPageRoute(builder: (context) => QrVehiculoScanner()));
+  }
+
+  onTapLogoutVehicle() async {
+    Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehiculo")));
+    BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar());
   }
 }

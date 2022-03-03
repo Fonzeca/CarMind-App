@@ -6,6 +6,7 @@ import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/main.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -65,8 +66,16 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
 
       log(evaluacionTerminada!.toJson().toString());
 
-      await api!.realizarEvaluacion(196, evaluacionTerminada!).onError((error, stackTrace) {
-        log("$error");
+      await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!).catchError((obj) {
+        switch (obj.runtimeType) {
+          case DioError:
+            // Here's the sample to get the failed response error code and message
+            final res = (obj as DioError).response;
+            log("Got error : ${res!.statusCode} -> ${res.statusMessage}");
+            break;
+          default:
+            break;
+        }
       });
 
       emit(state.copyWith(pMandandoEvaluacion: false, pEvaluacionTerminada: true));

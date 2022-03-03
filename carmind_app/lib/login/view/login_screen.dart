@@ -1,6 +1,7 @@
 import 'package:carmind_app/home/view/navigation_bar.dart';
 import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,12 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
-
     return BlocListener<LoginBlocBloc, LoginBlocState>(
       listener: (context, state) {
         if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
         } else if (state is LoginOk) {
+          BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
           Navigator.push(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()));
           emailCon.clear();
           passwordCon.clear();

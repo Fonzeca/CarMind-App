@@ -16,7 +16,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         pageHistorial.add(indexPageView);
       }
 
-      emit(state.copyWith(pageHistorial.last, indexNavButton, event.data));
+      emit(state.copyWith(selectedPageView: pageHistorial.last, selectedNavButton: indexNavButton, data: event.data));
     });
 
     on<PopEvent>((event, emit) {
@@ -27,6 +27,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
 
       add(HomeNavigationEvent(currentPage));
+    });
+
+    on<HideFab>((event, emit) {
+      emit(state.copyWith(showFab: false));
+    });
+
+    on<ShowFab>((event, emit) {
+      emit(state.copyWith(showFab: true));
     });
   }
 

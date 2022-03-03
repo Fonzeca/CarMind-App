@@ -70,11 +70,16 @@ class FormularioPreguntas extends StatelessWidget {
                       return previous.seccionesTerminadas.length != current.seccionesTerminadas.length;
                     },
                     builder: (context, state) {
-                      return StepProgressIndicator(
-                        totalSteps: evaluacion.secciones!.length,
-                        selectedColor: carMindAccentColor,
-                        currentStep: state.seccionesTerminadas.length,
-                        unselectedColor: const Color(0xFFCDCDCD),
+                      return ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: evaluacion.secciones!.length * (80 + 2),
+                        ),
+                        child: StepProgressIndicator(
+                          totalSteps: evaluacion.secciones!.length,
+                          selectedColor: carMindAccentColor,
+                          currentStep: state.seccionesTerminadas.length,
+                          unselectedColor: const Color(0xFFCDCDCD),
+                        ),
                       );
                     },
                   ),
@@ -174,8 +179,10 @@ class FormularioPreguntas extends StatelessWidget {
   }
 
   void finalizarFormulario(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ChechAnimation()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Completaste el formulario")));
     await Future.delayed(const Duration(milliseconds: 300));
-    BlocProvider.of<HomeBloc>(context).add(PopEvent());
+    BlocProvider.of<HomeBloc>(context)
+      ..add(const PopEvent())
+      ..add(ShowFab());
   }
 }

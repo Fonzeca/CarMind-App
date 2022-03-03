@@ -13,6 +13,10 @@ class HomeNavigationEvent extends HomeEvent {
   HomeNavigationEvent(this.buttonId, {this.data});
 }
 
+class HideFab extends HomeEvent {}
+
+class ShowFab extends HomeEvent {}
+
 class PopEvent extends HomeEvent {
   const PopEvent();
 }

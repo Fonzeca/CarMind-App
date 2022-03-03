@@ -41,7 +41,7 @@ dependencies:
   loading_animation_widget: ^1.1.0+1
   animations: ^2.0.2
   simple_animations: ^4.0.1
-  shimmer_animation: ^2.1.0+1
+  skeletons: ^0.0.3
   step_progress_indicator: ^1.0.2
   scroll_to_index: ^2.1.1
   image_picker: ^0.8.4+9
@@ -55,6 +55,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.0.13
   copy_with_extension: ^4.0.0
+  auto_size_text: ^3.0.0
+  
 
 dev_dependencies:
   flutter_test:

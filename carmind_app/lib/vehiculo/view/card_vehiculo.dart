@@ -1,16 +1,27 @@
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../../main.dart';
 
 class card_vehiculo extends StatelessWidget {
-  final Vehiculo vehiculo;
+  final Vehiculo? vehiculo;
+  final bool loading;
 
-  const card_vehiculo({Key? key, required this.vehiculo}) : super(key: key);
+  const card_vehiculo({Key? key, required this.vehiculo, this.loading = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return Skeleton(
+      isLoading: loading,
+      skeleton: loadingCard(),
+      child: _normalCard(),
+    );
+  }
+
+  Widget _normalCard() {
+    if (loading) return Container();
     return Container(
       height: 205,
       width: 140,
@@ -44,18 +55,18 @@ class card_vehiculo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "${vehiculo.nombre}",
+                      "${vehiculo!.nombre}",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 15),
                     Row(
                       children: [
                         Text(
-                          vehiculo.en_uso! ? "En uso" : "Disponible",
+                          vehiculo!.en_uso! ? "En uso" : "Disponible",
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(width: 8),
-                        Icon(Icons.circle, color: vehiculo.en_uso! ? const Color(0xFFDC0404) : const Color(0xFF36A900), size: 14)
+                        Icon(Icons.circle, color: vehiculo!.en_uso! ? const Color(0xFFDC0404) : const Color(0xFF36A900), size: 14)
                       ],
                     )
                   ],
@@ -64,6 +75,15 @@ class card_vehiculo extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget loadingCard() {
+    return const SkeletonAvatar(
+      style: SkeletonAvatarStyle(
+        height: 205,
+        width: 140,
       ),
     );
   }

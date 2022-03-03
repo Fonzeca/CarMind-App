@@ -37,6 +37,22 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<LoggedUser> loggedUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<LoggedUser>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/loggedUser',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = LoggedUser.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<Evaluacion> getEvaluacionById(idEvaluacion) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -68,6 +84,24 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<LogEvaluacion>>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/evaluacion/historial/loggedUser',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => LogEvaluacion.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
   Future<Vehiculo> getVehiculoById(idVehiculo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -80,6 +114,51 @@ class _ApiClient implements ApiClient {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = Vehiculo.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<void> iniciarUso(idVehiculo) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'GET', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/vehiculo/${idVehiculo}/iniciarUso',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
+  Future<void> terminarUso(idVehiculo) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'GET', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/vehiculo/${idVehiculo}/terminarUso',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
+  Future<Vehiculo?> getCurrent() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>?>(
+        _setStreamType<Vehiculo>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/vehiculo/current',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value =
+        _result.data == null ? null : Vehiculo.fromJson(_result.data!);
     return value;
   }
 

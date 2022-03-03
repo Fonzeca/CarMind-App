@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   bloc:
     dependency: transitive
     description:
@@ -702,13 +709,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  shimmer_animation:
-    dependency: "direct main"
-    description:
-      name: shimmer_animation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0+1"
   simple_animations:
     dependency: "direct main"
     description:
@@ -716,6 +716,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  skeletons:
+    dependency: "direct main"
+    description:
+      name: skeletons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   sky_engine:
     dependency: transitive
     description: flutter

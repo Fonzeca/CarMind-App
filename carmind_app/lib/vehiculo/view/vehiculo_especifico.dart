@@ -1,63 +1,107 @@
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
+import 'package:carmind_app/vehiculo/view/card_vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletons/skeletons.dart';
 
 import '../../main.dart';
-import 'card_vehiculo.dart';
 
 class VehiculoEspecifico extends StatelessWidget {
   BuildContext? context;
-  Vehiculo vehiculo;
+  Vehiculo? vehiculo;
 
-  VehiculoEspecifico({Key? key, required this.vehiculo}) : super(key: key);
+  VehiculoEspecifico({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     this.context = context;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 34),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 59),
-          const Text(
-            "Estas conduciendo:",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+
+    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent());
+    return BlocBuilder<VehiculoBloc, VehiculoState>(
+      builder: (context, state) {
+        vehiculo = state.vehiculo;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 34),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 59),
+              const Text(
+                "Estas conduciendo:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 24),
+              Builder(
+                builder: (context) {
+                  if (vehiculo != null || state.loading) {
+                    return card_vehiculo(
+                      vehiculo: vehiculo,
+                      loading: state.loading,
+                    );
+                  }
+                  return _buildNonVehiculo();
+                },
+              ),
+              const SizedBox(height: 44),
+              Builder(
+                builder: (context) {
+                  if (vehiculo == null && !state.loading) {
+                    return Container();
+                  }
+                  return const SizedBox(
+                    height: 34,
+                    child: Text(
+                      "Formularios",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                  );
+                },
+              ),
+              Builder(
+                builder: (context) {
+                  if (vehiculo == null && !state.loading) return Container();
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: _buildListCheckList(loading: state.loading),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 24),
-          card_vehiculo(
-            vehiculo: vehiculo,
-          ),
-          const SizedBox(height: 44),
-          const SizedBox(
-            height: 34,
-            child: Text(
-              "Formularios",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-          ),
-          const SizedBox(height: 16),
-          cardCheckList("Chequeo de ingreso", 15),
-          const SizedBox(height: 15),
-          cardCheckList("Chequeo de finalización", 15)
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget cardCheckList(String nombreCheck, int vencmimento) {
+  List<Widget> _buildListCheckList({bool loading = false}) {
+    List<Widget> list = [];
+    if (loading) {
+      list.add(const SizedBox(height: 15));
+      list.add(cardCheckListLoading());
+      list.add(const SizedBox(height: 15));
+      list.add(cardCheckListLoading());
+      return list;
+    } else {
+      for (var pendiente in vehiculo!.pendientes!) {
+        list.add(const SizedBox(height: 15));
+        list.add(cardCheckList(pendiente.id!, pendiente.titulo!, pendiente.vencimiento!));
+      }
+      return list;
+    }
+  }
+
+  Widget cardCheckList(int id, String nombreCheck, int vencmimento) {
+    bool tick = vencmimento > 0;
     return GestureDetector(
-      onTap: () => buscarEvaluacion(),
+      onTap: () => buscarEvaluacion(id),
       child: Card(
         elevation: 2,
         margin: EdgeInsets.zero,
         child: SizedBox(
-          width: 292,
           height: 57,
           child: Row(
             children: [
@@ -77,23 +121,41 @@ class VehiculoEspecifico extends StatelessWidget {
                     ),
                     color: carMindAccentColor),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      nombreCheck,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      "Vencimiento: $vencmimento días",
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                    ),
-                  ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 30),
+                        child: AutoSizeText(
+                          nombreCheck,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Text(
+                        "Vencimiento: $vencmimento día" + (vencmimento == 1 ? "" : "s"),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                    ],
+                  ),
                 ),
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: SvgPicture.asset(
+                      tick ? "assets/tick_fill.svg" : "assets/tick_empty_empty.svg",
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -101,9 +163,43 @@ class VehiculoEspecifico extends StatelessWidget {
     );
   }
 
-  buscarEvaluacion() async {
-    ApiClient api = ApiClient(staticDio!);
-    Evaluacion ev = await api.getEvaluacionById(196);
-    BlocProvider.of<HomeBloc>(context!).add(HomeNavigationEvent(4, data: ev));
+  Widget cardCheckListLoading() {
+    return SkeletonItem(
+      child: Row(
+        children: const [
+          Expanded(
+            child: SkeletonAvatar(
+              style: SkeletonAvatarStyle(
+                height: 57,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNonVehiculo() {
+    return Column(
+      children: [
+        const SizedBox(height: 159),
+        Row(
+          children: [
+            SvgPicture.asset("assets/happy_face.svg"),
+            const SizedBox(width: 24),
+            const Expanded(
+              child: Text(
+                "No estas conduciendo ningún vehículo",
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: Color(0xFFC7C7C7)),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  buscarEvaluacion(int id) async {
+    BlocProvider.of<VehiculoBloc>(context!).add(TapEvaluacion(id, context!));
   }
 }

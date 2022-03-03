@@ -3,6 +3,9 @@ import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/login/view/login_screen.dart';
+import 'package:carmind_app/profile/bloc/profile_bloc.dart';
+import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
+import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +42,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => LoginBlocBloc()),
         BlocProvider(create: (context) => FormularioBloc()),
         BlocProvider(create: (context) => RealiazarEvaluacionBloc()),
+        BlocProvider(create: (context) => QrScannerBloc()),
+        BlocProvider(create: (context) => VehiculoBloc()),
+        BlocProvider(create: (context) => ProfileBloc()),
       ],
     );
   }

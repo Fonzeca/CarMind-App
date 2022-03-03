@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class ChechAnimation extends StatefulWidget {
-  ChechAnimation({Key? key}) : super(key: key);
+  final String texto;
+  const ChechAnimation({Key? key, required this.texto}) : super(key: key);
 
   @override
   State<ChechAnimation> createState() => _ChechAnimationState();
@@ -54,7 +55,7 @@ class _ChechAnimationState extends State<ChechAnimation> with TickerProviderStat
                         fontSize: 5,
                         color: Colors.white10,
                       ),
-                child: const Text("Completaste el formulario"),
+                child: Text(widget.texto),
                 duration: const Duration(milliseconds: 500),
               ),
             )
