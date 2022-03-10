@@ -17,6 +17,8 @@ class HideFab extends HomeEvent {}
 
 class ShowFab extends HomeEvent {}
 
+class LogOutEvent extends HomeEvent {}
+
 class PopEvent extends HomeEvent {
   const PopEvent();
 }

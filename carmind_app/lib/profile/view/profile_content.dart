@@ -1,3 +1,4 @@
+import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +21,7 @@ class ProfileContent extends StatelessWidget {
           children: [
             Container(
               width: double.infinity,
-              height: 210,
+              height: 210 - 40,
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: [Color(0xFF000853), Color(0xFF4218D9)], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             ),
@@ -29,7 +30,7 @@ class ProfileContent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 122 + 20),
+                  const SizedBox(height: 122 + 20 - 40),
                   CircleAvatar(
                     radius: 140 / 2,
                     backgroundColor: Colors.white,
@@ -80,7 +81,7 @@ class ProfileContent extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "E-Mail",
+                                  "E-mail",
                                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
                                 ),
                               ),
@@ -113,11 +114,33 @@ class ProfileContent extends StatelessWidget {
                                 ),
                               )
                             ],
-                          )
+                          ),
+                          const SizedBox(height: 19),
+                          TextButton(
+                            onPressed: () {
+                              BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: carMindTopBar,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                              elevation: 2,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 17),
+                              child: Text(
+                                'Cerrar sesion',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -35,6 +36,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<ShowFab>((event, emit) {
       emit(state.copyWith(showFab: true));
+    });
+
+    on<LogOutEvent>((event, emit) async {
+      var shr = await SharedPreferences.getInstance();
+      shr.remove("token");
+      shr.remove("on_boarding_finish");
+      emit(HomeLogoutState());
     });
   }
 

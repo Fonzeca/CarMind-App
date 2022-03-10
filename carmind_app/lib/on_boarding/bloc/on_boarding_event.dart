@@ -6,3 +6,9 @@ abstract class OnBoardingEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class OnBoardingNextStep extends OnBoardingEvent {}
+
+class OnBoardingPreviousStep extends OnBoardingEvent {}
+
+class OnBoardingCancel extends OnBoardingEvent {}

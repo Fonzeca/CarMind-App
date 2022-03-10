@@ -24,3 +24,7 @@ class HomeState extends Equatable {
 class HomeInitial extends HomeState {
   const HomeInitial() : super(0, 0, null, true);
 }
+
+class HomeLogoutState extends HomeState {
+  const HomeLogoutState() : super(0, 0, null, true);
+}

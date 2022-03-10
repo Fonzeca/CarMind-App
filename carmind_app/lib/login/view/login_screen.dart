@@ -1,12 +1,14 @@
 import 'package:carmind_app/home/view/navigation_bar.dart';
 import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -19,33 +21,40 @@ class LoginScreen extends StatelessWidget {
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
     return BlocListener<LoginBlocBloc, LoginBlocState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is LoginError) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
         } else if (state is LoginOk) {
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()));
+          final prefs = await SharedPreferences.getInstance();
+          if (prefs.getBool("on_boarding_finish") ?? false) {
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
+          } else {
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
+          }
           emailCon.clear();
           passwordCon.clear();
         }
       },
       child: BlocBuilder<LoginBlocBloc, LoginBlocState>(
         builder: (context, state) {
-          return Stack(
-            children: [
-              _buildContent(emailCon, passwordCon, context),
-              () {
-                if (state is LoginLoading) {
-                  return Center(
-                    child: LoadingAnimationWidget.hexagonDots(
-                      color: Colors.blue,
-                      size: 50,
-                    ),
-                  );
-                }
-                return const SizedBox();
-              }(),
-            ],
+          return Material(
+            child: Stack(
+              children: [
+                _buildContent(emailCon, passwordCon, context),
+                () {
+                  if (state is LoginLoading) {
+                    return Center(
+                      child: LoadingAnimationWidget.hexagonDots(
+                        color: Colors.blue,
+                        size: 50,
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                }(),
+              ],
+            ),
           );
         },
       ),

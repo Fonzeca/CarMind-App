@@ -7,7 +7,7 @@ class FormularioState extends Equatable {
   const FormularioState({required this.loading, required this.logs});
 
   @override
-  List<Object> get props => [logs];
+  List<Object> get props => [logs, loading];
 
   FormularioState copyWith({bool? loading, List<LogEvaluacion>? logs}) {
     return FormularioState(

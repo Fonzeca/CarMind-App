@@ -10,13 +10,12 @@ LoggedUser _$LoggedUserFromJson(Map<String, dynamic> json) => LoggedUser()
   ..id = json['id'] as int?
   ..nombre = json['nombre'] as String?
   ..apellido = json['apellido'] as String?
-  ..email = json['email'] as String?
+  ..email = json['username'] as String?
   ..dni = json['dni'] as String?
   ..empresa = json['empresa'] as int?
   ..administrador = json['administrador'] as bool?;
 
-Map<String, dynamic> _$LoggedUserToJson(LoggedUser instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$LoggedUserToJson(LoggedUser instance) => <String, dynamic>{
       'id': instance.id,
       'nombre': instance.nombre,
       'apellido': instance.apellido,

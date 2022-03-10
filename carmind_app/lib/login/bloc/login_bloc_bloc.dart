@@ -20,8 +20,8 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
     on<AttemptToLogin>((event, emit) async {
       emit(LoginLoading());
 
-      await client.login(event.email, event.password).then((value) {
-        saveToken(value.token!);
+      await client.login(event.email, event.password).then((value) async {
+        await saveToken(value.token!);
 
         emit(LoginOk());
       }).onError((error, stackTrace) {
@@ -29,6 +29,10 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
         log("HUBO UN ERROR");
         emit(const LoginError("Completa la información"));
       });
+    });
+
+    on<ValidateSavedToken>((event, emit) async {
+      emit(LoginLoading());
     });
   }
 
@@ -40,5 +44,6 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
   removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove("token");
+    prefs.remove("on_boarding_finish");
   }
 }
