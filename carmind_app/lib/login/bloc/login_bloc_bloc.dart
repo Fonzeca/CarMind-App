@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
+import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ part 'login_bloc_state.dart';
 class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
   LoginBlocBloc() : super(LoginBlocInitial()) {
     final client = ApiClient(Dio());
+    final clientConToken = ApiClient(staticDio!);
 
     on<LoginBlocEvent>((event, emit) {
       // TODO: implement event handler
@@ -20,7 +22,7 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
     on<AttemptToLogin>((event, emit) async {
       emit(LoginLoading());
 
-      await client.login(event.email, event.password).then((value) async {
+      await client.login(event.email.trim(), event.password.trim()).then((value) async {
         await saveToken(value.token!);
 
         emit(LoginOk());
@@ -33,6 +35,18 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
 
     on<ValidateSavedToken>((event, emit) async {
       emit(LoginLoading());
+
+      if (await verifyToken()) {
+        //Llamo a la api para asegurarme que el token anda
+        await clientConToken.valdiateToken().then((value) {
+          emit(LoginOk());
+        }).catchError((obj) {
+          removeToken();
+          emit(LoginBlocInitial());
+        });
+      } else {
+        emit(LoginBlocInitial());
+      }
     });
   }
 
@@ -44,6 +58,11 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
   removeToken() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove("token");
-    prefs.remove("on_boarding_finish");
+    // prefs.remove("on_boarding_finish");
+  }
+
+  Future<bool> verifyToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey("token");
   }
 }

@@ -3,6 +3,7 @@ import 'package:carmind_app/formularios/bloc/formulario_bloc.dart';
 import 'package:carmind_app/formularios/view/util/card_formulario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FormuarioContent extends StatelessWidget {
   FormuarioContent(BuildContext context) {
@@ -25,16 +26,36 @@ class FormuarioContent extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 24),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: _buildListCard(state.logs, state.loading),
-                ),
-              )
+              Builder(builder: (context) {
+                if (state.logs.isEmpty) {
+                  return _buildNonFormulario();
+                }
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _buildListCard(state.logs, state.loading),
+                  ),
+                );
+              })
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNonFormulario() {
+    return Row(
+      children: [
+        SvgPicture.asset("assets/happy_face.svg"),
+        const SizedBox(width: 24),
+        const Expanded(
+          child: Text(
+            "Aún no completaste ningún formulario.",
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: Color(0xFFC7C7C7)),
+          ),
+        ),
+      ],
     );
   }
 
@@ -51,7 +72,7 @@ class FormuarioContent extends StatelessWidget {
         list.add(CardFormulario(log: log, loading: false));
         list.add(const SizedBox(width: 12));
       }
-      list.removeLast();
+      if (logs.isNotEmpty) list.removeLast();
     }
     return list;
   }

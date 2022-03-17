@@ -63,9 +63,12 @@ class VehiculoEspecifico extends StatelessWidget {
               Builder(
                 builder: (context) {
                   if (vehiculo == null && !state.loading) return Container();
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: _buildListCheckList(loading: state.loading),
+                  return Flexible(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: _buildListCheckList(loading: state.loading),
+                      ),
                     ),
                   );
                 },

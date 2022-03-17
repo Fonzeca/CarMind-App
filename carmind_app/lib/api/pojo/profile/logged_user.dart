@@ -7,7 +7,7 @@ class LoggedUser {
   int? id;
   String? nombre;
   String? apellido;
-  String? email;
+  String? username;
   String? dni;
   int? empresa;
   bool? administrador;

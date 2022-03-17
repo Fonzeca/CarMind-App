@@ -1,4 +1,4 @@
-package com.example.carmind_app
+package com.mindia.carmind_app
 
 import io.flutter.embedding.android.FlutterActivity
 

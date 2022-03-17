@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _ApiClient implements ApiClient {
   _ApiClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://vps-1791261-x.dattaweb.com:2233/';
+    baseUrl ??= 'https://carmind-app.com:2233/';
   }
 
   final Dio _dio;
@@ -50,6 +50,21 @@ class _ApiClient implements ApiClient {
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = LoggedUser.fromJson(_result.data!);
     return value;
+  }
+
+  @override
+  Future<HttpResponse<void>> valdiateToken() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<void>(_setStreamType<HttpResponse<void>>(
+        Options(method: 'GET', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/validate',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
   }
 
   @override

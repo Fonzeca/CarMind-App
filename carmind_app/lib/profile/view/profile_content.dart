@@ -88,7 +88,7 @@ class ProfileContent extends StatelessWidget {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  "${state.logged!.email}",
+                                  "${state.logged!.username}",
                                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
                                 ),
                               )

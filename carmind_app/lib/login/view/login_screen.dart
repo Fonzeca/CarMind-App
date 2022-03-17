@@ -18,6 +18,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<LoginBlocBloc>(context).add(ValidateSavedToken());
+
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
     return BlocListener<LoginBlocBloc, LoginBlocState>(
@@ -87,39 +89,6 @@ class LoginScreen extends StatelessWidget {
               height: 16,
             ),
             _fieldLogin(passwordCon, "Contraseña", true),
-            SizedBox(
-              height: 18 + 15 + 15,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ValueListenableBuilder(
-                    valueListenable: _checkBoxChecked,
-                    builder: (context, value, child) {
-                      return Container(
-                        alignment: Alignment.centerLeft,
-                        width: 18,
-                        child: Checkbox(
-                          value: _checkBoxChecked.value,
-                          onChanged: _onClickCheckBox,
-                        ),
-                      );
-                    },
-                  ),
-                  GestureDetector(
-                    onTap: () => _onClickCheckBox(null),
-                    child: Row(
-                      children: [
-                        Container(width: 15, height: double.infinity, color: Colors.transparent),
-                        const Text(
-                          "Recordarme",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
             const SizedBox(height: 52 - 18),
             SizedBox(
               width: double.infinity,
@@ -129,7 +98,7 @@ class LoginScreen extends StatelessWidget {
                   backgroundColor: MaterialStateProperty.all(carMindTopBar),
                   textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 ),
-                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin("alexisfonzos@gmail.com", "123", _checkBoxChecked.value)),
+                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text, _checkBoxChecked.value)),
                 child: const Text("Iniciar sesión"),
               ),
             ),

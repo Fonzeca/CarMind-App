@@ -21,8 +21,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<PopEvent>((event, emit) {
-      pageHistorial.removeLast();
       int currentPage = 0;
+      if (pageHistorial.length > 1) {
+        pageHistorial.removeLast();
+      }
       if (pageHistorial.isNotEmpty) {
         currentPage = pageHistorial.last;
       }

@@ -30,106 +30,113 @@ class CarMindNavigationBar extends StatelessWidget {
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
         }
       },
-      child: Scaffold(
-          bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) {
-              return BottomNavigationBar(
-                items: [
-                  BottomNavigationBarItem(
-                      icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: Colors.white)),
-                      activeIcon: Padding(
-                          padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor)),
-                      label: "Formularios"),
-                  BottomNavigationBarItem(
-                      icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white)),
-                      activeIcon: Padding(
-                          padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor)),
-                      label: "Vehículos"),
-                  BottomNavigationBarItem(
-                      icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
-                      activeIcon: Padding(
-                          padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
-                      label: "Perfil")
-                ],
-                currentIndex: state.selectedNavButton,
-                selectedItemColor: carMindAccentColor,
-                unselectedItemColor: Colors.white,
-                backgroundColor: Colors.black,
-                selectedFontSize: 14,
-                unselectedFontSize: 14,
-                onTap: (value) {
-                  BlocProvider.of<HomeBloc>(context).add(HomeNavigationEvent(value));
-                },
-              );
-            },
-          ),
-          body: BlocBuilder<HomeBloc, HomeState>(
-            buildWhen: (previous, current) {
-              return current is! HomeLogoutState;
-            },
-            builder: (context, state) {
-              switch (state.selectedPageView) {
-                case 0:
-                  return FormuarioContent(context);
-                case 1:
-                  return VehiculoEspecifico();
-                case 2:
-                  return ProfileContent();
-                case 3:
-                  return Container();
-                case 4:
-                  return FormularioPreguntas(evalua: state.data);
-              }
-              return Container();
-            },
-          ),
-          floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-            buildWhen: (previous, current) => previous.showFab != current.showFab,
-            builder: (context, state) {
-              return SpeedDial(
-                openCloseDial: isDialOpen,
-                icon: Icons.qr_code_2,
-                activeIcon: Icons.close,
-                direction: SpeedDialDirection.up,
-                onPress: () {
-                  isDialOpen.value = true;
-                },
-                visible: state.showFab,
-                overlayColor: const Color(0xA6292929),
-                backgroundColor: carMindPrimaryButton,
-                foregroundColor: carMindGrey,
-                iconTheme: const IconThemeData(size: 32),
-                childMargin: const EdgeInsets.all(29),
-                childPadding: const EdgeInsets.all(0),
-                buttonSize: const Size(49, 49),
-                childrenButtonSize: const Size(49, 49),
-                spaceBetweenChildren: 19,
-                children: [
-                  SpeedDialChild(
-                    child: const Icon(
-                      Icons.qr_code_2,
-                      size: 24,
+      child: WillPopScope(
+        onWillPop: () async {
+          BlocProvider.of<HomeBloc>(context).add(PopEvent());
+          return false;
+        },
+        child: Scaffold(
+            bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
+              builder: (context, state) {
+                return BottomNavigationBar(
+                  items: [
+                    BottomNavigationBarItem(
+                        icon:
+                            Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: Colors.white)),
+                        activeIcon: Padding(
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor)),
+                        label: "Formularios"),
+                    BottomNavigationBarItem(
+                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white)),
+                        activeIcon: Padding(
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor)),
+                        label: "Vehículos"),
+                    BottomNavigationBarItem(
+                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
+                        activeIcon: Padding(
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
+                        label: "Perfil")
+                  ],
+                  currentIndex: state.selectedNavButton,
+                  selectedItemColor: carMindAccentColor,
+                  unselectedItemColor: Colors.white,
+                  backgroundColor: Colors.black,
+                  selectedFontSize: 14,
+                  unselectedFontSize: 14,
+                  onTap: (value) {
+                    BlocProvider.of<HomeBloc>(context).add(HomeNavigationEvent(value));
+                  },
+                );
+              },
+            ),
+            body: BlocBuilder<HomeBloc, HomeState>(
+              buildWhen: (previous, current) {
+                return current is! HomeLogoutState;
+              },
+              builder: (context, state) {
+                switch (state.selectedPageView) {
+                  case 0:
+                    return FormuarioContent(context);
+                  case 1:
+                    return VehiculoEspecifico();
+                  case 2:
+                    return ProfileContent();
+                  case 3:
+                    return Container();
+                  case 4:
+                    return FormularioPreguntas(evalua: state.data);
+                }
+                return Container();
+              },
+            ),
+            floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
+              buildWhen: (previous, current) => previous.showFab != current.showFab,
+              builder: (context, state) {
+                return SpeedDial(
+                  openCloseDial: isDialOpen,
+                  icon: Icons.qr_code_2,
+                  activeIcon: Icons.close,
+                  direction: SpeedDialDirection.up,
+                  onPress: () {
+                    isDialOpen.value = true;
+                  },
+                  visible: state.showFab,
+                  overlayColor: const Color(0xA6292929),
+                  backgroundColor: carMindPrimaryButton,
+                  foregroundColor: carMindGrey,
+                  iconTheme: const IconThemeData(size: 32),
+                  childMargin: const EdgeInsets.all(29),
+                  childPadding: const EdgeInsets.all(0),
+                  buttonSize: const Size(49, 49),
+                  childrenButtonSize: const Size(49, 49),
+                  spaceBetweenChildren: 19,
+                  children: [
+                    SpeedDialChild(
+                      child: const Icon(
+                        Icons.qr_code_2,
+                        size: 24,
+                      ),
+                      backgroundColor: carMindGrey,
+                      foregroundColor: carMindPrimaryButton,
+                      labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
+                      onTap: () => onTapDialChild(0),
                     ),
-                    backgroundColor: carMindGrey,
-                    foregroundColor: carMindPrimaryButton,
-                    labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
-                    onTap: () => onTapDialChild(0),
-                  ),
-                  SpeedDialChild(
-                    child: SvgPicture.asset(
-                      "assets/logout_vehicle.svg",
-                      width: 18,
-                      height: 18,
-                    ),
-                    backgroundColor: carMindGrey,
-                    foregroundColor: carMindPrimaryButton,
-                    labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
-                    onTap: () => onTapDialChild(1),
-                  )
-                ],
-              );
-            },
-          )),
+                    SpeedDialChild(
+                      child: SvgPicture.asset(
+                        "assets/logout_vehicle.svg",
+                        width: 18,
+                        height: 18,
+                      ),
+                      backgroundColor: carMindGrey,
+                      foregroundColor: carMindPrimaryButton,
+                      labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
+                      onTap: () => onTapDialChild(1),
+                    )
+                  ],
+                );
+              },
+            )),
+      ),
     );
   }
 

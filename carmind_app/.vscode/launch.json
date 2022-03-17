@@ -13,8 +13,8 @@
             "name": "carmind_app (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug",
-            "deviceId": "android"
+            "flutterMode": "release",
+            "deviceId": "sm"
         }
     ]
 }

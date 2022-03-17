@@ -41,15 +41,49 @@ class OnBoardingContent extends StatelessWidget {
     );
     return BlocProvider(
       create: (context) => OnBoardingBloc(),
-      child: OverlayTooltipScaffold(
-        overlayColor: const Color(0xFF292929).withOpacity(0.8),
-        controller: _controller,
-        startWhen: (instantiatedWidgetLength) async {
-          //await any function and return a bool value when done.
-          await Future.delayed(const Duration(milliseconds: 500));
-          return instantiatedWidgetLength == 2 && !done;
-        },
-        builder: (context) => pageView(),
+      child: Stack(
+        children: [
+          OverlayTooltipScaffold(
+            overlayColor: const Color(0xFF292929).withOpacity(0.8),
+            controller: _controller,
+            startWhen: (instantiatedWidgetLength) async {
+              //await any function and return a bool value when done.
+              await Future.delayed(const Duration(milliseconds: 500));
+              return instantiatedWidgetLength == 2 && !done;
+            },
+            builder: (context) => pageView(),
+          ),
+          BlocBuilder<OnBoardingBloc, OnBoardingState>(
+            builder: (context, state) {
+              if (state.currentIndex != 1) {
+                return Container();
+              }
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: 389,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 34),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              _controller.next();
+                              BlocProvider.of<OnBoardingBloc>(context).add(OnBoardingNextStep());
+                            },
+                            child: Container(height: 130, color: Colors.transparent),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        ],
       ),
     );
   }
