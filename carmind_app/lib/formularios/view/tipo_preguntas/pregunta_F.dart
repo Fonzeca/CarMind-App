@@ -5,7 +5,6 @@ import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:carmind_app/main.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,18 +36,18 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
             children: [
               const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   pregunta.descripcion!,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
               ),
               const SizedBox(height: 20),
               Container(
                 width: double.infinity,
                 height: 30,
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 color: preguntaEnabled! ? null : const Color(0xFFEEEEEE),
                 child: GestureDetector(
                   onTap: preguntaEnabled!
@@ -94,7 +93,7 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                 builder: (context, value, child) {
                   return preguntaFinalizada
                       ? Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20 - 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 20 - 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

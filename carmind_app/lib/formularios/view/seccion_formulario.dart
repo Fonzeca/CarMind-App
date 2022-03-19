@@ -12,10 +12,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class seccion_formulario extends StatelessWidget {
   final SeccionPojo seccion;
+  final int index;
 
   ValueNotifier<bool> abierto = ValueNotifier(true);
 
-  seccion_formulario({Key? key, required this.seccion}) : super(key: key);
+  seccion_formulario({Key? key, required this.seccion, required this.index}) : super(key: key);
   AutoScrollController? controller;
 
   List<Widget>? listPreguntas;
@@ -32,13 +33,13 @@ class seccion_formulario extends StatelessWidget {
         valueListenable: abierto,
         builder: (context, value, child) {
           return AnimatedSize(
-            duration: Duration(milliseconds: 100),
+            duration: const Duration(milliseconds: 100),
             alignment: Alignment.topCenter,
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(5),
-                border: Border.all(color: Color(0xFFBDAAFF)),
+                border: Border.all(color: const Color(0xFFBDAAFF)),
               ),
               child: Material(
                 child: _buildContent(context),
@@ -77,18 +78,16 @@ class seccion_formulario extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      child: GestureDetector(
-        onTap: () {
-          abierto.value = true;
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          width: double.infinity,
-          child: Text(
-            "${seccion.index! + 1}. ${seccion.nombre!}",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
+    return GestureDetector(
+      onTap: () {
+        abierto.value = true;
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        width: double.infinity,
+        child: Text(
+          "${index + 1}. ${seccion.nombre!}",
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -97,7 +96,7 @@ class seccion_formulario extends StatelessWidget {
   List<Widget> listWidget() {
     List<Widget> list = [];
     for (var pregunta in seccion.preguntas!) {
-      list.add(Container(height: 1, width: double.infinity, color: Color(0xFFBDAAFF)));
+      list.add(Container(height: 1, width: double.infinity, color: const Color(0xFFBDAAFF)));
 
       switch (pregunta.tipo!) {
         case "TX":
@@ -148,7 +147,7 @@ class seccion_formulario extends StatelessWidget {
           ));
           break;
         default:
-          list.add(Text("Error, pregunta no implementada."));
+          list.add(const Text("Error, pregunta no implementada."));
       }
     }
     return list;

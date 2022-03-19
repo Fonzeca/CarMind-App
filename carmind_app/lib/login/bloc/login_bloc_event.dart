@@ -10,9 +10,8 @@ abstract class LoginBlocEvent extends Equatable {
 class AttemptToLogin extends LoginBlocEvent {
   final String email;
   final String password;
-  final bool remember;
 
-  const AttemptToLogin(this.email, this.password, this.remember);
+  const AttemptToLogin(this.email, this.password);
 }
 
 class ValidateSavedToken extends LoginBlocEvent {}

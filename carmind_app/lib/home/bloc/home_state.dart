@@ -3,12 +3,12 @@ part of 'home_bloc.dart';
 class HomeState extends Equatable {
   final int selectedPageView;
   final int selectedNavButton;
-  final dynamic data;
+  final List<dynamic> data;
   final bool showFab;
 
   const HomeState(this.selectedPageView, this.selectedNavButton, this.data, this.showFab);
 
-  HomeState copyWith({int? selectedPageView, int? selectedNavButton, dynamic? data, bool? showFab}) {
+  HomeState copyWith({int? selectedPageView, int? selectedNavButton, List<dynamic>? data, bool? showFab}) {
     return HomeState(
       selectedPageView ?? this.selectedPageView,
       selectedNavButton ?? this.selectedNavButton,
@@ -18,13 +18,13 @@ class HomeState extends Equatable {
   }
 
   @override
-  List<Object> get props => [selectedPageView, selectedNavButton, showFab];
+  List<Object> get props => [selectedPageView, selectedNavButton, showFab, data];
 }
 
 class HomeInitial extends HomeState {
-  const HomeInitial() : super(0, 0, null, true);
+  HomeInitial() : super(0, 0, [], true);
 }
 
 class HomeLogoutState extends HomeState {
-  const HomeLogoutState() : super(0, 0, null, true);
+  HomeLogoutState() : super(0, 0, [], true);
 }

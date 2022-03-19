@@ -8,7 +8,7 @@ class Evaluacion {
   List<int>? vehiculo_id;
   String? titulo;
   List<SeccionPojo>? secciones;
-  
+
   Evaluacion();
 
   factory Evaluacion.fromJson(Map<String, dynamic> json) => _$EvaluacionFromJson(json);
@@ -16,10 +16,9 @@ class Evaluacion {
 }
 
 @JsonSerializable()
-class SeccionPojo{
+class SeccionPojo {
   int? id;
   String? nombre;
-  int? index;
   List<PreguntaPojo>? preguntas;
 
   SeccionPojo();
@@ -29,21 +28,20 @@ class SeccionPojo{
 }
 
 @JsonSerializable()
-class PreguntaPojo{
+class PreguntaPojo {
   int? id;
   String? descripcion;
-  int? index;
   String? tipo;
   List<OpcionPojo>? opciones;
 
   PreguntaPojo();
 
-factory PreguntaPojo.fromJson(Map<String, dynamic> json) => _$PreguntaPojoFromJson(json);
+  factory PreguntaPojo.fromJson(Map<String, dynamic> json) => _$PreguntaPojoFromJson(json);
   Map<String, dynamic> toJson() => _$PreguntaPojoToJson(this);
 }
 
 @JsonSerializable()
-class OpcionPojo{
+class OpcionPojo {
   int? id;
   String? texto;
 

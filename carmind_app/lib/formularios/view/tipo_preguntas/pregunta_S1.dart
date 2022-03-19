@@ -92,7 +92,7 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
     );
   }
 
-  Map<int, bool?> checkeds = Map();
+  Map<int, bool?> checkeds = {};
 
   List<Widget> _buildOptions() {
     List<Widget> list = [];

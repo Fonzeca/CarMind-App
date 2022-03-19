@@ -32,7 +32,7 @@ class CarMindNavigationBar extends StatelessWidget {
       },
       child: WillPopScope(
         onWillPop: () async {
-          BlocProvider.of<HomeBloc>(context).add(PopEvent());
+          BlocProvider.of<HomeBloc>(context).add(const PopEvent());
           return false;
         },
         child: Scaffold(
@@ -84,7 +84,10 @@ class CarMindNavigationBar extends StatelessWidget {
                   case 3:
                     return Container();
                   case 4:
-                    return FormularioPreguntas(evalua: state.data);
+                    return FormularioPreguntas(
+                      evalua: state.data[0],
+                      vehiculo: state.data[1],
+                    );
                 }
                 return Container();
               },

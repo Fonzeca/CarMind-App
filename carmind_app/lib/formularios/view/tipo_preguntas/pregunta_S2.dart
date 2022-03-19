@@ -36,7 +36,7 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
                 child: Text(
                   pregunta.descripcion!,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
               ),
               const SizedBox(height: 13),

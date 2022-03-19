@@ -3,8 +3,6 @@ import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -14,7 +12,6 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
 
   final ValueNotifier<bool> _passwordVisible = ValueNotifier(false);
-  final ValueNotifier<bool> _checkBoxChecked = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +95,7 @@ class LoginScreen extends StatelessWidget {
                   backgroundColor: MaterialStateProperty.all(carMindTopBar),
                   textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 ),
-                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text, _checkBoxChecked.value)),
+                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text)),
                 child: const Text("Iniciar sesión"),
               ),
             ),
@@ -156,9 +153,5 @@ class LoginScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  _onClickCheckBox(bool? value) {
-    _checkBoxChecked.value = !_checkBoxChecked.value;
   }
 }

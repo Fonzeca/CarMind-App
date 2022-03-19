@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

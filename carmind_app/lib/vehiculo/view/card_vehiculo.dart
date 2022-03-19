@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,7 +23,7 @@ class card_vehiculo extends StatelessWidget {
 
   Widget _normalCard() {
     if (loading) return Container();
-    return Container(
+    return SizedBox(
       height: 205,
       width: 140,
       child: Card(
@@ -37,7 +38,7 @@ class card_vehiculo extends StatelessWidget {
               width: double.infinity,
               height: 139,
               child: Center(
-                child: Container(
+                child: SizedBox(
                   width: 60,
                   height: 60,
                   child: SvgPicture.asset(
@@ -48,17 +49,22 @@ class card_vehiculo extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 7, top: 7),
+              padding: const EdgeInsets.all(7),
               child: SizedBox(
                 width: double.infinity,
+                height: 52,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "${vehiculo!.nombre}",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 35),
+                      child: AutoSizeText(
+                        "${vehiculo!.nombre}",
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, overflow: TextOverflow.ellipsis),
+                        maxLines: 2,
+                      ),
                     ),
-                    const SizedBox(height: 15),
                     Row(
                       children: [
                         Text(

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FormuarioContent extends StatelessWidget {
-  FormuarioContent(BuildContext context) {
+  FormuarioContent(BuildContext context, {Key? key}) : super(key: key) {
     BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
   }
   @override
@@ -21,7 +21,7 @@ class FormuarioContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 "Últimos formularios",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),

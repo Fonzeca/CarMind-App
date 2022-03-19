@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
@@ -26,7 +25,6 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         switch (err.runtimeType) {
           case DioError:
             final res = (err as DioError).response;
-
             break;
           default:
         }
@@ -46,7 +44,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     on<TapEvaluacion>((event, emit) async {
       Evaluacion ev = await api.getEvaluacionById(event.id);
       BlocProvider.of<HomeBloc>(event.context)
-        ..add(HomeNavigationEvent(4, data: ev))
+        ..add(HomeNavigationEvent(4, data: [ev, vehiculo]))
         ..add(HideFab());
 
       vehiculo = null;

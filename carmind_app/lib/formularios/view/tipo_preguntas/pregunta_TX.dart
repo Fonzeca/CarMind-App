@@ -2,7 +2,6 @@ import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,6 +17,7 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
 
   bool preguntaFinalizada = false;
 
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
       builder: (context, state) {
@@ -35,7 +35,7 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
                   textAlign: TextAlign.left,
                 ),
                 const SizedBox(height: 20),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 64,
                   child: TextField(

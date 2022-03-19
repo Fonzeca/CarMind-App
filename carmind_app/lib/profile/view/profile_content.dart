@@ -1,16 +1,15 @@
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ProfileContent extends StatelessWidget {
-  final ImagePicker _picker = ImagePicker();
   bool isVideo = false;
+
+  ProfileContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,12 +55,12 @@ class ProfileContent extends StatelessWidget {
                         children: [
                           Text(
                             "${state.logged!.nombre} ${state.logged!.apellido}",
-                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+                            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
                           ),
                           const SizedBox(height: 40),
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Text(
                                   "DNI",
                                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
@@ -71,7 +70,7 @@ class ProfileContent extends StatelessWidget {
                                 flex: 2,
                                 child: Text(
                                   "${state.logged!.dni}",
-                                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                                  style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
                                 ),
                               )
                             ],
@@ -79,7 +78,7 @@ class ProfileContent extends StatelessWidget {
                           const SizedBox(height: 19),
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Text(
                                   "E-mail",
                                   style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
@@ -89,7 +88,7 @@ class ProfileContent extends StatelessWidget {
                                 flex: 2,
                                 child: Text(
                                   "${state.logged!.username}",
-                                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                                  style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
                                 ),
                               )
                             ],
@@ -125,8 +124,8 @@ class ProfileContent extends StatelessWidget {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               elevation: 2,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 17),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 17),
                               child: Text(
                                 'Cerrar sesion',
                                 style: TextStyle(
@@ -182,7 +181,7 @@ class ProfileContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SkeletonLine(
+                      const SkeletonLine(
                         style: SkeletonLineStyle(
                           randomLength: true,
                           minLength: 160,
@@ -190,7 +189,7 @@ class ProfileContent extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
                       SkeletonParagraph(
-                        style: SkeletonParagraphStyle(
+                        style: const SkeletonParagraphStyle(
                           lines: 3,
                           spacing: 19,
                           padding: EdgeInsets.zero,

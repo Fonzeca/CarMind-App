@@ -8,7 +8,6 @@ import 'package:carmind_app/on_boarding/bloc/on_boarding_bloc.dart';
 import 'package:carmind_app/on_boarding/view/m_tool_tip.dart';
 import 'package:carmind_app/vehiculo/view/card_vehiculo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,6 +25,8 @@ class OnBoardingContent extends StatelessWidget {
   Widget? screen1;
 
   late BuildContext context;
+
+  OnBoardingContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +129,7 @@ class OnBoardingContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             "Últimos formularios",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),

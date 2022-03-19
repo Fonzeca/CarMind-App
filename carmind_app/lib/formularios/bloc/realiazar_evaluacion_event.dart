@@ -9,8 +9,9 @@ abstract class RealiazarEvaluacionEvent extends Equatable {
 
 class IniciarEvaluacionEvent extends RealiazarEvaluacionEvent {
   final Evaluacion evaluacion;
+  final Vehiculo vehiculo;
 
-  const IniciarEvaluacionEvent(this.evaluacion);
+  const IniciarEvaluacionEvent(this.evaluacion, this.vehiculo);
 
   @override
   List<Object> get props => [evaluacion];

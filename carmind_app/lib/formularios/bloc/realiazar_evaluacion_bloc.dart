@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
+import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
@@ -38,7 +39,7 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
       evaluacion = event.evaluacion;
 
       evaluacionTerminada = EvaluacionTerminadaPojo();
-      evaluacionTerminada!.vehiculo_id = 71;
+      evaluacionTerminada!.vehiculo_id = event.vehiculo.id;
       evaluacionTerminada!.respuestas = [];
 
       int proxima = obtenerPreguntaActual();

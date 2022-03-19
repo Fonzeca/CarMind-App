@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';

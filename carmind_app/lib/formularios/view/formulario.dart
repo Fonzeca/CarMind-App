@@ -1,4 +1,5 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/check_animation.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
@@ -13,8 +14,9 @@ import 'seccion_formulario.dart';
 
 class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
+  final Vehiculo vehiculo;
 
-  FormularioPreguntas({Key? key, required dynamic evalua})
+  FormularioPreguntas({Key? key, required dynamic evalua, required this.vehiculo})
       : assert(evalua is Evaluacion),
         evaluacion = evalua,
         super(key: key);
@@ -34,13 +36,13 @@ class FormularioPreguntas extends StatelessWidget {
       suggestedRowHeight: 200,
     );
 
-    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion));
+    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(43),
         child: AppBar(
           backgroundColor: carMindTopBar,
-          leading: IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back_ios_new)),
+          leading: IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new)),
         ),
       ),
       body: BlocListener<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
@@ -124,6 +126,7 @@ class FormularioPreguntas extends StatelessWidget {
       list.add(const SizedBox(height: 8));
       list.add(seccion_formulario(
         seccion: seccion,
+        index: evaluacion.secciones?.indexOf(seccion) ?? 0,
       ));
     }
     list.add(_buildFinishButton());
@@ -144,7 +147,7 @@ class FormularioPreguntas extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: enabled ? carMindPrimaryButton : const Color(0xFFB9B9B9),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 2, offset: Offset(0, 2))]),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 2, offset: const Offset(0, 2))]),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(

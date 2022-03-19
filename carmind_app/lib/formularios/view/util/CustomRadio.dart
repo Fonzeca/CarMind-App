@@ -2,11 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 
 const double _kOuterRadius = 8.0;
 const double _kInnerRadius = 4.5;
@@ -82,9 +78,9 @@ class CustomRadio<T> extends StatefulWidget {
     this.visualDensity,
     this.focusNode,
     this.autofocus = false,
-  }) : assert(autofocus != null),
-       assert(toggleable != null),
-       super(key: key);
+  })  : assert(autofocus != null),
+        assert(toggleable != null),
+        super(key: key);
 
   final int id;
   final List<int> listIds;
@@ -284,9 +280,9 @@ class _CustomRadioState<T> extends State<CustomRadio<T>> with TickerProviderStat
   final _RadioPainter _painter = _RadioPainter();
 
   void _handleChanged(bool? selected) {
-    if(selected!){
+    if (selected!) {
       widget.onChanged!(widget.id);
-    }else{
+    } else {
       widget.onChanged!(-1);
     }
   }
@@ -346,12 +342,9 @@ class _CustomRadioState<T> extends State<CustomRadio<T>> with TickerProviderStat
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterial(context));
     final ThemeData themeData = Theme.of(context);
-    final MaterialTapTargetSize effectiveMaterialTapTargetSize = widget.materialTapTargetSize
-      ?? themeData.radioTheme.materialTapTargetSize
-      ?? themeData.materialTapTargetSize;
-    final VisualDensity effectiveVisualDensity = widget.visualDensity
-      ?? themeData.radioTheme.visualDensity
-      ?? themeData.visualDensity;
+    final MaterialTapTargetSize effectiveMaterialTapTargetSize =
+        widget.materialTapTargetSize ?? themeData.radioTheme.materialTapTargetSize ?? themeData.materialTapTargetSize;
+    final VisualDensity effectiveVisualDensity = widget.visualDensity ?? themeData.radioTheme.visualDensity ?? themeData.visualDensity;
     Size size;
     switch (effectiveMaterialTapTargetSize) {
       case MaterialTapTargetSize.padded:
@@ -362,48 +355,48 @@ class _CustomRadioState<T> extends State<CustomRadio<T>> with TickerProviderStat
         break;
     }
     size += effectiveVisualDensity.baseSizeAdjustment;
-    size += Offset(0, -22);
+    size += const Offset(0, -22);
 
     final MaterialStateProperty<MouseCursor> effectiveMouseCursor = MaterialStateProperty.resolveWith<MouseCursor>((Set<MaterialState> states) {
-      return MaterialStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor, states)
-        ?? themeData.radioTheme.mouseCursor?.resolve(states)
-        ?? MaterialStateProperty.resolveAs<MouseCursor>(MaterialStateMouseCursor.clickable, states);
+      return MaterialStateProperty.resolveAs<MouseCursor?>(widget.mouseCursor, states) ??
+          themeData.radioTheme.mouseCursor?.resolve(states) ??
+          MaterialStateProperty.resolveAs<MouseCursor>(MaterialStateMouseCursor.clickable, states);
     });
 
     // Colors need to be resolved in selected and non selected states separately
     // so that they can be lerped between.
     final Set<MaterialState> activeStates = states..add(MaterialState.selected);
     final Set<MaterialState> inactiveStates = states..remove(MaterialState.selected);
-    final Color effectiveActiveColor = widget.fillColor?.resolve(activeStates)
-      ?? _widgetFillColor.resolve(activeStates)
-      ?? themeData.radioTheme.fillColor?.resolve(activeStates)
-      ?? _defaultFillColor.resolve(activeStates);
-    final Color effectiveInactiveColor = widget.fillColor?.resolve(inactiveStates)
-      ?? _widgetFillColor.resolve(inactiveStates)
-      ?? themeData.radioTheme.fillColor?.resolve(inactiveStates)
-      ?? _defaultFillColor.resolve(inactiveStates);
+    final Color effectiveActiveColor = widget.fillColor?.resolve(activeStates) ??
+        _widgetFillColor.resolve(activeStates) ??
+        themeData.radioTheme.fillColor?.resolve(activeStates) ??
+        _defaultFillColor.resolve(activeStates);
+    final Color effectiveInactiveColor = widget.fillColor?.resolve(inactiveStates) ??
+        _widgetFillColor.resolve(inactiveStates) ??
+        themeData.radioTheme.fillColor?.resolve(inactiveStates) ??
+        _defaultFillColor.resolve(inactiveStates);
 
     final Set<MaterialState> focusedStates = states..add(MaterialState.focused);
-    final Color effectiveFocusOverlayColor = widget.overlayColor?.resolve(focusedStates)
-      ?? widget.focusColor
-      ?? themeData.radioTheme.overlayColor?.resolve(focusedStates)
-      ?? themeData.focusColor;
+    final Color effectiveFocusOverlayColor = widget.overlayColor?.resolve(focusedStates) ??
+        widget.focusColor ??
+        themeData.radioTheme.overlayColor?.resolve(focusedStates) ??
+        themeData.focusColor;
 
     final Set<MaterialState> hoveredStates = states..add(MaterialState.hovered);
-    final Color effectiveHoverOverlayColor = widget.overlayColor?.resolve(hoveredStates)
-        ?? widget.hoverColor
-        ?? themeData.radioTheme.overlayColor?.resolve(hoveredStates)
-        ?? themeData.hoverColor;
+    final Color effectiveHoverOverlayColor = widget.overlayColor?.resolve(hoveredStates) ??
+        widget.hoverColor ??
+        themeData.radioTheme.overlayColor?.resolve(hoveredStates) ??
+        themeData.hoverColor;
 
     final Set<MaterialState> activePressedStates = activeStates..add(MaterialState.pressed);
-    final Color effectiveActivePressedOverlayColor = widget.overlayColor?.resolve(activePressedStates)
-        ?? themeData.radioTheme.overlayColor?.resolve(activePressedStates)
-        ?? effectiveActiveColor.withAlpha(kRadialReactionAlpha);
+    final Color effectiveActivePressedOverlayColor = widget.overlayColor?.resolve(activePressedStates) ??
+        themeData.radioTheme.overlayColor?.resolve(activePressedStates) ??
+        effectiveActiveColor.withAlpha(kRadialReactionAlpha);
 
     final Set<MaterialState> inactivePressedStates = inactiveStates..add(MaterialState.pressed);
-    final Color effectiveInactivePressedOverlayColor = widget.overlayColor?.resolve(inactivePressedStates)
-        ?? themeData.radioTheme.overlayColor?.resolve(inactivePressedStates)
-        ?? effectiveActiveColor.withAlpha(kRadialReactionAlpha);
+    final Color effectiveInactivePressedOverlayColor = widget.overlayColor?.resolve(inactivePressedStates) ??
+        themeData.radioTheme.overlayColor?.resolve(inactivePressedStates) ??
+        effectiveActiveColor.withAlpha(kRadialReactionAlpha);
 
     return Semantics(
       inMutuallyExclusiveGroup: true,
@@ -432,7 +425,6 @@ class _CustomRadioState<T> extends State<CustomRadio<T>> with TickerProviderStat
     );
   }
 }
-
 
 class _RadioPainter extends ToggleablePainter {
   @override

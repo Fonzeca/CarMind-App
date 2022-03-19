@@ -2,7 +2,6 @@ import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +42,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
                 child: Text(
                   pregunta.descripcion!,
                   textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
               ),
               const SizedBox(height: 20 - 13),
@@ -143,7 +142,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
           return Container(
             width: double.infinity,
             height: 64,
-            margin: EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
             child: TextField(
               minLines: null,
               maxLines: null,
@@ -151,10 +150,10 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
               textAlign: TextAlign.start,
               keyboardType: TextInputType.multiline,
               textAlignVertical: TextAlignVertical.top,
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
               expands: true,
               enabled: !preguntaFinalizada,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),

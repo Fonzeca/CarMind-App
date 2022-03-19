@@ -14,7 +14,7 @@ class CardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (loading) return loadingCard();
-    return Container(
+    return SizedBox(
       height: 205,
       width: 140,
       child: Card(
@@ -30,7 +30,7 @@ class CardFormulario extends StatelessWidget {
               width: double.infinity,
               height: 139,
               child: Center(
-                child: Container(
+                child: SizedBox(
                   width: 54,
                   height: 54,
                   child: SvgPicture.asset(
@@ -51,14 +51,14 @@ class CardFormulario extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 25),
+                        constraints: const BoxConstraints(maxHeight: 25),
                         child: AutoSizeText(
                           "${log!.nombre_evaluacion}",
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
                         ),
                       ),
                       ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 25),
+                        constraints: const BoxConstraints(maxHeight: 25),
                         child: AutoSizeText(
                           "Fecha: ${log!.fecha}",
                           maxFontSize: 11,

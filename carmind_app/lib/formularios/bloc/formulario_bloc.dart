@@ -10,7 +10,7 @@ part 'formulario_state.dart';
 class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
   late ApiClient api;
 
-  FormularioBloc() : super(FormularioState(logs: [], loading: true)) {
+  FormularioBloc() : super(const FormularioState(logs: [], loading: true)) {
     api = ApiClient(staticDio!);
     on<FormularioBuscarDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
