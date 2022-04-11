@@ -10,11 +10,20 @@
             "type": "dart"
         },
         {
-            "name": "carmind_app (profile mode)",
+            "name": "carmind_app Celular cable",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
             "deviceId": "sm"
+        },
+        {
+            "name": "carmind_app Android",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "deviceId": "android",
+            "args": []
+
         }
     ]
 }

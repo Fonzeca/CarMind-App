@@ -1,12 +1,21 @@
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'evaluacion.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: 4)
 class Evaluacion {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   List<int>? vehiculo_id;
+
+  @HiveField(2)
   String? titulo;
+
+  @HiveField(3)
   List<SeccionPojo>? secciones;
 
   Evaluacion();
@@ -16,9 +25,15 @@ class Evaluacion {
 }
 
 @JsonSerializable()
+@HiveType(typeId: 5)
 class SeccionPojo {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? nombre;
+
+  @HiveField(2)
   List<PreguntaPojo>? preguntas;
 
   SeccionPojo();
@@ -28,10 +43,18 @@ class SeccionPojo {
 }
 
 @JsonSerializable()
+@HiveType(typeId: 6)
 class PreguntaPojo {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? descripcion;
+
+  @HiveField(2)
   String? tipo;
+
+  @HiveField(3)
   List<OpcionPojo>? opciones;
 
   PreguntaPojo();
@@ -41,8 +64,12 @@ class PreguntaPojo {
 }
 
 @JsonSerializable()
+@HiveType(typeId: 7)
 class OpcionPojo {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? texto;
 
   OpcionPojo();

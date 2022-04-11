@@ -3,6 +3,110 @@
 part of 'vehiculo.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class VehiculoAdapter extends TypeAdapter<Vehiculo> {
+  @override
+  final int typeId = 1;
+
+  @override
+  Vehiculo read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Vehiculo()
+      ..id = fields[0] as int?
+      ..nombre = fields[1] as String?
+      ..en_uso = fields[2] as bool?
+      ..color = fields[3] as String?
+      ..marca = fields[4] as String?
+      ..modelo = fields[5] as String?
+      ..linea = fields[6] as String?
+      ..patente = fields[7] as String?
+      ..pendientes = (fields[8] as List?)?.cast<EvaluacionesPendientes>();
+  }
+
+  @override
+  void write(BinaryWriter writer, Vehiculo obj) {
+    writer
+      ..writeByte(9)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.nombre)
+      ..writeByte(2)
+      ..write(obj.en_uso)
+      ..writeByte(3)
+      ..write(obj.color)
+      ..writeByte(4)
+      ..write(obj.marca)
+      ..writeByte(5)
+      ..write(obj.modelo)
+      ..writeByte(6)
+      ..write(obj.linea)
+      ..writeByte(7)
+      ..write(obj.patente)
+      ..writeByte(8)
+      ..write(obj.pendientes);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VehiculoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class EvaluacionesPendientesAdapter
+    extends TypeAdapter<EvaluacionesPendientes> {
+  @override
+  final int typeId = 2;
+
+  @override
+  EvaluacionesPendientes read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return EvaluacionesPendientes()
+      ..id = fields[0] as int?
+      ..titulo = fields[1] as String?
+      ..pendiente = fields[2] as bool?
+      ..vencimiento = fields[3] as int?;
+  }
+
+  @override
+  void write(BinaryWriter writer, EvaluacionesPendientes obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.id)
+      ..writeByte(1)
+      ..write(obj.titulo)
+      ..writeByte(2)
+      ..write(obj.pendiente)
+      ..writeByte(3)
+      ..write(obj.vencimiento);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EvaluacionesPendientesAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

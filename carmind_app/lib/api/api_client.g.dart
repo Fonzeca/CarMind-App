@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _ApiClient implements ApiClient {
   _ApiClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://carmind-app.com:2233/';
+    baseUrl ??= 'http://vps-1791261-x.dattaweb.com:2233/';
   }
 
   final Dio _dio;
@@ -65,6 +65,22 @@ class _ApiClient implements ApiClient {
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final httpResponse = HttpResponse(null, _result);
     return httpResponse;
+  }
+
+  @override
+  Future<OfflineData> obtenerDatosOffline() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<OfflineData>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/usuario/modo-offline',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = OfflineData.fromJson(_result.data!);
+    return value;
   }
 
   @override

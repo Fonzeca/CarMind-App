@@ -3,9 +3,9 @@ import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
+import 'package:carmind_app/utils/loading_spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -43,12 +43,7 @@ class LoginScreen extends StatelessWidget {
                 _buildContent(emailCon, passwordCon, context),
                 () {
                   if (state is LoginLoading) {
-                    return Center(
-                      child: LoadingAnimationWidget.hexagonDots(
-                        color: Colors.blue,
-                        size: 50,
-                      ),
-                    );
+                    return const LoadingSpinner();
                   }
                   return const SizedBox();
                 }(),

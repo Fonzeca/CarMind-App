@@ -1,15 +1,37 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'vehiculo.g.dart';
 
 @JsonSerializable()
+@HiveType(typeId: 1)
 class Vehiculo extends Equatable {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? nombre;
+
+  @HiveField(2)
   bool? en_uso;
+
+  @HiveField(3)
   String? color;
-  String? marca, modelo, linea, patente;
+
+  @HiveField(4)
+  String? marca;
+
+  @HiveField(5)
+  String? modelo;
+
+  @HiveField(6)
+  String? linea;
+
+  @HiveField(7)
+  String? patente;
+
+  @HiveField(8)
   List<EvaluacionesPendientes>? pendientes;
 
   Vehiculo();
@@ -22,10 +44,18 @@ class Vehiculo extends Equatable {
 }
 
 @JsonSerializable()
+@HiveType(typeId: 2)
 class EvaluacionesPendientes extends Equatable {
+  @HiveField(0)
   int? id;
+
+  @HiveField(1)
   String? titulo;
+
+  @HiveField(2)
   bool? pendiente;
+
+  @HiveField(3)
   int? vencimiento;
 
   EvaluacionesPendientes();

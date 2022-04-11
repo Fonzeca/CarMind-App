@@ -64,7 +64,9 @@ class CarMindNavigationBar extends StatelessWidget {
                   selectedFontSize: 14,
                   unselectedFontSize: 14,
                   onTap: (value) {
-                    BlocProvider.of<HomeBloc>(context).add(HomeNavigationEvent(value));
+                    BlocProvider.of<HomeBloc>(context)
+                      ..add(HomeNavigationEvent(value))
+                      ..add(ShowFab());
                   },
                 );
               },
