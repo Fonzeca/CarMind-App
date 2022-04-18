@@ -9,6 +9,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'vehiculo_event.dart';
@@ -61,7 +62,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         var log = LogUso()
           ..enUso = false
           ..vehiculoId = vehiculo!.id!
-          ..timestamp = DateTime.now();
+          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
         box.add(log);
       } else {
         await api.terminarUso(vehiculo!.id!);

@@ -4,12 +4,16 @@ import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
+import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/formularios/view/formulario.dart';
 import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'realiazar_evaluacion_event.dart';
 part 'realiazar_evaluacion_state.dart';
@@ -65,21 +69,37 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
     on<FinalizarEvaluacionEvent>((event, emit) async {
       emit(state.copyWith(pMandandoEvaluacion: true));
 
-      log(evaluacionTerminada!.toJson().toString());
+      var sh = await SharedPreferences.getInstance();
 
-      await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!).catchError((obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-            // Here's the sample to get the failed response error code and message
-            final res = (obj as DioError).response;
-            log("Got error : ${res!.statusCode} -> ${res.statusMessage}");
-            break;
-          default:
-            break;
-        }
-      });
+      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
+        var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
+        var log = LogEvaluacionTerminadaPojo()
+          ..evaluacionId = evaluacion!.id!
+          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now())
+          ..respuesta = evaluacionTerminada!;
 
-      emit(state.copyWith(pMandandoEvaluacion: false, pEvaluacionTerminada: true));
+        box.add(log);
+      } else {
+        await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!).catchError((obj) {
+          switch (obj.runtimeType) {
+            case DioError:
+              // Here's the sample to get the failed response error code and message
+              final res = (obj as DioError).response;
+              log("Got error : ${res!.statusCode} -> ${res.statusMessage}");
+              break;
+            default:
+              break;
+          }
+        });
+      }
+
+      emit(state.copyWith(
+          pMandandoEvaluacion: false,
+          pEvaluacionTerminada: true,
+          pEvaluaconIniciada: false,
+          pPreguntaActual: -1,
+          pPreguntasRespondidas: [],
+          pSeccionesTermiandas: []));
 
       respondidas = [];
       evaluacion = null;

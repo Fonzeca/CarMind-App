@@ -3,6 +3,128 @@
 part of 'evaluacion_terminada.dart';
 
 // **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
+class EvaluacionTerminadaPojoAdapter
+    extends TypeAdapter<EvaluacionTerminadaPojo> {
+  @override
+  final int typeId = 11;
+
+  @override
+  EvaluacionTerminadaPojo read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return EvaluacionTerminadaPojo()
+      ..vehiculo_id = fields[0] as int?
+      ..respuestas = (fields[1] as List?)?.cast<RespuestaPojo>();
+  }
+
+  @override
+  void write(BinaryWriter writer, EvaluacionTerminadaPojo obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.vehiculo_id)
+      ..writeByte(1)
+      ..write(obj.respuestas);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EvaluacionTerminadaPojoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RespuestaPojoAdapter extends TypeAdapter<RespuestaPojo> {
+  @override
+  final int typeId = 12;
+
+  @override
+  RespuestaPojo read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return RespuestaPojo()
+      ..pregunta_id = fields[0] as int?
+      ..tick_correcto = fields[1] as bool?
+      ..base64_image = fields[2] as String?
+      ..texto = fields[3] as String?
+      ..opciones = (fields[4] as List?)?.cast<RespuestaOpcionPojo>();
+  }
+
+  @override
+  void write(BinaryWriter writer, RespuestaPojo obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.pregunta_id)
+      ..writeByte(1)
+      ..write(obj.tick_correcto)
+      ..writeByte(2)
+      ..write(obj.base64_image)
+      ..writeByte(3)
+      ..write(obj.texto)
+      ..writeByte(4)
+      ..write(obj.opciones);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RespuestaPojoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class RespuestaOpcionPojoAdapter extends TypeAdapter<RespuestaOpcionPojo> {
+  @override
+  final int typeId = 13;
+
+  @override
+  RespuestaOpcionPojo read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return RespuestaOpcionPojo()
+      ..opcion_id = fields[0] as int?
+      ..tick_correcto = fields[1] as bool?;
+  }
+
+  @override
+  void write(BinaryWriter writer, RespuestaOpcionPojo obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.opcion_id)
+      ..writeByte(1)
+      ..write(obj.tick_correcto);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RespuestaOpcionPojoAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

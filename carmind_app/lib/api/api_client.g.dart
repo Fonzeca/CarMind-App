@@ -84,6 +84,21 @@ class _ApiClient implements ApiClient {
   }
 
   @override
+  Future<void> sincronizarDatos(sync) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(sync.toJson());
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'POST', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/usuario/sync',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
   Future<Evaluacion> getEvaluacionById(idEvaluacion) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

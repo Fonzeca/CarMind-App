@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/profile/logged_user.dart';
+import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/main.dart';
@@ -48,22 +52,33 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
       emit(state.copyWith(loading: true));
 
       var boxVehiculos = Hive.box<Vehiculo>("vehiculos");
-      boxVehiculos.clear();
-
       var boxEvaluaciones = Hive.box<Evaluacion>("evaluaciones");
-      boxEvaluaciones.clear();
-
       var boxLogsEvaluaciones = Hive.box<LogEvaluacion>("logs");
-      boxLogsEvaluaciones.clear();
-
       var boxLoggedUser = Hive.box<LoggedUser>("loggedUser");
-      boxLoggedUser.clear();
-
       var boxLogUso = Hive.box<LogUso>("logUso");
-      boxLogUso.clear();
+      var boxLogEvaluaciones = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
+
+      SyncView syncView = SyncView();
+      syncView.logUso = boxLogUso.values.toList();
+      syncView.evaluacionesRealizadas = boxLogEvaluaciones.values.toList();
+
+      try {
+        await api.sincronizarDatos(syncView);
+      } catch (e) {
+        log(e.toString());
+        emit(state.copyWith(loading: false));
+        return;
+      }
 
       var sh = await SharedPreferences.getInstance();
       sh.setBool("offline", false);
+
+      boxVehiculos.clear();
+      boxEvaluaciones.clear();
+      boxLogsEvaluaciones.clear();
+      boxLoggedUser.clear();
+      boxLogUso.clear();
+      boxLogEvaluaciones.clear();
 
       emit(state.copyWith(offline: false, loading: false));
     });

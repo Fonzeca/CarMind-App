@@ -1,5 +1,7 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
+import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/profile/logged_user.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
@@ -30,12 +32,17 @@ void main() async {
   Hive.registerAdapter(LogEvaluacionAdapter());
   Hive.registerAdapter(LoggedUserAdapter());
   Hive.registerAdapter(LogUsoAdapter());
+  Hive.registerAdapter(LogEvaluacionTerminadaPojoAdapter());
+  Hive.registerAdapter(EvaluacionTerminadaPojoAdapter());
+  Hive.registerAdapter(RespuestaPojoAdapter());
+  Hive.registerAdapter(RespuestaOpcionPojoAdapter());
 
   await Hive.openBox<Vehiculo>('vehiculos');
   await Hive.openBox<LogEvaluacion>('logs');
   await Hive.openBox<LoggedUser>('loggedUser');
   await Hive.openBox<Evaluacion>('evaluaciones');
   await Hive.openBox<LogUso>('logUso');
+  await Hive.openBox<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
 
   runApp(const MyApp());
 }

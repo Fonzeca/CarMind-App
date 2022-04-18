@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,7 +37,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         var log = LogUso()
           ..enUso = true
           ..vehiculoId = idVehiculo
-          ..timestamp = DateTime.now();
+          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
         box.add(log);
       } else {
         await api.iniciarUso(idVehiculo);

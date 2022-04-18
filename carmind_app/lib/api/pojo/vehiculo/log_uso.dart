@@ -11,7 +11,7 @@ class LogUso extends Equatable {
   int? vehiculoId;
 
   @HiveField(1)
-  DateTime? timestamp;
+  String? fecha;
 
   @HiveField(2)
   bool? enUso;

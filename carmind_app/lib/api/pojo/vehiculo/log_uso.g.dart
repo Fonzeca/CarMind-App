@@ -18,7 +18,7 @@ class LogUsoAdapter extends TypeAdapter<LogUso> {
     };
     return LogUso()
       ..vehiculoId = fields[0] as int?
-      ..timestamp = fields[1] as DateTime?
+      ..fecha = fields[1] as String?
       ..enUso = fields[2] as bool?;
   }
 
@@ -29,7 +29,7 @@ class LogUsoAdapter extends TypeAdapter<LogUso> {
       ..writeByte(0)
       ..write(obj.vehiculoId)
       ..writeByte(1)
-      ..write(obj.timestamp)
+      ..write(obj.fecha)
       ..writeByte(2)
       ..write(obj.enUso);
   }
@@ -51,13 +51,11 @@ class LogUsoAdapter extends TypeAdapter<LogUso> {
 
 LogUso _$LogUsoFromJson(Map<String, dynamic> json) => LogUso()
   ..vehiculoId = json['vehiculoId'] as int?
-  ..timestamp = json['timestamp'] == null
-      ? null
-      : DateTime.parse(json['timestamp'] as String)
+  ..fecha = json['fecha'] as String?
   ..enUso = json['enUso'] as bool?;
 
 Map<String, dynamic> _$LogUsoToJson(LogUso instance) => <String, dynamic>{
       'vehiculoId': instance.vehiculoId,
-      'timestamp': instance.timestamp?.toIso8601String(),
+      'fecha': instance.fecha,
       'enUso': instance.enUso,
     };

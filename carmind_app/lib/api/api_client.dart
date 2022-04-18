@@ -4,6 +4,7 @@ import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
 import 'package:carmind_app/api/pojo/login_pojo.dart';
 import 'package:carmind_app/api/pojo/profile/logged_user.dart';
 import 'package:carmind_app/api/pojo/profile/offline_data.dart';
+import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
@@ -27,6 +28,9 @@ abstract class ApiClient {
 
   @GET("/usuario/modo-offline")
   Future<OfflineData> obtenerDatosOffline();
+
+  @POST("/usuario/sync")
+  Future<void> sincronizarDatos(@Body() SyncView sync);
 
   //----------------------------EVALUACION----------------------------
 
