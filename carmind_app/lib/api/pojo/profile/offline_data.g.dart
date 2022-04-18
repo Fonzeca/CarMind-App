@@ -18,7 +18,8 @@ OfflineData _$OfflineDataFromJson(Map<String, dynamic> json) => OfflineData()
       .toList()
   ..logEvaluacion = (json['logEvaluacion'] as List<dynamic>?)
       ?.map((e) => LogEvaluacion.fromJson(e as Map<String, dynamic>))
-      .toList();
+      .toList()
+  ..idVehiculoActual = json['idVehiculoActual'] as int?;
 
 Map<String, dynamic> _$OfflineDataToJson(OfflineData instance) =>
     <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$OfflineDataToJson(OfflineData instance) =>
       'vehiculos': instance.vehiculos,
       'evaluaciones': instance.evaluaciones,
       'logEvaluacion': instance.logEvaluacion,
+      'idVehiculoActual': instance.idVehiculoActual,
     };

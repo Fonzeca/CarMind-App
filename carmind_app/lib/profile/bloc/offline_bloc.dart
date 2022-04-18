@@ -26,6 +26,7 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
       emit(state.copyWith(loading: true));
 
       var datos = await api.obtenerDatosOffline();
+      var sh = await SharedPreferences.getInstance();
 
       var boxVehiculos = Hive.box<Vehiculo>("vehiculos");
       var mapVehiculos = {for (var v in datos.vehiculos!) v.id: v};
@@ -42,7 +43,10 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
       var boxLoggedUser = Hive.box<LoggedUser>("loggedUser");
       boxLoggedUser.put(0, datos.loggedUser!);
 
-      var sh = await SharedPreferences.getInstance();
+      if (datos.idVehiculoActual != null) {
+        sh.setInt("current-offline", datos.idVehiculoActual!);
+      }
+
       sh.setBool("offline", true);
 
       emit(state.copyWith(offline: true, loading: false));

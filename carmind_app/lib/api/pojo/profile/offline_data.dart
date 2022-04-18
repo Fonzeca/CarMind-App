@@ -12,6 +12,7 @@ class OfflineData {
   List<Vehiculo>? vehiculos;
   List<Evaluacion>? evaluaciones;
   List<LogEvaluacion>? logEvaluacion;
+  int? idVehiculoActual;
 
   OfflineData();
 

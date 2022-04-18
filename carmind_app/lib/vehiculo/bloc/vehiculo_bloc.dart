@@ -35,8 +35,14 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         if (log != null && log.enUso!) {
           vehiculo = Hive.box<Vehiculo>("vehiculos").get(log.vehiculoId);
         } else {
-          //Si el log es de "desuso" lo dejamos en null
-          vehiculo = null;
+          int? idVehiculoOffline = sh.getInt("current-offline");
+
+          if (idVehiculoOffline != null) {
+            vehiculo = Hive.box<Vehiculo>("vehiculos").get(idVehiculoOffline);
+          } else {
+            //Si el log es de "desuso" lo dejamos en null
+            vehiculo = null;
+          }
         }
       } else {
         //Si no esta offline, le preguntamos al server
