@@ -1,10 +1,13 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:carmind_app/vehiculo/view/card_vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../main.dart';
@@ -91,14 +94,13 @@ class VehiculoEspecifico extends StatelessWidget {
     } else {
       for (var pendiente in vehiculo!.pendientes!) {
         list.add(const SizedBox(height: 15));
-        list.add(cardCheckList(pendiente.id!, pendiente.titulo!, pendiente.vencimiento!));
+        list.add(cardCheckList(pendiente.id!, pendiente.titulo!, pendiente.pendiente!, pendiente.vencimiento!));
       }
       return list;
     }
   }
 
-  Widget cardCheckList(int id, String nombreCheck, int vencmimento) {
-    bool tick = vencmimento > 0;
+  Widget cardCheckList(int id, String nombreCheck, bool pendiente, int vencimiento) {
     return GestureDetector(
       onTap: () => buscarEvaluacion(id),
       child: Card(
@@ -141,7 +143,7 @@ class VehiculoEspecifico extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "Vencimiento: $vencmimento día" + (vencmimento == 1 ? "" : "s"),
+                        "Vencimiento: $vencimiento día" + (vencimiento == 1 ? "" : "s"),
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                       ),
                     ],
@@ -154,7 +156,7 @@ class VehiculoEspecifico extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
                     child: SvgPicture.asset(
-                      tick ? "assets/tick_fill.svg" : "assets/tick_empty_empty.svg",
+                      !pendiente ? "assets/tick_fill.svg" : "assets/tick_empty_empty.svg",
                     ),
                   ),
                 ],
@@ -164,6 +166,32 @@ class VehiculoEspecifico extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  DateTime? verifyTick(String fechaVencimiento, int intervaloDias) {
+    if (fechaVencimiento.isNotEmpty) {
+      var date = DateFormat("dd/MM/yyyy").parse(fechaVencimiento);
+      if (date.isAfter(DateTime.now())) {
+        if (date.difference(DateTime.now()).inDays > 0) {
+          return date;
+        }
+      }
+    }
+
+    var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
+    try {
+      var logOk = box.values.firstWhere(
+        (element) {
+          var date = DateFormat("dd/MM/yyyy HH:mm:ss").parse(element.fecha!);
+          var dateSubstract = DateTime.now().subtract(Duration(days: intervaloDias));
+
+          return dateSubstract.isBefore(date);
+        },
+      );
+      return DateFormat("dd/MM/yyyy HH:mm").parse(logOk.fecha!).add(Duration(days: intervaloDias));
+    } catch (e) {}
+
+    return null;
   }
 
   Widget cardCheckListLoading() {

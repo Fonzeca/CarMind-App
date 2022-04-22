@@ -58,11 +58,14 @@ class EvaluacionesPendientes extends Equatable {
   @HiveField(3)
   int? vencimiento;
 
+  @HiveField(4)
+  int? intervaloDias;
+
   EvaluacionesPendientes();
 
   factory EvaluacionesPendientes.fromJson(Map<String, dynamic> json) => _$EvaluacionesPendientesFromJson(json);
   Map<String, dynamic> toJson() => _$EvaluacionesPendientesToJson(this);
 
   @override
-  List<Object?> get props => [id, titulo, pendiente, vencimiento];
+  List<Object?> get props => [id, titulo, pendiente, vencimiento, intervaloDias];
 }

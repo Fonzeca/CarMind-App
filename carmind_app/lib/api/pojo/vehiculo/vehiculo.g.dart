@@ -78,13 +78,14 @@ class EvaluacionesPendientesAdapter
       ..id = fields[0] as int?
       ..titulo = fields[1] as String?
       ..pendiente = fields[2] as bool?
-      ..vencimiento = fields[3] as int?;
+      ..vencimiento = fields[3] as int?
+      ..intervaloDias = fields[4] as int?;
   }
 
   @override
   void write(BinaryWriter writer, EvaluacionesPendientes obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -92,7 +93,9 @@ class EvaluacionesPendientesAdapter
       ..writeByte(2)
       ..write(obj.pendiente)
       ..writeByte(3)
-      ..write(obj.vencimiento);
+      ..write(obj.vencimiento)
+      ..writeByte(4)
+      ..write(obj.intervaloDias);
   }
 
   @override
@@ -141,7 +144,8 @@ EvaluacionesPendientes _$EvaluacionesPendientesFromJson(
       ..id = json['id'] as int?
       ..titulo = json['titulo'] as String?
       ..pendiente = json['pendiente'] as bool?
-      ..vencimiento = json['vencimiento'] as int?;
+      ..vencimiento = json['vencimiento'] as int?
+      ..intervaloDias = json['intervaloDias'] as int?;
 
 Map<String, dynamic> _$EvaluacionesPendientesToJson(
         EvaluacionesPendientes instance) =>
@@ -150,4 +154,5 @@ Map<String, dynamic> _$EvaluacionesPendientesToJson(
       'titulo': instance.titulo,
       'pendiente': instance.pendiente,
       'vencimiento': instance.vencimiento,
+      'intervaloDias': instance.intervaloDias,
     };
