@@ -10,3 +10,5 @@ abstract class OfflineEvent extends Equatable {
 class SetOffline extends OfflineEvent {}
 
 class SetOnline extends OfflineEvent {}
+
+class SyncEvent extends OfflineEvent {}

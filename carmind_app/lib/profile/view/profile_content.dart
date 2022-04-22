@@ -15,6 +15,7 @@ class ProfileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<OfflineBloc>(context).add(SyncEvent());
     return Material(
       child: Stack(
         children: [

@@ -22,6 +22,15 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
 
   OfflineBloc() : super(const OfflineState(offline: false, loading: false)) {
     api = ApiClient(staticDio!);
+    on<SyncEvent>((event, emit) async {
+      emit(state.copyWith(loading: true));
+
+      var sh = await SharedPreferences.getInstance();
+      var offline = sh.getBool("offline");
+
+      emit(state.copyWith(offline: offline, loading: false));
+    });
+
     on<SetOffline>((event, emit) async {
       emit(state.copyWith(loading: true));
 
