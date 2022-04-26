@@ -36,6 +36,18 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
     on<ValidateSavedToken>((event, emit) async {
       emit(LoginLoading());
 
+      //Si el inicio de sesion es para ponerlo en online, no verificamos si esta offline, porque si esta.
+      if (!event.offlineMode) {
+        //Verifico si pasa offline
+        var sh = await SharedPreferences.getInstance();
+        var offline = sh.getBool("offline");
+
+        if (offline!) {
+          emit(LoginOk());
+          return;
+        }
+      }
+
       if (await verifyToken()) {
         //Llamo a la api para asegurarme que el token anda
         await clientConToken.valdiateToken().then((value) {
@@ -47,6 +59,10 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
       } else {
         emit(LoginBlocInitial());
       }
+    });
+
+    on<ResetScreen>((event, emit) {
+      emit(LoginBlocInitial());
     });
   }
 

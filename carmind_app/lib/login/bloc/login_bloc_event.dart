@@ -14,4 +14,12 @@ class AttemptToLogin extends LoginBlocEvent {
   const AttemptToLogin(this.email, this.password);
 }
 
-class ValidateSavedToken extends LoginBlocEvent {}
+class ValidateSavedToken extends LoginBlocEvent {
+  //Con este flag va a saber si preguntar si esta modo offline o no.
+  //Si esta en true, NO pregunta si esta en offline, y va directamente por internet.
+  final offlineMode;
+
+  const ValidateSavedToken(this.offlineMode);
+}
+
+class ResetScreen extends LoginBlocEvent {}

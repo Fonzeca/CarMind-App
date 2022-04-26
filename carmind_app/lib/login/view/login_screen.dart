@@ -2,6 +2,7 @@ import 'package:carmind_app/home/view/navigation_bar.dart';
 import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:carmind_app/utils/loading_spinner.dart';
 import 'package:flutter/material.dart';
@@ -9,28 +10,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  bool? offline = false;
+  LoginScreen({Key? key, this.offline}) : super(key: key);
 
   final ValueNotifier<bool> _passwordVisible = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<LoginBlocBloc>(context).add(ValidateSavedToken());
+    BlocProvider.of<LoginBlocBloc>(context).add(ValidateSavedToken(offline ?? false));
 
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
     return BlocListener<LoginBlocBloc, LoginBlocState>(
       listener: (context, state) async {
         if (state is LoginError) {
+          //Tiramos error si el login es fallido
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
         } else if (state is LoginOk) {
+          //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
-          final prefs = await SharedPreferences.getInstance();
-          if (prefs.getBool("on_boarding_finish") ?? false) {
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
+
+          //Si se uso para actualizar el token o para iniciar sesion
+          if (offline != null && offline!) {
+            //Seteamos online en true, sincronizando los datos
+            BlocProvider.of<OfflineBloc>(context).add(SetOnline());
+            Navigator.pop(context);
           } else {
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
+            //Le damos para adelante a la app
+            final prefs = await SharedPreferences.getInstance();
+            if (prefs.getBool("on_boarding_finish") ?? false) {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
+            } else {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
+            }
           }
+          BlocProvider.of<LoginBlocBloc>(context).add(ResetScreen());
           emailCon.clear();
           passwordCon.clear();
         }

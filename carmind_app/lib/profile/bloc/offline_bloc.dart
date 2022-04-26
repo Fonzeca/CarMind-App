@@ -10,6 +10,7 @@ import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/main.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,7 @@ part 'offline_state.dart';
 class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
   late ApiClient api;
 
-  OfflineBloc() : super(const OfflineState(offline: false, loading: false)) {
+  OfflineBloc() : super(const OfflineState(offline: false, loading: false, failAuth: false)) {
     api = ApiClient(staticDio!);
     on<SyncEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
@@ -75,25 +76,37 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
       syncView.logUso = boxLogUso.values.toList();
       syncView.evaluacionesRealizadas = boxLogEvaluaciones.values.toList();
 
+      var sh = await SharedPreferences.getInstance();
+
       try {
-        await api.sincronizarDatos(syncView);
+        await api.sincronizarDatos(syncView).catchError((Object obj) {
+          // non-200 error goes here.
+          if (obj.runtimeType == DioError) {
+            final res = (obj as DioError).response;
+            if (res?.statusCode == 403) {
+              sh.remove("token");
+              emit(state.copyWith(failAuth: true));
+              return;
+            }
+          }
+        });
       } catch (e) {
         log(e.toString());
         emit(state.copyWith(loading: false));
         return;
       }
 
-      var sh = await SharedPreferences.getInstance();
-      sh.setBool("offline", false);
+      if (!state.failAuth) {
+        sh.setBool("offline", false);
+        boxVehiculos.clear();
+        boxEvaluaciones.clear();
+        boxLogsEvaluaciones.clear();
+        boxLoggedUser.clear();
+        boxLogUso.clear();
+        boxLogEvaluaciones.clear();
 
-      boxVehiculos.clear();
-      boxEvaluaciones.clear();
-      boxLogsEvaluaciones.clear();
-      boxLoggedUser.clear();
-      boxLogUso.clear();
-      boxLogEvaluaciones.clear();
-
-      emit(state.copyWith(offline: false, loading: false));
+        emit(state.copyWith(offline: false, loading: false));
+      }
     });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:carmind_app/home/bloc/home_bloc.dart';
+import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
@@ -20,13 +21,20 @@ class ProfileContent extends StatelessWidget {
       child: Stack(
         children: [
           _buildContent(),
-          BlocBuilder<OfflineBloc, OfflineState>(
-            builder: (context, state) {
-              if (state.loading) {
-                return const LoadingSpinner();
+          BlocListener<OfflineBloc, OfflineState>(
+            listener: (context, state) {
+              if (state.failAuth) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(offline: true)));
               }
-              return const SizedBox();
             },
+            child: BlocBuilder<OfflineBloc, OfflineState>(
+              builder: (context, state) {
+                if (state.loading) {
+                  return const LoadingSpinner();
+                }
+                return const SizedBox();
+              },
+            ),
           )
         ],
       ),
