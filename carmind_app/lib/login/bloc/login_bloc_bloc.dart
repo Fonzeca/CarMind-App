@@ -42,10 +42,11 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
         var sh = await SharedPreferences.getInstance();
         var offline = sh.getBool("offline");
 
-        if (offline!) {
+        if (offline != null && offline) {
           emit(LoginOk());
           return;
         }
+        emit(LoginBlocInitial());
       }
 
       if (await verifyToken()) {
