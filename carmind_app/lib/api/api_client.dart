@@ -12,8 +12,8 @@ import 'package:retrofit/http.dart';
 
 part 'api_client.g.dart';
 
-// @RestApi(baseUrl: "http://vps-1791261-x.dattaweb.com:2233/")
-@RestApi(baseUrl: "https://carmind-app.com:2233/")
+// @RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
+@RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
