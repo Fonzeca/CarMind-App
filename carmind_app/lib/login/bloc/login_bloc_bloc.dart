@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/main.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,8 +11,7 @@ part 'login_bloc_state.dart';
 
 class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
   LoginBlocBloc() : super(LoginBlocInitial()) {
-    final client = ApiClient(Dio());
-    final clientConToken = ApiClient(staticDio!);
+    final client = ApiClient(staticDio!);
 
     on<LoginBlocEvent>((event, emit) {
       // TODO: implement event handler
@@ -51,7 +49,7 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
 
       if (await verifyToken()) {
         //Llamo a la api para asegurarme que el token anda
-        await clientConToken.valdiateToken().then((value) {
+        await client.valdiateToken().then((value) {
           emit(LoginOk());
         }).catchError((obj) {
           removeToken();
