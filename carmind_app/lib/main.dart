@@ -14,6 +14,7 @@ import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -94,5 +95,11 @@ class MyApp extends StatelessWidget {
         handler.next(options);
       },
     ));
+
+    //TODO: Agujero en la seguridad.
+    (staticDio?.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
+    };
   }
 }
