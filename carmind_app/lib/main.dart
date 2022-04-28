@@ -64,6 +64,7 @@ class MyApp extends StatelessWidget {
     configDio();
     return MultiBlocProvider(
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(
