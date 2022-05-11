@@ -12,7 +12,6 @@ import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:carmind_app/utils/bloc/loading_bloc.dart';
 import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:dio/adapter.dart';
@@ -69,7 +68,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       child: MaterialApp(
         key: _scaffoldKey,
-        debugShowCheckedModeBanner: false,
         title: 'CarMind',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(
@@ -86,7 +84,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
         BlocProvider(create: (context) => OfflineBloc()),
-        BlocProvider(create: (context) => LoadingBloc())
       ],
     );
   }

@@ -7,6 +7,7 @@ import 'package:carmind_app/api/pojo/profile/offline_data.dart';
 import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
 

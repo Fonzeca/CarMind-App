@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,8 +19,15 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
 
     on<AttemptToLogin>((event, emit) async {
       EasyLoading.show();
+      String email = event.email.trim();
+      String pass = event.password.trim();
 
-      await client.login(event.email.trim(), event.password.trim()).then((value) async {
+      if (kDebugMode) {
+        email = "alexisfonzos@gmail.com";
+        pass = "123";
+      }
+
+      await client.login(email, pass).then((value) async {
         await saveToken(value.token!);
 
         emit(LoginOk());
