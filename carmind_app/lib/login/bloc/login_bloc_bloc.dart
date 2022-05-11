@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'login_bloc_event.dart';
@@ -18,21 +17,20 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
     });
 
     on<AttemptToLogin>((event, emit) async {
-      emit(LoginLoading());
+      EasyLoading.show();
 
       await client.login(event.email.trim(), event.password.trim()).then((value) async {
         await saveToken(value.token!);
 
         emit(LoginOk());
+        EasyLoading.dismiss();
       }).onError((error, stackTrace) {
         removeToken();
-        log("HUBO UN ERROR");
-        emit(const LoginError("Completa la información"));
       });
     });
 
     on<ValidateSavedToken>((event, emit) async {
-      emit(LoginLoading());
+      EasyLoading.show();
 
       //Si el inicio de sesion es para ponerlo en online, no verificamos si esta offline, porque si esta.
       if (!event.offlineMode) {
@@ -41,6 +39,7 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
         var offline = sh.getBool("offline");
 
         if (offline != null && offline) {
+          EasyLoading.dismiss();
           emit(LoginOk());
           return;
         }
@@ -58,6 +57,8 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
       } else {
         emit(LoginBlocInitial());
       }
+
+      EasyLoading.dismiss();
     });
 
     on<ResetScreen>((event, emit) {

@@ -4,7 +4,6 @@ import 'package:carmind_app/main.dart';
 import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrVehiculoScanner extends StatefulWidget {
@@ -98,12 +97,7 @@ class _QrVehiculoScannerState extends State<QrVehiculoScanner> {
               width: double.infinity,
               height: double.infinity,
               color: Colors.black54,
-              child: Center(
-                child: LoadingAnimationWidget.hexagonDots(
-                  color: Colors.blue,
-                  size: 50,
-                ),
-              ),
+              child: const SizedBox(),
             );
           },
         )

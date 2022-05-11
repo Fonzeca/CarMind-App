@@ -3,9 +3,9 @@ import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:carmind_app/utils/loading_spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -18,25 +18,18 @@ class ProfileContent extends StatelessWidget {
   Widget build(BuildContext context) {
     BlocProvider.of<OfflineBloc>(context).add(SyncEvent());
     return Material(
-      child: Stack(
-        children: [
-          _buildContent(),
-          BlocListener<OfflineBloc, OfflineState>(
-            listener: (context, state) {
-              if (state.failAuth) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(offline: true)));
-              }
-            },
-            child: BlocBuilder<OfflineBloc, OfflineState>(
-              builder: (context, state) {
-                if (state.loading) {
-                  return const LoadingSpinner();
-                }
-                return const SizedBox();
-              },
-            ),
-          )
-        ],
+      child: BlocListener<OfflineBloc, OfflineState>(
+        listener: (context, state) {
+          if (state.failAuth) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(offline: true)));
+          }
+          if (state.loading) {
+            EasyLoading.show();
+          } else {
+            EasyLoading.dismiss();
+          }
+        },
+        child: _buildContent(),
       ),
     );
   }

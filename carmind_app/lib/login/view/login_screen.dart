@@ -4,9 +4,9 @@ import 'package:carmind_app/main.dart';
 import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
 import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:carmind_app/utils/loading_spinner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -17,6 +17,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    configEasyLoading();
     BlocProvider.of<LoginBlocBloc>(context).add(ValidateSavedToken(offline ?? false));
 
     final emailCon = TextEditingController();
@@ -24,8 +25,6 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<LoginBlocBloc, LoginBlocState>(
       listener: (context, state) async {
         if (state is LoginError) {
-          //Tiramos error si el login es fallido
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
         } else if (state is LoginOk) {
           //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
@@ -52,17 +51,7 @@ class LoginScreen extends StatelessWidget {
       child: BlocBuilder<LoginBlocBloc, LoginBlocState>(
         builder: (context, state) {
           return Material(
-            child: Stack(
-              children: [
-                _buildContent(emailCon, passwordCon, context),
-                () {
-                  if (state is LoginLoading) {
-                    return const LoadingSpinner();
-                  }
-                  return const SizedBox();
-                }(),
-              ],
-            ),
+            child: _buildContent(emailCon, passwordCon, context),
           );
         },
       ),
@@ -162,5 +151,11 @@ class LoginScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void configEasyLoading() {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.dark
+      ..indicatorType = EasyLoadingIndicatorType.fadingFour;
   }
 }

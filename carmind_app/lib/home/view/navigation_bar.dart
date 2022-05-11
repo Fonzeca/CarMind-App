@@ -184,7 +184,7 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapLogoutVehicle() async {
-    Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehiculo")));
+    Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar());
   }
 }

@@ -38,6 +38,14 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
     api = ApiClient(staticDio!);
 
     on<IniciarEvaluacionEvent>((event, emit) {
+      emit(state.copyWith(
+          pMandandoEvaluacion: false,
+          pEvaluacionTerminada: false,
+          pEvaluaconIniciada: false,
+          pPreguntaActual: -1,
+          pPreguntasRespondidas: [],
+          pSeccionesTermiandas: []));
+
       respondidas = [];
 
       evaluacion = event.evaluacion;
@@ -66,6 +74,7 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
 
       emit(state.copyWith(pPreguntasRespondidas: respondidas, pPreguntaActual: proxima, pSeccionesTermiandas: obtenerSeccionesTerminadas()));
     });
+
     on<FinalizarEvaluacionEvent>((event, emit) async {
       emit(state.copyWith(pMandandoEvaluacion: true));
 

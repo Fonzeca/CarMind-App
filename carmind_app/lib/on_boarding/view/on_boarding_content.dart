@@ -213,7 +213,7 @@ class OnBoardingContent extends StatelessWidget {
                       _controller.next();
                       BlocProvider.of<OnBoardingBloc>(context).add(OnBoardingNextStep());
                     },
-                    child: cardCheckList(0, "Chequedo de ingreso", 0),
+                    child: cardCheckList(0, "Chequeo de ingreso", 0),
                   ),
                   const SizedBox(height: 15),
                   GestureDetector(
@@ -221,7 +221,7 @@ class OnBoardingContent extends StatelessWidget {
                       _controller.next();
                       BlocProvider.of<OnBoardingBloc>(context).add(OnBoardingNextStep());
                     },
-                    child: cardCheckList(0, "Chequedo de finalizacion", 0),
+                    child: cardCheckList(0, "Chequeo de finalizacion", 0),
                   ),
                 ],
               ),
@@ -317,7 +317,7 @@ class OnBoardingContent extends StatelessWidget {
         tooltip: (p0) => Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            MTooltip(controller: p0, title: "Avisa cuando termines de usar el vehiculo."),
+            MTooltip(controller: p0, title: "Avisa cuando termines de usar el vehículo."),
             const SizedBox(height: 40),
             SvgPicture.asset("assets/arrow_onboarding.svg"),
             const SizedBox(height: 150),

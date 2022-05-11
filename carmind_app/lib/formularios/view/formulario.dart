@@ -6,7 +6,7 @@ import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
@@ -53,68 +53,56 @@ class FormularioPreguntas extends StatelessWidget {
           if (state.evaluacionTerminada) {
             finalizarFormulario(context);
           }
+          if (state.mandandoEvaluacion) {
+            EasyLoading.show();
+          } else {
+            EasyLoading.dismiss();
+          }
         },
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 34),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 37),
-                  Text(
-                    evaluacion.titulo!,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 8),
-                  BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
-                    buildWhen: (previous, current) {
-                      return previous.seccionesTerminadas.length != current.seccionesTerminadas.length;
-                    },
-                    builder: (context, state) {
-                      return ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: evaluacion.secciones!.length * (80 + 2),
-                        ),
-                        child: StepProgressIndicator(
-                          totalSteps: evaluacion.secciones!.length,
-                          selectedColor: carMindAccentColor,
-                          currentStep: state.seccionesTerminadas.length,
-                          unselectedColor: const Color(0xFFCDCDCD),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 34 - 8),
-                  Flexible(
-                    flex: 2,
-                    child: SingleChildScrollView(
-                      controller: controller,
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: listSecciones(),
-                      ),
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 34),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 37),
+              Text(
+                evaluacion.titulo!,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-            ),
-            BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
-              builder: (context, state) {
-                if (state.mandandoEvaluacion) {
-                  return Center(
-                    child: LoadingAnimationWidget.hexagonDots(
-                      color: Colors.blue,
-                      size: 50,
+              const SizedBox(height: 8),
+              BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+                buildWhen: (previous, current) {
+                  return previous.seccionesTerminadas.length != current.seccionesTerminadas.length;
+                },
+                builder: (context, state) {
+                  return ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: evaluacion.secciones!.length * (80 + 2),
+                    ),
+                    child: StepProgressIndicator(
+                      totalSteps: evaluacion.secciones!.length,
+                      selectedColor: carMindAccentColor,
+                      currentStep: state.seccionesTerminadas.length,
+                      unselectedColor: const Color(0xFFCDCDCD),
                     ),
                   );
-                }
-                return const SizedBox();
-              },
-            ),
-          ],
+                },
+              ),
+              const SizedBox(height: 34 - 8),
+              Flexible(
+                flex: 2,
+                child: SingleChildScrollView(
+                  controller: controller,
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: listSecciones(),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
