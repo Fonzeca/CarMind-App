@@ -10,11 +10,7 @@ part of 'api_client.dart';
 
 class _ApiClient implements ApiClient {
   _ApiClient(this._dio, {this.baseUrl}) {
-    if (kDebugMode) {
-      baseUrl ??= 'http://66.97.44.3:2233/';
-    } else {
-      baseUrl ??= 'https://66.97.43.111:2233/';
-    }
+    baseUrl ??= 'http://66.97.44.3:2233/';
   }
 
   final Dio _dio;

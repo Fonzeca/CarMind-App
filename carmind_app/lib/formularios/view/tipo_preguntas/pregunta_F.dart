@@ -6,7 +6,9 @@ import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -52,16 +54,21 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                 child: GestureDetector(
                   onTap: preguntaEnabled!
                       ? () async {
-                          final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
-                          if (photo != null) {
-                            photoName = photo.name;
+                          try {
+                            final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
 
-                            var imageBytes = await photo.readAsBytes();
-                            photoBase64 = base64Encode(imageBytes);
+                            if (photo != null) {
+                              photoName = photo.name;
 
-                            preguntaFinalizada = true;
-                            reconstruye.value = !reconstruye.value;
-                            BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                              var imageBytes = await photo.readAsBytes();
+                              photoBase64 = base64Encode(imageBytes);
+
+                              preguntaFinalizada = true;
+                              reconstruye.value = !reconstruye.value;
+                              BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                            }
+                          } on PlatformException catch (e) {
+                            EasyLoading.showError(e.message ?? "Error en camara");
                           }
                         }
                       : null,

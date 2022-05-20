@@ -7,14 +7,13 @@ import 'package:carmind_app/api/pojo/profile/offline_data.dart';
 import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
 
 part 'api_client.g.dart';
 
-// @RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
-@RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
+@RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
+// @RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
