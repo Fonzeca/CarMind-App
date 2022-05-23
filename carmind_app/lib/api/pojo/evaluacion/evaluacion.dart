@@ -16,30 +16,12 @@ class Evaluacion {
   String? titulo;
 
   @HiveField(3)
-  List<SeccionPojo>? secciones;
+  List<PreguntaPojo>? preguntas;
 
   Evaluacion();
 
   factory Evaluacion.fromJson(Map<String, dynamic> json) => _$EvaluacionFromJson(json);
   Map<String, dynamic> toJson() => _$EvaluacionToJson(this);
-}
-
-@JsonSerializable()
-@HiveType(typeId: 5)
-class SeccionPojo {
-  @HiveField(0)
-  int? id;
-
-  @HiveField(1)
-  String? nombre;
-
-  @HiveField(2)
-  List<PreguntaPojo>? preguntas;
-
-  SeccionPojo();
-
-  factory SeccionPojo.fromJson(Map<String, dynamic> json) => _$SeccionPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$SeccionPojoToJson(this);
 }
 
 @JsonSerializable()

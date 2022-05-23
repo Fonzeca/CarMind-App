@@ -20,7 +20,7 @@ class EvaluacionAdapter extends TypeAdapter<Evaluacion> {
       ..id = fields[0] as int?
       ..vehiculo_id = (fields[1] as List?)?.cast<int>()
       ..titulo = fields[2] as String?
-      ..secciones = (fields[3] as List?)?.cast<SeccionPojo>();
+      ..preguntas = (fields[3] as List?)?.cast<PreguntaPojo>();
   }
 
   @override
@@ -34,45 +34,6 @@ class EvaluacionAdapter extends TypeAdapter<Evaluacion> {
       ..writeByte(2)
       ..write(obj.titulo)
       ..writeByte(3)
-      ..write(obj.secciones);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EvaluacionAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class SeccionPojoAdapter extends TypeAdapter<SeccionPojo> {
-  @override
-  final int typeId = 5;
-
-  @override
-  SeccionPojo read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return SeccionPojo()
-      ..id = fields[0] as int?
-      ..nombre = fields[1] as String?
-      ..preguntas = (fields[2] as List?)?.cast<PreguntaPojo>();
-  }
-
-  @override
-  void write(BinaryWriter writer, SeccionPojo obj) {
-    writer
-      ..writeByte(3)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.nombre)
-      ..writeByte(2)
       ..write(obj.preguntas);
   }
 
@@ -82,7 +43,7 @@ class SeccionPojoAdapter extends TypeAdapter<SeccionPojo> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SeccionPojoAdapter &&
+      other is EvaluacionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -174,8 +135,8 @@ Evaluacion _$EvaluacionFromJson(Map<String, dynamic> json) => Evaluacion()
   ..vehiculo_id =
       (json['vehiculo_id'] as List<dynamic>?)?.map((e) => e as int).toList()
   ..titulo = json['titulo'] as String?
-  ..secciones = (json['secciones'] as List<dynamic>?)
-      ?.map((e) => SeccionPojo.fromJson(e as Map<String, dynamic>))
+  ..preguntas = (json['preguntas'] as List<dynamic>?)
+      ?.map((e) => PreguntaPojo.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$EvaluacionToJson(Evaluacion instance) =>
@@ -183,20 +144,6 @@ Map<String, dynamic> _$EvaluacionToJson(Evaluacion instance) =>
       'id': instance.id,
       'vehiculo_id': instance.vehiculo_id,
       'titulo': instance.titulo,
-      'secciones': instance.secciones,
-    };
-
-SeccionPojo _$SeccionPojoFromJson(Map<String, dynamic> json) => SeccionPojo()
-  ..id = json['id'] as int?
-  ..nombre = json['nombre'] as String?
-  ..preguntas = (json['preguntas'] as List<dynamic>?)
-      ?.map((e) => PreguntaPojo.fromJson(e as Map<String, dynamic>))
-      .toList();
-
-Map<String, dynamic> _$SeccionPojoToJson(SeccionPojo instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'nombre': instance.nombre,
       'preguntas': instance.preguntas,
     };
 

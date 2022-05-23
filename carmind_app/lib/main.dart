@@ -28,7 +28,6 @@ void main() async {
   Hive.registerAdapter(VehiculoAdapter());
   Hive.registerAdapter(EvaluacionesPendientesAdapter());
   Hive.registerAdapter(EvaluacionAdapter());
-  Hive.registerAdapter(SeccionPojoAdapter());
   Hive.registerAdapter(PreguntaPojoAdapter());
   Hive.registerAdapter(OpcionPojoAdapter());
   Hive.registerAdapter(LogEvaluacionAdapter());
