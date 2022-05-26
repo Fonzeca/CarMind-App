@@ -1,6 +1,7 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_base.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +33,8 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
 
-        return Material(
+        return PreguntaBase(
+          preguntaEnabled: preguntaEnabled!,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

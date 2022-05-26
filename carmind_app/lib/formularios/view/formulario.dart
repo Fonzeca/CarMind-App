@@ -1,16 +1,19 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_F.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S1.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S2.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S3.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_TX.dart';
 import 'package:carmind_app/formularios/view/util/check_animation.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:scroll_to_id/scroll_to_id.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
-
-import 'seccion_formulario.dart';
 
 class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
@@ -21,7 +24,8 @@ class FormularioPreguntas extends StatelessWidget {
         evaluacion = evalua,
         super(key: key);
 
-  static AutoScrollController? controller;
+  static ScrollController? controller;
+  static ScrollToId? scrollToId;
 
   ValueNotifier<bool> finishEvaluacionEnabled = ValueNotifier(false);
   BuildContext? context;
@@ -30,11 +34,8 @@ class FormularioPreguntas extends StatelessWidget {
   Widget build(BuildContext context) {
     this.context = context;
 
-    controller = AutoScrollController(
-      viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
-      axis: Axis.vertical,
-      suggestedRowHeight: 200,
-    );
+    controller = ScrollController();
+    scrollToId = ScrollToId(scrollController: controller);
 
     BlocProvider.of<RealiazarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
     return Scaffold(
@@ -42,12 +43,20 @@ class FormularioPreguntas extends StatelessWidget {
         preferredSize: const Size.fromHeight(43),
         child: AppBar(
           backgroundColor: carMindTopBar,
-          leading: IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back_ios_new)),
+          leading: IconButton(
+              onPressed: () {
+                BlocProvider.of<HomeBloc>(context).add(const PopEvent());
+              },
+              icon: const Icon(Icons.arrow_back_ios_new)),
+          title: Text(
+            evaluacion.titulo!,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          ),
         ),
       ),
       body: BlocListener<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
         listener: (context, state) {
-          if (state.seccionesTerminadas.length == evaluacion.secciones!.length) {
+          if (state.preguntasRespondidas.length == evaluacion.preguntas!.length) {
             finishEvaluacionEnabled.value = true;
           }
           if (state.evaluacionTerminada) {
@@ -64,25 +73,18 @@ class FormularioPreguntas extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 37),
-              Text(
-                evaluacion.titulo!,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
               const SizedBox(height: 8),
               BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
-                buildWhen: (previous, current) {
-                  return previous.seccionesTerminadas.length != current.seccionesTerminadas.length;
-                },
                 builder: (context, state) {
+                  //Esto se hizo asi, para que cada indicador tenga un maximo de width
                   return ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: evaluacion.secciones!.length * (80 + 2),
+                      maxWidth: evaluacion.preguntas!.length * (80 + 2),
                     ),
                     child: StepProgressIndicator(
-                      totalSteps: evaluacion.secciones!.length,
+                      totalSteps: evaluacion.preguntas!.length,
                       selectedColor: carMindAccentColor,
-                      currentStep: state.seccionesTerminadas.length,
+                      currentStep: state.preguntasRespondidas.length,
                       unselectedColor: const Color(0xFFCDCDCD),
                     ),
                   );
@@ -91,14 +93,10 @@ class FormularioPreguntas extends StatelessWidget {
               const SizedBox(height: 34 - 8),
               Flexible(
                 flex: 2,
-                child: SingleChildScrollView(
-                  controller: controller,
+                child: InteractiveScrollViewer(
+                  scrollToId: scrollToId,
                   scrollDirection: Axis.vertical,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: listSecciones(),
-                  ),
+                  children: listPreguntas(),
                 ),
               ),
             ],
@@ -108,16 +106,46 @@ class FormularioPreguntas extends StatelessWidget {
     );
   }
 
-  List<Widget> listSecciones() {
-    List<Widget> list = [];
-    for (var seccion in evaluacion.secciones!) {
-      list.add(const SizedBox(height: 8));
-      list.add(seccion_formulario(
-        seccion: seccion,
-        index: evaluacion.secciones?.indexOf(seccion) ?? 0,
-      ));
+  List<ScrollContent> listPreguntas() {
+    List<ScrollContent> list = [];
+    for (var pregunta in evaluacion.preguntas!) {
+      // list.add(Container(height: 1, width: double.infinity, color: const Color(0xFFBDAAFF)));
+
+      switch (pregunta.tipo!) {
+        case "TX":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaTX(pregunta: pregunta),
+          ));
+          break;
+        case "F":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaF(pregunta: pregunta),
+          ));
+          break;
+        case "S1":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaS1(pregunta: pregunta),
+          ));
+          break;
+        case "S2":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaS2(pregunta: pregunta),
+          ));
+          break;
+        case "S3":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaS3(pregunta: pregunta),
+          ));
+          break;
+      }
     }
-    list.add(_buildFinishButton());
+
+    list.add(ScrollContent(child: _buildFinishButton(), id: 'finish'));
     return list;
   }
 
@@ -135,7 +163,7 @@ class FormularioPreguntas extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: enabled ? carMindPrimaryButton : const Color(0xFFB9B9B9),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 2, offset: const Offset(0, 2))]),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1).withOpacity(0.25), blurRadius: 2, offset: const Offset(0, 2))]),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
