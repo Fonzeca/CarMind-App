@@ -1,5 +1,6 @@
 import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
+import 'package:carmind_app/constants.dart' as constants;
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
@@ -44,7 +45,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         var log = LogUso()
           ..enUso = true
           ..vehiculoId = idVehiculo
-          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
+          ..fecha = DateFormat(constants.dateTimeFormat).format(DateTime.now());
         box.add(log);
       } else {
         try {

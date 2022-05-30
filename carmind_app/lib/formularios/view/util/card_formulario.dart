@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
+import 'package:carmind_app/constants.dart' as constants;
 import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
 
 class CardFormulario extends StatelessWidget {
@@ -60,7 +62,7 @@ class CardFormulario extends StatelessWidget {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 25),
                         child: AutoSizeText(
-                          "Fecha: ${log!.fecha}",
+                          "Fecha: ${_readableDate()}",
                           maxFontSize: 11,
                           minFontSize: 3,
                           maxLines: 1,
@@ -85,5 +87,18 @@ class CardFormulario extends StatelessWidget {
         width: 140,
       ),
     );
+  }
+
+  String _readableDate() {
+    var dateTimeFormat = DateFormat(constants.dateTimeFormat);
+    var dateFormat = DateFormat(constants.dateFormat);
+    String todayDate = dateFormat.format(DateTime.now());
+    String yesterdayDate = dateFormat.format(DateTime.now().subtract(const Duration(days: 1)));
+    String logDate = dateFormat.format(dateTimeFormat.parse(log!.fecha!));
+    int isToday = logDate.compareTo(todayDate);
+    int isYesterday = logDate.compareTo(yesterdayDate);
+    if (isToday == 0) return 'Hoy';
+    if (isYesterday == 0) return 'Ayer';
+    return log!.fecha!;
   }
 }

@@ -3,6 +3,7 @@ import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
+import 'package:carmind_app/constants.dart' as constants;
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
@@ -73,7 +74,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         var log = LogUso()
           ..enUso = false
           ..vehiculoId = vehiculo!.id!
-          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
+          ..fecha = DateFormat(constants.dateTimeFormat).format(DateTime.now());
         box.add(log);
       } else {
         await api.terminarUso(vehiculo!.id!);
@@ -123,7 +124,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           ..vencimiento = 0;
       } else {
         //Si no esta vacia, buscamos los logs que cumplan para poner el pendiente en false
-        var format = DateFormat("dd/MM/yyyy");
+        var format = DateFormat(constants.dateFormat);
         var logsInTime = listLogsEvaluacion.where((element) => format
             .parse(element.fecha!) //Transformamos la fecha de log en un objeto DateTime
             .add(Duration(days: eva.intervaloDias!)) //Le agregamos el intervalo de dias, para despues comprarlo
@@ -136,7 +137,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
             ..vencimiento = 0;
         } else {
           //Cuando si hay un efectivo, se ordenan entre todos los logs efectivos, para que tengamos el ultimo log.
-          var format = DateFormat("dd/MM/yyyy HH:mm:ss");
+          var format = DateFormat(constants.dateTimeFormat);
           var listSorted = logsInTime.toList();
           listSorted.sort((a, b) => format.parse(a.fecha!).compareTo(format.parse(b.fecha!)));
 

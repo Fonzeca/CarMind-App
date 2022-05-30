@@ -3,6 +3,7 @@ import 'package:carmind_app/api/api_client.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
+import 'package:carmind_app/constants.dart' as constants;
 import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -40,7 +41,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
           return log;
         }));
 
-        var format = DateFormat("dd/MM/yyyy HH:mm:ss");
+        var format = DateFormat(constants.dateTimeFormat);
 
         logs.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
       } else {
