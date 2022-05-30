@@ -8,7 +8,7 @@ abstract class QrScannerEvent extends Equatable {
 }
 
 class QrEscaneoEvent extends QrScannerEvent {
-  final Barcode result;
+  final String result;
   BuildContext context;
 
   QrEscaneoEvent(this.result, this.context);
