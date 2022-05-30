@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'qr_scanner_event.dart';
@@ -29,15 +28,13 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
 
       //CarMind-vehiculo=71-CarMind
       var reg = RegExp(r'^CarMind-vehiculo=(\d*)-CarMind$');
-      String s = result.code!;
-      if (reg.hasMatch(s)) {
-        var match = reg.firstMatch(s);
+      if (reg.hasMatch(result)) {
+        var match = reg.firstMatch(result);
 
         idVehiculo = int.parse(match!.group(1)!);
       } else {
         emit(QrScannerInitial());
         EasyLoading.showError("Qr invalido");
-        Navigator.of(event.context).pop();
         return;
       }
 
@@ -53,7 +50,6 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         try {
           await api.iniciarUso(idVehiculo);
         } catch (e) {
-          Navigator.of(event.context).pop();
           emit(QrScannerInitial());
           return;
         }
@@ -63,8 +59,6 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
 
       BlocProvider.of<HomeBloc>(event.context).add(HomeNavigationEvent(1));
       BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent());
-
-      Navigator.of(event.context).pop();
     });
   }
 }

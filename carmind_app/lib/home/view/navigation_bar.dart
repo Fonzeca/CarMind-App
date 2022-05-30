@@ -6,12 +6,14 @@ import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/profile/view/profile_content.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
-import 'package:carmind_app/vehiculo/view/qr_scanner.dart';
 import 'package:carmind_app/vehiculo/view/vehiculo_especifico.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+
+import '../../vehiculo/bloc/qr_scanner_bloc.dart';
 
 class CarMindNavigationBar extends StatelessWidget {
   CarMindNavigationBar({Key? key}) : super(key: key);
@@ -180,7 +182,8 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapQr() async {
-    Navigator.push(context!, MaterialPageRoute(builder: (context) => QrVehiculoScanner()));
+    String barcodeScanResponse = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.QR);
+    BlocProvider.of<QrScannerBloc>(context!).add(QrEscaneoEvent(barcodeScanResponse, context!));
   }
 
   onTapLogoutVehicle() async {
