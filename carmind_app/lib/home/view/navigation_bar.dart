@@ -29,10 +29,7 @@ class CarMindNavigationBar extends StatelessWidget {
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-              (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
         }
       },
       child: WillPopScope(
@@ -46,34 +43,20 @@ class CarMindNavigationBar extends StatelessWidget {
                 return BottomNavigationBar(
                   items: [
                     BottomNavigationBarItem(
-                        icon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/formulario.svg",
-                                color: Colors.white)),
+                        icon:
+                            Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: Colors.white)),
                         activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/formulario.svg",
-                                color: carMindAccentColor)),
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor)),
                         label: "Formularios"),
                     BottomNavigationBarItem(
-                        icon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/vehiculo.svg",
-                                color: Colors.white)),
+                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white)),
                         activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/vehiculo.svg",
-                                color: carMindAccentColor)),
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor)),
                         label: "Vehículos"),
                     BottomNavigationBarItem(
-                        icon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/profile.svg",
-                                color: Colors.white)),
+                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
                         activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3),
-                            child: SvgPicture.asset("assets/profile.svg",
-                                color: carMindAccentColor)),
+                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
                         label: "Perfil")
                   ],
                   currentIndex: state.selectedNavButton,
@@ -114,8 +97,7 @@ class CarMindNavigationBar extends StatelessWidget {
               },
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) =>
-                  previous.showFab != current.showFab,
+              buildWhen: (previous, current) => previous.showFab != current.showFab,
               builder: (context, state) {
                 return SpeedDial(
                   openCloseDial: isDialOpen,
@@ -143,8 +125,7 @@ class CarMindNavigationBar extends StatelessWidget {
                       ),
                       backgroundColor: carMindGrey,
                       foregroundColor: carMindPrimaryButton,
-                      labelWidget:
-                          speedDialChild_labelwidget("Escanear código QR", 0),
+                      labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
                       onTap: () => onTapDialChild(0),
                     ),
                     SpeedDialChild(
@@ -155,8 +136,7 @@ class CarMindNavigationBar extends StatelessWidget {
                       ),
                       backgroundColor: carMindGrey,
                       foregroundColor: carMindPrimaryButton,
-                      labelWidget: speedDialChild_labelwidget(
-                          "Dejar de usar vehículo", 1),
+                      labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
                       onTap: () => onTapDialChild(1),
                     )
                   ],
@@ -202,18 +182,12 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapQr() async {
-    String barcodeScanResponse = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", false, ScanMode.QR);
-    BlocProvider.of<QrScannerBloc>(context!)
-        .add(QrEscaneoEvent(barcodeScanResponse, context!));
+    String barcodeScanResponse = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.QR);
+    BlocProvider.of<QrScannerBloc>(context!).add(QrEscaneoEvent(barcodeScanResponse, context!));
   }
 
   onTapLogoutVehicle() async {
-    Navigator.push(
-        context!,
-        MaterialPageRoute(
-            builder: (context) =>
-                const ChechAnimation(texto: "Has dejado de usar el vehículo")));
+    Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar());
   }
 }
