@@ -20,18 +20,12 @@ class _ApiClient implements ApiClient {
   @override
   Future<TokenLogin> login(email, password) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'username': email,
-      r'password': password
-    };
+    final queryParameters = <String, dynamic>{r'username': email, r'password': password};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<TokenLogin>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/login',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType<TokenLogin>(Options(method: 'POST', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/login', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = TokenLogin.fromJson(_result.data!);
     return value;
   }
@@ -42,12 +36,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<LoggedUser>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/loggedUser',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType<LoggedUser>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/loggedUser', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = LoggedUser.fromJson(_result.data!);
     return value;
   }
@@ -58,11 +49,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<void>(_setStreamType<HttpResponse<void>>(
-        Options(method: 'GET', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/validate',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<void>(_setStreamType<HttpResponse<void>>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/validate', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final httpResponse = HttpResponse(null, _result);
     return httpResponse;
   }
@@ -73,12 +62,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<OfflineData>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/usuario/modo-offline',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType<OfflineData>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/usuario/modo-offline', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = OfflineData.fromJson(_result.data!);
     return value;
   }
@@ -90,11 +76,9 @@ class _ApiClient implements ApiClient {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(sync.toJson());
-    await _dio.fetch<void>(_setStreamType<void>(
-        Options(method: 'POST', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/usuario/sync',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(method: 'POST', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/usuario/sync', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 
@@ -104,12 +88,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<Evaluacion>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/evaluacion/${idEvaluacion}',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType<Evaluacion>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/evaluacion/${idEvaluacion}', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = Evaluacion.fromJson(_result.data!);
     return value;
   }
@@ -121,11 +102,9 @@ class _ApiClient implements ApiClient {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(pojo.toJson());
-    await _dio.fetch<void>(_setStreamType<void>(
-        Options(method: 'POST', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/evaluacion/${idEvaluacion}/realizar',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(method: 'POST', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/evaluacion/${idEvaluacion}/realizar', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 
@@ -135,15 +114,10 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<List<LogEvaluacion>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/evaluacion/historial/loggedUser',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    var value = _result.data!
-        .map((dynamic i) => LogEvaluacion.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final _result = await _dio.fetch<List<dynamic>>(_setStreamType<List<LogEvaluacion>>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/evaluacion/historial/loggedUser', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!.map((dynamic i) => LogEvaluacion.fromJson(i as Map<String, dynamic>)).toList();
     return value;
   }
 
@@ -153,12 +127,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<Vehiculo>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/vehiculo/${idVehiculo}',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_setStreamType<Vehiculo>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/vehiculo/${idVehiculo}', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = Vehiculo.fromJson(_result.data!);
     return value;
   }
@@ -169,11 +140,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.fetch<void>(_setStreamType<void>(
-        Options(method: 'GET', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/vehiculo/${idVehiculo}/iniciarUso',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/vehiculo/${idVehiculo}/iniciarUso', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 
@@ -183,11 +152,9 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.fetch<void>(_setStreamType<void>(
-        Options(method: 'GET', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/vehiculo/${idVehiculo}/terminarUso',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/vehiculo/${idVehiculo}/terminarUso', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 
@@ -197,21 +164,28 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>?>(
-        _setStreamType<Vehiculo>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/vehiculo/current',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value =
-        _result.data == null ? null : Vehiculo.fromJson(_result.data!);
+    final _result = await _dio.fetch<Map<String, dynamic>?>(_setStreamType<Vehiculo>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/vehiculo/current', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data == null ? null : Vehiculo.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<String> getLastVersionByPlatform(storeType) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'platform': storeType};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>?>(_setStreamType<String>(Options(method: 'GET', headers: _headers, extra: _extra)
+        .compose(_dio.options, '/public/lastVersion', queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!["storeVersion"];
     return value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
-    if (T != dynamic &&
-        !(requestOptions.responseType == ResponseType.bytes ||
-            requestOptions.responseType == ResponseType.stream)) {
+    if (T != dynamic && !(requestOptions.responseType == ResponseType.bytes || requestOptions.responseType == ResponseType.stream)) {
       if (T == String) {
         requestOptions.responseType = ResponseType.plain;
       } else {

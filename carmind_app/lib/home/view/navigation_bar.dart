@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../services/version_service.dart';
 import '../../vehiculo/bloc/qr_scanner_bloc.dart';
 
 class CarMindNavigationBar extends StatelessWidget {
@@ -25,6 +26,11 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      VersionService.isNewVersionAvailable().then((isNewVersion) {
+        if (isNewVersion) VersionService.showVersionAvailableAlert(context);
+      });
+    });
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {

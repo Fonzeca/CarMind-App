@@ -12,6 +12,7 @@ import 'package:retrofit/http.dart';
 
 part 'api_client.g.dart';
 
+//@RestApi(baseUrl: "http://localhost:8090/") // LOCAL
 @RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
 // @RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
 abstract class ApiClient {
@@ -56,4 +57,8 @@ abstract class ApiClient {
 
   @GET("/vehiculo/current")
   Future<Vehiculo?> getCurrent();
+
+  //----------------------------VERSION----------------------------
+  @GET("/public/lastVersion?platform={platform}")
+  Future<String> getLastVersionByPlatform(@Path("storeType") String storeType);
 }
