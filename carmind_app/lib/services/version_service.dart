@@ -52,13 +52,13 @@ class VersionService {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Nueva Versión Disponible'),
+          title: const Text('Nueva Versión Disponible',style: TextStyle(color: carMindTopBar)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Row(
                   children: [
-                    const Text('Tu versión de CarMind es la ', style: TextStyle(color: carMindTopBar)),
+                    const Text('Tu versión de CarMind es la '),
                     Text(
                       _currentVersion.toString(),
                       style: const TextStyle(fontWeight: FontWeight.bold),
