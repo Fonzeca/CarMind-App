@@ -41,7 +41,7 @@ abstract class ApiClient {
   @POST("/evaluacion/{id}/realizar")
   Future<void> realizarEvaluacion(@Path("id") int idEvaluacion, @Body() EvaluacionTerminadaPojo pojo);
 
-  @GET("/evaluacion/historial/loggedUser")
+  @GET("/evaluacion/historial/loggedUser?limit=50")
   Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser();
 
   //----------------------------VEHICULO----------------------------

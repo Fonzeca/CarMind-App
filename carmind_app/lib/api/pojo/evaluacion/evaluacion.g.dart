@@ -102,7 +102,7 @@ class OpcionPojoAdapter extends TypeAdapter<OpcionPojo> {
     };
     return OpcionPojo()
       ..id = fields[0] as int?
-      ..texto = fields[1] as String?;
+      ..opcion = fields[1] as String?;
   }
 
   @override
@@ -112,7 +112,7 @@ class OpcionPojoAdapter extends TypeAdapter<OpcionPojo> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.texto);
+      ..write(obj.opcion);
   }
 
   @override
@@ -165,10 +165,10 @@ Map<String, dynamic> _$PreguntaPojoToJson(PreguntaPojo instance) =>
 
 OpcionPojo _$OpcionPojoFromJson(Map<String, dynamic> json) => OpcionPojo()
   ..id = json['id'] as int?
-  ..texto = json['texto'] as String?;
+  ..opcion = json['opcion'] as String?;
 
 Map<String, dynamic> _$OpcionPojoToJson(OpcionPojo instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'texto': instance.texto,
+      'opcion': instance.opcion,
     };

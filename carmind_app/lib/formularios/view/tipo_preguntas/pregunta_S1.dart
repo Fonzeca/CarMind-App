@@ -150,7 +150,7 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
                   : null,
             ),
             Text(
-              option.texto!,
+              option.opcion!,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
             )
           ],
