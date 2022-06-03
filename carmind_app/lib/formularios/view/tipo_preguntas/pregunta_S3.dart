@@ -1,6 +1,6 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
-import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_base.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+    return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
 
@@ -69,7 +69,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
                                     await Future.delayed(const Duration(milliseconds: 200));
 
                                     preguntaFinalizada = true;
-                                    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                    BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                     reconstruye.value = !reconstruye.value;
                                   }
                                 : null,
@@ -113,7 +113,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
                                   tickCorrecto = true;
                                   muestraNota = false;
                                   preguntaFinalizada = true;
-                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                  BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                   reconstruye.value = !reconstruye.value;
                                 }
                               : null,

@@ -6,7 +6,7 @@ import 'package:carmind_app/api/pojo/profile/logged_user.dart';
 import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:carmind_app/formularios/bloc/formulario_bloc.dart';
-import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
 import 'package:carmind_app/login/view/login_screen.dart';
@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => HomeBloc()),
         BlocProvider(create: (context) => LoginBlocBloc()),
         BlocProvider(create: (context) => FormularioBloc()),
-        BlocProvider(create: (context) => RealiazarEvaluacionBloc()),
+        BlocProvider(create: (context) => RealizarEvaluacionBloc()),
         BlocProvider(create: (context) => QrScannerBloc()),
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),

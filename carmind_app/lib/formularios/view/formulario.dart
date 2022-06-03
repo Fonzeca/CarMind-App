@@ -1,7 +1,8 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_F.dart';
+import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_KM..dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S1.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S2.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S3.dart';
@@ -37,7 +38,7 @@ class FormularioPreguntas extends StatelessWidget {
     controller = ScrollController();
     scrollToId = ScrollToId(scrollController: controller);
 
-    BlocProvider.of<RealiazarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
+    BlocProvider.of<RealizarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(43),
@@ -54,7 +55,7 @@ class FormularioPreguntas extends StatelessWidget {
           ),
         ),
       ),
-      body: BlocListener<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+      body: BlocListener<RealizarEvaluacionBloc, RealizarEvaluacionState>(
         listener: (context, state) {
           if (state.preguntasRespondidas.length == evaluacion.preguntas!.length) {
             finishEvaluacionEnabled.value = true;
@@ -74,7 +75,7 @@ class FormularioPreguntas extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+              BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
                 builder: (context, state) {
                   //Esto se hizo asi, para que cada indicador tenga un maximo de width
                   return ConstrainedBox(
@@ -112,6 +113,12 @@ class FormularioPreguntas extends StatelessWidget {
       // list.add(Container(height: 1, width: double.infinity, color: const Color(0xFFBDAAFF)));
 
       switch (pregunta.tipo!) {
+        case "KM":
+          list.add(ScrollContent(
+            id: pregunta.id!.toString(),
+            child: PreguntaKM(pregunta: pregunta),
+          ));
+          break;
         case "TX":
           list.add(ScrollContent(
             id: pregunta.id!.toString(),
@@ -193,7 +200,7 @@ class FormularioPreguntas extends StatelessWidget {
   }
 
   enviarFormulario() async {
-    BlocProvider.of<RealiazarEvaluacionBloc>(context!).add(const FinalizarEvaluacionEvent());
+    BlocProvider.of<RealizarEvaluacionBloc>(context!).add(const FinalizarEvaluacionEvent());
     finishEvaluacionEnabled.value = false;
   }
 

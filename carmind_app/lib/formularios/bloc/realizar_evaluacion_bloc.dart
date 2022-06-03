@@ -16,10 +16,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'realiazar_evaluacion_event.dart';
-part 'realiazar_evaluacion_state.dart';
+part 'realizar_evaluacion_event.dart';
+part 'realizar_evaluacion_state.dart';
 
-class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEvaluacionState> {
+class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvaluacionState> {
   Evaluacion? evaluacion;
 
   EvaluacionTerminadaPojo? evaluacionTerminada;
@@ -28,10 +28,16 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
 
   ApiClient? api;
 
-  RealiazarEvaluacionBloc()
-      : super(const RealiazarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false)) {
+  RealizarEvaluacionBloc()
+      : super(const RealizarEvaluacionState(
+            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, errorField: true)) {
     api = ApiClient(staticDio!);
+
+    on<ValidarTextFieldEvent>((event, emit) async {
+        emit(state.copyWith(
+           errorField: event.errorField
+        ));
+    });
 
     on<IniciarEvaluacionEvent>((event, emit) {
       //Steamos en 0 las variables

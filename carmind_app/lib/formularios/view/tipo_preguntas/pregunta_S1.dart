@@ -1,6 +1,6 @@
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
 import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
-import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
+import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
 import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_base.dart';
 import 'package:carmind_app/formularios/view/util/CustomCheckBox.dart';
 import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
@@ -24,7 +24,7 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+    return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
 
@@ -77,7 +77,7 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
                                 if (!preguntaFinalizada) {
                                   preguntaFinalizada = true;
                                   reconstruye.value = !reconstruye.value;
-                                  BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                  BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                 }
                               }
                             : null,

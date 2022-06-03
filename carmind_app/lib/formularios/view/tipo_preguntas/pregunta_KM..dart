@@ -7,19 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PreguntaTX extends StatelessWidget with PreguntaInterface {
+class PreguntaKM extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
   final TextEditingController controller = TextEditingController();
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
 
-  PreguntaTX({Key? key, required this.pregunta}) : super(key: key);
+  PreguntaKM({Key? key, required this.pregunta}) : super(key: key);
 
   bool? preguntaEnabled;
 
   bool preguntaFinalizada = false;
 
+  Color errorColor = Colors.red;
+
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_thereIsError()));
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
@@ -43,26 +46,34 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
                     width: double.infinity,
                     height: 64,
                     child: TextField(
+
                       minLines: null,
-                      maxLines: null,
+                      maxLines: 1,
                       textAlign: TextAlign.start,
-                      keyboardType: TextInputType.multiline,
+                      keyboardType: TextInputType.number,
                       textAlignVertical: TextAlignVertical.top,
                       controller: controller,
                       enabled: preguntaEnabled!,
                       onChanged: (value) {
                         preguntaFinalizada = false;
                         reconstruye.value = !reconstruye.value;
+                         BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_thereIsError()));
                       },
                       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                      expands: true,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        hintText: "Añadir nota...",
+                      decoration:   InputDecoration(
+                        border:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                        focusedBorder:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                        contentPadding:  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                        hintText: "Añadir kilometraje...",
+                        errorText: (state.errorField) ? _errorTextToShow() : null,
+                        errorStyle: TextStyle(color: errorColor),
+                        errorBorder: _renderBorder(state),
+                        enabledBorder: _renderBorder(state),
+                        focusedErrorBorder: _renderBorder(state)
                       ),
+                      
                     ),
+                    
                   ),
                   const SizedBox(height: 20 - 12),
                   ValueListenableBuilder(
@@ -72,16 +83,15 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            onPressed: preguntaEnabled!
+                            onPressed: preguntaEnabled! && !state.errorField
                                 ? () {
                                     preguntaFinalizada = true;
                                     reconstruye.value = !reconstruye.value;
-                                    BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                   }
                                 : null,
                             icon: SvgPicture.asset(
                               preguntaFinalizada ? "assets/tick_fill.svg" : "assets/tick_empty.svg",
-                              color: preguntaEnabled! ? null : const Color(0xFF6F6F6F),
+                              color: preguntaEnabled! && !state.errorField ? null : const Color(0xFF6F6F6F),
                             ),
                             padding: EdgeInsets.zero,
                             iconSize: 23,
@@ -107,4 +117,33 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
     res.texto = controller.text;
     return res;
   }
+
+
+  UnderlineInputBorder _renderBorder(RealizarEvaluacionState state) =>
+      UnderlineInputBorder(
+        borderSide: BorderSide(
+            color: state.errorField ? errorColor : Colors.black,
+            width: 1),
+      );
+
+
+  String _errorTextToShow(){
+
+    if(controller.text.isEmpty){
+      errorColor = const Color(0xFF6F6F6F);
+      return "Este campo no puede estar vacío";
+    } 
+
+    if(int.tryParse(controller.text) == null ){
+      errorColor = Colors.red;
+      return  "Debes ingresar un número válido";
+    } 
+
+    return "";
+  }
+
+  bool _thereIsError(){
+    return _errorTextToShow().isEmpty ? false : true;
+  }
+
 }
