@@ -35,10 +35,11 @@ class FinalizarEvaluacionEvent extends RealizarEvaluacionEvent {
 }
 
 class ValidarTextFieldEvent extends RealizarEvaluacionEvent {
-  final bool errorField;
+  final bool isFieldEmptyError;
+  final bool isFieldNotNumberError;
 
-  const ValidarTextFieldEvent(this.errorField);
+  const ValidarTextFieldEvent(this.isFieldEmptyError, this.isFieldNotNumberError);
 
   @override
-  List<Object> get props => [errorField];
+  List<Object> get props => [isFieldEmptyError, isFieldNotNumberError];
 }

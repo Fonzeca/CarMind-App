@@ -30,12 +30,13 @@ class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvalu
 
   RealizarEvaluacionBloc()
       : super(const RealizarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, errorField: true)) {
+            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false)) {
     api = ApiClient(staticDio!);
 
     on<ValidarTextFieldEvent>((event, emit) async {
         emit(state.copyWith(
-           errorField: event.errorField
+           isFieldEmptyError: event.isFieldEmptyError,
+           isFieldNotNumberError: event.isFieldNotNumberError
         ));
     });
 

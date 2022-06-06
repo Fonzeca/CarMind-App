@@ -7,7 +7,8 @@ class RealizarEvaluacionState extends Equatable {
 
   final bool mandandoEvaluacion;
   final bool evaluacionTerminada;
-  final bool errorField;
+  final bool isFieldEmptyError;
+  final bool isFieldNotNumberError;
 
   const RealizarEvaluacionState(
       {required this.evaluacionIniciada,
@@ -15,20 +16,23 @@ class RealizarEvaluacionState extends Equatable {
       required this.preguntasRespondidas,
       required this.evaluacionTerminada,
       required this.mandandoEvaluacion,
-      required this.errorField
+      required this.isFieldEmptyError,
+      required this.isFieldNotNumberError
       });
 
   RealizarEvaluacionState copyWith(
-      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? pMandandoEvaluacion, bool? errorField}) {
+      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError}) {
     return RealizarEvaluacionState(
         preguntaActual: pPreguntaActual ?? preguntaActual,
         preguntasRespondidas: pPreguntasRespondidas ?? preguntasRespondidas,
         evaluacionTerminada: pEvaluacionTerminada ?? evaluacionTerminada,
         evaluacionIniciada: pEvaluaconIniciada ?? evaluacionIniciada,
         mandandoEvaluacion: pMandandoEvaluacion ?? mandandoEvaluacion,
-        errorField: errorField ?? this.errorField);
+        isFieldEmptyError: isFieldEmptyError ?? this.isFieldEmptyError,
+        isFieldNotNumberError: isFieldNotNumberError ?? this.isFieldNotNumberError
+        );
   }
 
   @override
-  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada, evaluacionTerminada, mandandoEvaluacion, errorField];
+  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada, evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError];
 }

@@ -22,7 +22,6 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_thereIsError()));
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
@@ -57,7 +56,7 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                       onChanged: (value) {
                         preguntaFinalizada = false;
                         reconstruye.value = !reconstruye.value;
-                         BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_thereIsError()));
+                         BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_isFieldEmptyError(), _isFieldNotNumberError()));
                       },
                       style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
                       decoration:   InputDecoration(
@@ -65,7 +64,7 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                         focusedBorder:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
                         contentPadding:  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                         hintText: "Añadir kilometraje...",
-                        errorText: (state.errorField) ? _errorTextToShow() : null,
+                        errorText: (state.isFieldEmptyError || state.isFieldNotNumberError) ? _errorTextToShow() : null,
                         errorStyle: TextStyle(color: errorColor),
                         errorBorder: _renderBorder(state),
                         enabledBorder: _renderBorder(state),
@@ -83,7 +82,7 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            onPressed: preguntaEnabled! && !state.errorField
+                            onPressed: preguntaEnabled! && !state.isFieldEmptyError && !state.isFieldNotNumberError
                                 ? () {
                                     preguntaFinalizada = true;
                                     reconstruye.value = !reconstruye.value;
@@ -91,7 +90,7 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                                 : null,
                             icon: SvgPicture.asset(
                               preguntaFinalizada ? "assets/tick_fill.svg" : "assets/tick_empty.svg",
-                              color: preguntaEnabled! && !state.errorField ? null : const Color(0xFF6F6F6F),
+                              color: preguntaEnabled! && !state.isFieldNotNumberError ? null : const Color(0xFF6F6F6F),
                             ),
                             padding: EdgeInsets.zero,
                             iconSize: 23,
@@ -122,19 +121,19 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
   UnderlineInputBorder _renderBorder(RealizarEvaluacionState state) =>
       UnderlineInputBorder(
         borderSide: BorderSide(
-            color: state.errorField ? errorColor : Colors.black,
+            color: (state.isFieldEmptyError || state.isFieldNotNumberError) ? errorColor : Colors.black,
             width: 1),
       );
 
 
   String _errorTextToShow(){
 
-    if(controller.text.isEmpty){
+    if( _isFieldEmptyError()){
       errorColor = const Color(0xFF6F6F6F);
       return "Este campo no puede estar vacío";
     } 
 
-    if(int.tryParse(controller.text) == null ){
+    if(_isFieldNotNumberError()){
       errorColor = Colors.red;
       return  "Debes ingresar un número válido";
     } 
@@ -142,8 +141,12 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
     return "";
   }
 
-  bool _thereIsError(){
-    return _errorTextToShow().isEmpty ? false : true;
+  bool _isFieldEmptyError(){
+    return controller.text.isEmpty;
+  }
+
+  bool _isFieldNotNumberError(){
+    return int.tryParse(controller.text) == null;
   }
 
 }
