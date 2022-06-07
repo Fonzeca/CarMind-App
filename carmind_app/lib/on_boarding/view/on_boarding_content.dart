@@ -141,7 +141,7 @@ class OnBoardingContent extends StatelessWidget {
                   children: [
                     CardFormulario(
                         log: LogEvaluacion()
-                          ..fecha = "09/03/2022 09:47"
+                          ..fecha = "09/03/2022 09:47:00"
                           ..nombre_evaluacion = "Chequeo de ingreso",
                         loading: false),
                   ],

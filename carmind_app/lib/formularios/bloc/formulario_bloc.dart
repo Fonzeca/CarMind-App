@@ -45,7 +45,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
 
         logs.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
       } else {
-        logs = await api.getLogEvaluacionesByLoggedUser();
+        logs = await api.getLogEvaluacionesByLoggedUser('50');
       }
 
       emit(state.copyWith(loading: false, logs: logs));

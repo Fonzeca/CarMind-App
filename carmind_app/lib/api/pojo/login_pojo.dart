@@ -5,6 +5,7 @@ part 'login_pojo.g.dart';
 @JsonSerializable()
 class TokenLogin {
   String? token;
+  bool? mustChangePassword;
   
   TokenLogin();
 

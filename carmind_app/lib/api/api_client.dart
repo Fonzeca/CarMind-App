@@ -4,6 +4,7 @@ import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
 import 'package:carmind_app/api/pojo/login_pojo.dart';
 import 'package:carmind_app/api/pojo/profile/logged_user.dart';
 import 'package:carmind_app/api/pojo/profile/offline_data.dart';
+import 'package:carmind_app/api/pojo/profile/recover_password_user.dart';
 import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:dio/dio.dart';
@@ -33,6 +34,18 @@ abstract class ApiClient {
   @POST("/usuario/sync")
   Future<void> sincronizarDatos(@Body() SyncView sync);
 
+  @POST("/public/usuario/recuperar")
+  Future<void> recuperarContrasena(@Query('email') String email);
+
+  @POST("/public/usuario/validateRecoverToken")
+  Future<void> validateRecoverToken(@Body() RecoverPasswordUserPojo pojo);
+
+  @POST("/public/usuario/resetPassword")
+  Future<void> resetPassword(@Body() RecoverPasswordUserPojo pojo);
+
+  @POST("/usuario/newPassword")
+  Future<void> newPasswordAtFirstLogin(@Query("password") String password);
+
   //----------------------------EVALUACION----------------------------
 
   @GET("/evaluacion/{id}")
@@ -41,8 +54,8 @@ abstract class ApiClient {
   @POST("/evaluacion/{id}/realizar")
   Future<void> realizarEvaluacion(@Path("id") int idEvaluacion, @Body() EvaluacionTerminadaPojo pojo);
 
-  @GET("/evaluacion/historial/loggedUser?limit=50")
-  Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser();
+  @GET("/evaluacion/historial/loggedUser?limit={limit}")
+  Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser(@Path("limit") String limit);
 
   //----------------------------VEHICULO----------------------------
 
@@ -59,6 +72,6 @@ abstract class ApiClient {
   Future<Vehiculo?> getCurrent();
 
   //----------------------------VERSION----------------------------
-  @GET("/public/lastVersion?platform={platform}")
-  Future<String> getLastVersionByPlatform(@Path("storeType") String storeType);
+  @GET("/public/lastVersion?platform={storeType}")
+  Future<String> getLastVersionByPlatform(@Query("storeType") String storeType);
 }

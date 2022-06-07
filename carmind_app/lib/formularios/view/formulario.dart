@@ -10,6 +10,7 @@ import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_TX.dart';
 import 'package:carmind_app/formularios/view/util/check_animation.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -40,21 +41,9 @@ class FormularioPreguntas extends StatelessWidget {
 
     BlocProvider.of<RealizarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(43),
-        child: AppBar(
-          backgroundColor: carMindTopBar,
-          leading: IconButton(
-              onPressed: () {
-                BlocProvider.of<HomeBloc>(context).add(const PopEvent());
-              },
-              icon: const Icon(Icons.arrow_back_ios_new)),
-          title: Text(
-            evaluacion.titulo!,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-        ),
-      ),
+      appBar: CustomAppBar(
+        onPressed: () => BlocProvider.of<HomeBloc>(context).add(const PopEvent()),
+      title:  evaluacion.titulo!),
       body: BlocListener<RealizarEvaluacionBloc, RealizarEvaluacionState>(
         listener: (context, state) {
           if (state.preguntasRespondidas.length == evaluacion.preguntas!.length) {
@@ -212,3 +201,4 @@ class FormularioPreguntas extends StatelessWidget {
       ..add(ShowFab());
   }
 }
+

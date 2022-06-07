@@ -33,6 +33,7 @@ dependencies:
   copy_with_extension: ^4.0.0
   cupertino_icons: ^1.0.2
   dio: ^4.0.4
+  email_validator: ^2.0.1
   equatable: ^2.0.3
   flutter:
     sdk: flutter

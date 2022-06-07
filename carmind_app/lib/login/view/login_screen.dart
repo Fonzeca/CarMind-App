@@ -1,30 +1,37 @@
+import 'package:carmind_app/constants.dart' as constants;
 import 'package:carmind_app/home/view/navigation_bar.dart';
-import 'package:carmind_app/login/bloc/login_bloc_bloc.dart';
+import 'package:carmind_app/login/bloc/login_bloc.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
 import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
 import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/bloc/profile_bloc.dart';
+import 'package:carmind_app/widgets/custom_elevated_button.dart';
+import 'package:carmind_app/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../nueva_contrasena/view/ingresar_email.dart';
+import '../../nueva_contrasena/view/nueva_contrasena.dart';
+
 class LoginScreen extends StatelessWidget {
   bool? offline = false;
   LoginScreen({Key? key, this.offline}) : super(key: key);
 
-  final ValueNotifier<bool> _passwordVisible = ValueNotifier(false);
 
   @override
   Widget build(BuildContext context) {
     configEasyLoading();
-    BlocProvider.of<LoginBlocBloc>(context).add(ValidateSavedToken(offline ?? false));
+    BlocProvider.of<LoginBloc>(context).add(ValidateSavedToken(offline ?? false));
 
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
-    return BlocListener<LoginBlocBloc, LoginBlocState>(
+    return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
-        if (state is LoginError) {
+        if (state is FirstLogin) {
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')), (obj) => false);
         } else if (state is LoginOk) {
           //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
@@ -43,12 +50,12 @@ class LoginScreen extends StatelessWidget {
               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
             }
           }
-          BlocProvider.of<LoginBlocBloc>(context).add(ResetScreen());
+          BlocProvider.of<LoginBloc>(context).add(ResetScreen());
           emailCon.clear();
           passwordCon.clear();
         }
       },
-      child: BlocBuilder<LoginBlocBloc, LoginBlocState>(
+      child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Material(
             child: _buildContent(emailCon, passwordCon, context),
@@ -76,33 +83,26 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 32),
             const Text(
               "Ingresá a tu cuenta",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+              style: constants.subtitleStyle,
             ),
             const SizedBox(height: 20),
-            _fieldLogin(emailCon, "E-mail"),
+            CustomInput(controller: emailCon, label: 'E-mail'),
             const SizedBox(
               height: 16,
             ),
-            _fieldLogin(passwordCon, "Contraseña", true),
+            CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true),
             const SizedBox(height: 52 - 18),
-            SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(carMindTopBar),
-                  textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                ),
-                onPressed: () => BlocProvider.of<LoginBlocBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text)),
-                child: const Text("Iniciar sesión"),
-              ),
-            ),
+            CustomElevatedButton(text: 'Iniciar sesión',shapeColor: carMindTopBar, textColor: Colors.white
+            , onPressed:  () => BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text))),
             const SizedBox(height: 27 - 8),
             TextButton(
-                onPressed: () {},
+                onPressed: (() => Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(carMindAccentColor.withOpacity(0.2)), 
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
                 child: const Text(
                   "Olvidé mi contraseña",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
                 ))
           ],
         ),
@@ -110,48 +110,7 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _fieldLogin(TextEditingController controller, String label, [bool password = false]) {
-    return SizedBox(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 48,
-            child: ValueListenableBuilder(
-                valueListenable: password ? _passwordVisible : ValueNotifier(true),
-                builder: (context, value, child) {
-                  return TextField(
-                    controller: controller,
-                    obscureText: password ? !_passwordVisible.value : false,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: carMindPrimaryButton, width: 3)),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 13, horizontal: 18),
-                      suffixIcon: password
-                          ? IconButton(
-                              icon: Icon(!_passwordVisible.value ? Icons.visibility : Icons.visibility_off),
-                              onPressed: () {
-                                _passwordVisible.value = !_passwordVisible.value;
-                              },
-                            )
-                          : null,
-                    ),
-                    textAlignVertical: TextAlignVertical.top,
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
-                  );
-                }),
-          ),
-        ],
-      ),
-    );
-  }
+
 
   void configEasyLoading() {
     EasyLoading.instance
