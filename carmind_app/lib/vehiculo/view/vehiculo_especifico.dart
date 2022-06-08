@@ -10,7 +10,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
-
 import '../../main.dart';
 
 class VehiculoEspecifico extends StatelessWidget {
@@ -22,8 +21,6 @@ class VehiculoEspecifico extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
-
-    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent());
     return BlocBuilder<VehiculoBloc, VehiculoState>(
       builder: (context, state) {
         vehiculo = state.vehiculo;

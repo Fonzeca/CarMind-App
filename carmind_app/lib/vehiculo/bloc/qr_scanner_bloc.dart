@@ -59,7 +59,9 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
       EasyLoading.dismiss();
 
       BlocProvider.of<HomeBloc>(event.context).add(HomeNavigationEvent(1));
-      BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent());
+      BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent(event.context));
+      final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
+      BlocProvider.of<HomeBloc>(event.context).add(DejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
     });
   }
 }

@@ -7,7 +7,11 @@ abstract class VehiculoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetCurrent extends VehiculoEvent {}
+class GetCurrent extends VehiculoEvent {
+  final BuildContext context;
+
+  const GetCurrent(this.context);
+}
 
 class TapEvaluacion extends VehiculoEvent {
   final int id;
@@ -16,4 +20,8 @@ class TapEvaluacion extends VehiculoEvent {
   TapEvaluacion(this.id, this.context);
 }
 
-class DejarUsar extends VehiculoEvent {}
+class DejarUsar extends VehiculoEvent {
+  final BuildContext context;
+
+  const DejarUsar(this.context);
+}

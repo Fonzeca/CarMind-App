@@ -26,6 +26,7 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
@@ -103,7 +104,7 @@ class CarMindNavigationBar extends StatelessWidget {
               },
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) => previous.showFab != current.showFab,
+              buildWhen: (previous, current) => (previous.showFab != current.showFab) || (previous.showDejarDeUsarVehiculo != current.showDejarDeUsarVehiculo),
               builder: (context, state) {
                 return SpeedDial(
                   openCloseDial: isDialOpen,
@@ -134,6 +135,7 @@ class CarMindNavigationBar extends StatelessWidget {
                       labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
                       onTap: () => onTapDialChild(0),
                     ),
+                    if(state.showDejarDeUsarVehiculo)
                     SpeedDialChild(
                       child: SvgPicture.asset(
                         "assets/logout_vehicle.svg",
@@ -194,6 +196,6 @@ class CarMindNavigationBar extends StatelessWidget {
 
   onTapLogoutVehicle() async {
     Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehículo")));
-    BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar());
+    BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
   }
 }

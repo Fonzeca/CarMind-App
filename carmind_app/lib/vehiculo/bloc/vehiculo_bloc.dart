@@ -61,7 +61,8 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           }
         });
       }
-
+      final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
+      BlocProvider.of<HomeBloc>(event.context).add(DejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
       emit(state.copyWith(vehiculo: vehiculo, loading: false));
     });
 
@@ -80,7 +81,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         await api.terminarUso(vehiculo!.id!);
       }
 
-      add(GetCurrent());
+      add(GetCurrent(event.context));
     });
 
     on<TapEvaluacion>((event, emit) async {
