@@ -13,6 +13,7 @@ class CustomShortInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool valueChanged = false;
      return Padding(
        padding: const EdgeInsets.all(10.0),
        child: SizedBox(
@@ -21,22 +22,38 @@ class CustomShortInput extends StatelessWidget {
           child: ValueListenableBuilder(
               valueListenable: ValueNotifier(true),
               builder: (context, value, child) {
-                return TextField(
-                  onChanged: ((_) => (focusNode != null && nextFocus != null) ? FocusScope.of(context).requestFocus(nextFocus) : null),
-                  focusNode: focusNode,
-                  maxLength: 1,
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    counterText: '',
-                    border:  OutlineInputBorder(),
-                    focusedBorder:   OutlineInputBorder(borderSide: BorderSide(color: carMindPrimaryButton, width: 3)),
-                    contentPadding:  EdgeInsets.symmetric(vertical: 13, horizontal: 18),
-
-                  ),
-                  textAlignVertical: TextAlignVertical.top,
-                  style: const TextStyle(
-                    fontSize: 16,
+                return Focus(
+                  onFocusChange: (_){
+                    if(!valueChanged){
+                      controller.text = '';
+                    }else{
+                      null;
+                      valueChanged = false;
+                    }
+                  },
+                  child: TextField(
+                    onTap: () => controller.text = '',
+                    onChanged: (_){
+                      valueChanged = true;
+                      (focusNode != null && nextFocus != null) 
+                        ? FocusScope.of(context).requestFocus(nextFocus)
+                        : null;
+                      },
+                    focusNode: focusNode,
+                    maxLength: 1,
+                    controller: controller,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      counterText: '',
+                      border:  OutlineInputBorder(),
+                      focusedBorder:   OutlineInputBorder(borderSide: BorderSide(color: carMindPrimaryButton, width: 3)),
+                      contentPadding:  EdgeInsets.symmetric(vertical: 13, horizontal: 18),
+                
+                    ),
+                    textAlignVertical: TextAlignVertical.top,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
                   ),
                 );
               }),

@@ -1,9 +1,5 @@
 
-import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
-import 'package:carmind_app/nueva_contrasena/view/ingresar_codigo.dart';
-import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
-import 'package:carmind_app/nueva_contrasena/view/ingresar_email.dart';
 import 'package:flutter/material.dart';
 import 'package:carmind_app/widgets/custom_appbar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

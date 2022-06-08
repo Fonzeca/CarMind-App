@@ -2,12 +2,10 @@ import 'package:carmind_app/nueva_contrasena/view/ingresar_codigo.dart';
 import 'package:carmind_app/nueva_contrasena/view/nueva_contrasena.dart';
 import 'package:carmind_app/services/form_service.dart';
 import 'package:flutter/material.dart';
-
 import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
 import 'package:carmind_app/widgets/custom_elevated_button.dart';
 import 'package:carmind_app/widgets/custom_input.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../constants.dart' as constants;
 import '../../main.dart';
 

@@ -1,11 +1,9 @@
 import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:flutter/material.dart';
-
 import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
 import 'package:carmind_app/widgets/custom_elevated_button.dart';
 import 'package:carmind_app/widgets/custom_input.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../constants.dart' as constants;
 import '../../main.dart';
 import '../../services/form_service.dart';
