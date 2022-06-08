@@ -21,6 +21,7 @@ class VehiculoEspecifico extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     this.context = context;
+    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
     return BlocBuilder<VehiculoBloc, VehiculoState>(
       builder: (context, state) {
         vehiculo = state.vehiculo;

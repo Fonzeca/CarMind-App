@@ -86,6 +86,8 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                                 ? () {
                                     preguntaFinalizada = true;
                                     reconstruye.value = !reconstruye.value;
+                                    BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                    FocusManager.instance.primaryFocus?.unfocus();
                                   }
                                 : null,
                             icon: SvgPicture.asset(
