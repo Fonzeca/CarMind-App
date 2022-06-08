@@ -46,13 +46,18 @@ class IngresarContrasena extends StatelessWidget {
                 text: 'Cambiar contraseña',
                 shapeColor: carMindPrimaryButton, 
                 textColor: Colors.black, 
-                onPressed: () =>  
-                (codigo != null)
-                  ? BlocProvider.of<NuevaConstrasenaBloc>(context).add(CambiarContrasenaEvent(email!, codigo!, newPassCon.text))
-                  : (oldPassCon.text.compareTo(newPassCon.text) == 0) 
-                    ? BlocProvider.of<NuevaConstrasenaBloc>(context).add(NuevaContrasenaEnPrimerLoginEvent(newPassCon.text))
-                    :  BlocProvider.of<NuevaConstrasenaBloc>(context).add(ArePassNotEqualsEvent())
-                    )
+                onPressed: (){
+                  if(oldPassCon.text.compareTo(newPassCon.text) == 0){
+                      if(codigo != null){
+                        BlocProvider.of<NuevaConstrasenaBloc>(context).add(CambiarContrasenaEvent(email!, codigo!, newPassCon.text));
+                      }else{
+                         BlocProvider.of<NuevaConstrasenaBloc>(context).add(NuevaContrasenaEnPrimerLoginEvent(newPassCon.text));
+                      }
+                  }else{
+                    BlocProvider.of<NuevaConstrasenaBloc>(context).add(ArePassNotEqualsEvent());
+                  }
+                }
+              )
             ],
           )
       );

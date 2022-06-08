@@ -29,7 +29,7 @@ class IngresarCodigo extends StatelessWidget {
     return BlocListener<NuevaConstrasenaBloc, NuevaContrasenaState>(
     listener: (context, state) async {
         if (!state.inputChangedValue && state.codigo.isNotEmpty){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NuevaConstrasena(child: IngresarContrasena(email: state.email), appBarTitle: 'Restaurar Contraseña')));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NuevaConstrasena(child: IngresarContrasena(email: state.email, codigo: state.codigo), appBarTitle: 'Restaurar Contraseña')));
         }
     },
     child: Column(
