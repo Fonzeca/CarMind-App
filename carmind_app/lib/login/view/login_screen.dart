@@ -88,6 +88,7 @@ class _LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(top: 24, left: 34, right: 34, bottom: MediaQuery.of(context).viewInsets.bottom),
         child: SingleChildScrollView(
