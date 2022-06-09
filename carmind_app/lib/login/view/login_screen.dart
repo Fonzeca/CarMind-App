@@ -59,54 +59,9 @@ class LoginScreen extends StatelessWidget {
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Material(
-            child: _buildContent(emailCon, passwordCon, context),
+            child: _LoginView(emailCon: emailCon, passwordCon: passwordCon),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildContent(TextEditingController emailCon, TextEditingController passwordCon, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 24, left: 34, right: 34),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            SizedBox(
-              child: Image.asset("assets/logo.png", width: 87, height: 87),
-            ),
-            const SizedBox(height: 11),
-            const Text(
-              "CarMind",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 32),
-            const Text(
-              "Ingresá a tu cuenta",
-              style: subtitleStyle,
-            ),
-            const SizedBox(height: 20),
-            CustomInput(controller: emailCon, label: 'E-mail'),
-            const SizedBox(
-              height: 16,
-            ),
-            CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true),
-            const SizedBox(height: 52 - 18),
-            CustomElevatedButton(text: 'Iniciar sesión',shapeColor: carMindTopBar, textColor: Colors.white
-            , onPressed:  () => BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text))),
-            const SizedBox(height: 27 - 8),
-            TextButton(
-                onPressed: (() => Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(carMindAccentColor.withOpacity(0.2)), 
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
-                child: const Text(
-                  "Olvidé mi contraseña",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
-                ))
-          ],
-        ),
       ),
     );
   }
@@ -117,5 +72,63 @@ class LoginScreen extends StatelessWidget {
     EasyLoading.instance
       ..loadingStyle = EasyLoadingStyle.dark
       ..indicatorType = EasyLoadingIndicatorType.fadingFour;
+  }
+}
+
+class _LoginView extends StatelessWidget {
+  const _LoginView({
+    Key? key,
+    required this.emailCon,
+    required this.passwordCon,
+  }) : super(key: key);
+
+  final TextEditingController emailCon;
+  final TextEditingController passwordCon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24, left: 34, right: 34),
+      child: SingleChildScrollView(
+        reverse: true,
+        child: Column(
+          children: [
+                const SizedBox(height: 40),
+                SizedBox(
+                  child: Image.asset("assets/logo.png", width: 87, height: 87),
+                ),
+                const SizedBox(height: 11),
+                const Text(
+                  "CarMind",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 32),
+                const Text(
+                  "Ingresá a tu cuenta",
+                  style: subtitleStyle,
+                ),
+                const SizedBox(height: 20),
+                CustomInput(controller: emailCon, label: 'E-mail'),
+                const SizedBox(
+                  height: 16,
+                ),
+                CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true),
+                const SizedBox(height: 52 - 18),
+                CustomElevatedButton(text: 'Iniciar sesión',shapeColor: carMindTopBar, textColor: Colors.white
+                , onPressed:  () => BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text))),
+                const SizedBox(height: 27 - 8),
+                TextButton(
+                    onPressed: (() => Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(carMindAccentColor.withOpacity(0.2)), 
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
+                    child: const Text(
+                      "Olvidé mi contraseña",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
+               ))
+              ],
+        ),
+      ),
+    );
   }
 }

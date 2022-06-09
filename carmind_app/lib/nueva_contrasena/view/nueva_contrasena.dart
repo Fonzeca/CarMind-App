@@ -29,6 +29,7 @@ class NuevaConstrasena extends StatelessWidget {
                 body: Padding(
                   padding: const EdgeInsets.only(top: 24, left: 34, right: 34),
                   child: SingleChildScrollView(
+                    reverse: true,
                     child: child
                   ),
                 ),
