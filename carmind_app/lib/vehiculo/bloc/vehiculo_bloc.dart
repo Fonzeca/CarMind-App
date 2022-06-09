@@ -86,6 +86,8 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         await api.terminarUso(vehiculo!.id!);
       }
 
+      lastTimeFetched ??= DateTime.now();
+      vehiculo = null;
       add(GetCurrent(event.context));
     });
 
