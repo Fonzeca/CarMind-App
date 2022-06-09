@@ -1,21 +1,18 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_F.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_KM..dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S1.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S2.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_S3.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_TX.dart';
-import 'package:carmind_app/formularios/view/util/check_animation.dart';
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/widgets/custom_appbar.dart';
+import 'package:carmind_app/home/home.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:scroll_to_id/scroll_to_id.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+
+import '../../constants.dart';
+import '../../widgets/widgets.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+
+
+
 
 class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
@@ -194,7 +191,7 @@ class FormularioPreguntas extends StatelessWidget {
   }
 
   void finalizarFormulario(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Completaste el formulario")));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Completaste el formulario")));
     await Future.delayed(const Duration(milliseconds: 300));
     BlocProvider.of<HomeBloc>(context)
       ..add(const PopEvent())

@@ -1,18 +1,16 @@
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/constants.dart' as constants;
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/main.dart';
-import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../home/home.dart';
+import '../../main.dart';
+import '../../api/api.dart';
+import 'package:carmind_app/constants.dart';
 
 part 'vehiculo_event.dart';
 part 'vehiculo_state.dart';
@@ -75,7 +73,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         var log = LogUso()
           ..enUso = false
           ..vehiculoId = vehiculo!.id!
-          ..fecha = DateFormat(constants.dateTimeFormat).format(DateTime.now());
+          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
         box.add(log);
       } else {
         await api.terminarUso(vehiculo!.id!);
@@ -125,7 +123,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           ..vencimiento = 0;
       } else {
         //Si no esta vacia, buscamos los logs que cumplan para poner el pendiente en false
-        var format = DateFormat(constants.dateFormat);
+        var format = DateFormat(dateFormat);
         var logsInTime = listLogsEvaluacion.where((element) => format
             .parse(element.fecha!) //Transformamos la fecha de log en un objeto DateTime
             .add(Duration(days: eva.intervaloDias!)) //Le agregamos el intervalo de dias, para despues comprarlo
@@ -138,7 +136,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
             ..vencimiento = 0;
         } else {
           //Cuando si hay un efectivo, se ordenan entre todos los logs efectivos, para que tengamos el ultimo log.
-          var format = DateFormat(constants.dateTimeFormat);
+          var format = DateFormat(dateTimeFormat);
           var listSorted = logsInTime.toList();
           listSorted.sort((a, b) => format.parse(a.fecha!).compareTo(format.parse(b.fecha!)));
 

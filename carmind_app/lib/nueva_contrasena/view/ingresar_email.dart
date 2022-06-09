@@ -1,13 +1,14 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../constants.dart';
+import '../../widgets/widgets.dart';
 import 'package:carmind_app/nueva_contrasena/view/ingresar_codigo.dart';
 import 'package:carmind_app/nueva_contrasena/view/nueva_contrasena.dart';
 import 'package:carmind_app/services/form_service.dart';
-import 'package:flutter/material.dart';
 import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
-import 'package:carmind_app/widgets/custom_elevated_button.dart';
-import 'package:carmind_app/widgets/custom_input.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants.dart' as constants;
-import '../../main.dart';
+
 
 class IngresarEmail extends StatelessWidget {
 
@@ -31,9 +32,9 @@ class IngresarEmail extends StatelessWidget {
       child: Column(
               children: [
                 const SizedBox(height: 20),
-                const Text('¿Olvidaste tu contraseña?', style: constants.titleStyle),
+                const Text('¿Olvidaste tu contraseña?', style: titleStyle),
                 const SizedBox(height: 20),
-                const Text('No hay problema. Te enviaremos un código para restaurar tu contraseña.', style: constants.subtitleStyle),
+                const Text('No hay problema. Te enviaremos un código para restaurar tu contraseña.', style: subtitleStyle),
                 const SizedBox(height: 20),
                 CustomInput(controller: emailCon, label: 'E-mail'),
                 const SizedBox(height: 52 - 18),

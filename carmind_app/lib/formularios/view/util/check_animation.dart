@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:lottie/lottie.dart';
 
-class ChechAnimation extends StatefulWidget {
+class CheckAnimation extends StatefulWidget {
   final String texto;
-  const ChechAnimation({Key? key, required this.texto}) : super(key: key);
+  const CheckAnimation({Key? key, required this.texto}) : super(key: key);
 
   @override
-  State<ChechAnimation> createState() => _ChechAnimationState();
+  State<CheckAnimation> createState() => _CheckAnimationState();
 }
 
-class _ChechAnimationState extends State<ChechAnimation> with TickerProviderStateMixin {
+class _CheckAnimationState extends State<CheckAnimation> with TickerProviderStateMixin {
   late final AnimationController _controller;
 
   bool visible = false;

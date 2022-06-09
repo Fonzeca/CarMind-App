@@ -1,13 +1,15 @@
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/login/view/login_screen.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
-import 'package:carmind_app/profile/bloc/profile_bloc.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletons/skeletons.dart';
+
+import '../../constants.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/home/home.dart';
+
 
 class ProfileContent extends StatelessWidget {
   bool isVideo = false;

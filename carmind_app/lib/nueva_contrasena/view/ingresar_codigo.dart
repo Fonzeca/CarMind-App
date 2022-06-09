@@ -1,14 +1,12 @@
-import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
-import 'package:carmind_app/widgets/custom_short_input.dart';
 import 'package:flutter/material.dart';
 
-import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
-import 'package:carmind_app/widgets/custom_elevated_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../constants.dart' as constants;
-import '../../main.dart';
+import '../../constants.dart';
+import '../../widgets/widgets.dart';
 import 'nueva_contrasena.dart';
+import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
+import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
 
 class IngresarCodigo extends StatelessWidget {
 
@@ -35,9 +33,9 @@ class IngresarCodigo extends StatelessWidget {
     child: Column(
             children: [
               const SizedBox(height: 20),
-              Text('Codigo enviado a $email', style: constants.titleStyle),
+              Text('Codigo enviado a $email', style: titleStyle),
               const SizedBox(height: 20),
-              const Align(alignment: Alignment.centerLeft,child: Text('Ingresa el codigo de 4 digitos', style: constants.subtitleStyle)),
+              const Align(alignment: Alignment.centerLeft,child: Text('Ingresa el codigo de 4 digitos', style: subtitleStyle)),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

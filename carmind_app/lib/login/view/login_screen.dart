@@ -1,20 +1,21 @@
-import 'package:carmind_app/constants.dart' as constants;
-import 'package:carmind_app/home/view/navigation_bar.dart';
-import 'package:carmind_app/login/bloc/login_bloc.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
-import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
-import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:carmind_app/widgets/custom_elevated_button.dart';
-import 'package:carmind_app/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../nueva_contrasena/view/ingresar_email.dart';
+import '../../constants.dart';
+import '../../widgets/widgets.dart';
 import '../../nueva_contrasena/view/nueva_contrasena.dart';
+import '../../nueva_contrasena/view/ingresar_email.dart';
+import 'package:carmind_app/home/view/navigation_bar.dart';
+import 'package:carmind_app/login/bloc/login_bloc.dart';
+import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
+import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/profile/bloc/profile_bloc.dart';
+
+
 
 class LoginScreen extends StatelessWidget {
   bool? offline = false;
@@ -83,7 +84,7 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(height: 32),
             const Text(
               "Ingresá a tu cuenta",
-              style: constants.subtitleStyle,
+              style: subtitleStyle,
             ),
             const SizedBox(height: 20),
             CustomInput(controller: emailCon, label: 'E-mail'),

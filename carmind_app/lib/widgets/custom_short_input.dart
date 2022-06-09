@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../constants.dart';
 
 class CustomShortInput extends StatelessWidget {
 

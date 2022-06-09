@@ -1,11 +1,14 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/constants.dart' as constants;
-import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import '../../../constants.dart';
+import 'package:carmind_app/api/api.dart';
+
+
 
 class CardFormulario extends StatelessWidget {
   final LogEvaluacion? log;
@@ -90,11 +93,10 @@ class CardFormulario extends StatelessWidget {
   }
 
   String _readableDate() {
-    var dateTimeFormat = DateFormat(constants.dateTimeFormat);
-    var dateFormat = DateFormat(constants.dateFormat);
-    String todayDate = dateFormat.format(DateTime.now());
-    String yesterdayDate = dateFormat.format(DateTime.now().subtract(const Duration(days: 1)));
-    String logDate = dateFormat.format(dateTimeFormat.parse(log!.fecha!));
+    var dateTimeForm = DateFormat(dateTimeFormat);
+    String todayDate = dateTimeForm.format(DateTime.now());
+    String yesterdayDate = dateTimeForm.format(DateTime.now().subtract(const Duration(days: 1)));
+    String logDate = dateTimeForm.format(dateTimeForm.parse(log!.fecha!));
     int isToday = logDate.compareTo(todayDate);
     int isYesterday = logDate.compareTo(yesterdayDate);
     if (isToday == 0) return 'Hoy';

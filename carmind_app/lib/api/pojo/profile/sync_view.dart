@@ -1,6 +1,6 @@
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:carmind_app/api/api.dart';
 
 part 'sync_view.g.dart';
 

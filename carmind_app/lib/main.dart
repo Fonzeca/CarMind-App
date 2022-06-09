@@ -1,27 +1,19 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/profile/logged_user.dart';
-import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/formularios/bloc/formulario_bloc.dart';
-import 'package:carmind_app/formularios/bloc/realizar_evaluacion_bloc.dart';
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/login/bloc/login_bloc.dart';
-import 'package:carmind_app/login/view/login_screen.dart';
-import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
-import 'package:carmind_app/profile/bloc/profile_bloc.dart';
-import 'package:carmind_app/vehiculo/bloc/qr_scanner_bloc.dart';
-import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
+import 'package:flutter/material.dart';
+
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -48,12 +40,6 @@ void main() async {
 
   runApp(MyApp());
 }
-
-const carMindAccentColor = Color(0xff8ed8f8);
-const carMindAccent2Color = Color(0xff0078FF);
-const carMindPrimaryButton = Color(0xffB6E802);
-const carMindTopBar = Color(0xff000853);
-const carMindGrey = Color(0xff212121);
 Dio? staticDio;
 
 class MyApp extends StatelessWidget {

@@ -1,8 +1,10 @@
 
-import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:carmind_app/widgets/custom_appbar.dart';
+
+import '../../widgets/widgets.dart';
+import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class NuevaConstrasena extends StatelessWidget {
   final String appBarTitle;

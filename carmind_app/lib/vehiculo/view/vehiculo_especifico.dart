@@ -1,16 +1,16 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/constants.dart' as constants;
-import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
-import 'package:carmind_app/vehiculo/view/card_vehiculo.dart';
 import 'package:flutter/material.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
-import '../../main.dart';
+
+import '../../constants.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+
 
 class VehiculoEspecifico extends StatelessWidget {
   BuildContext? context;
@@ -169,7 +169,7 @@ class VehiculoEspecifico extends StatelessWidget {
 
   DateTime? verifyTick(String fechaVencimiento, int intervaloDias) {
     if (fechaVencimiento.isNotEmpty) {
-      var date = DateFormat(constants.dateFormat).parse(fechaVencimiento);
+      var date = DateFormat(dateFormat).parse(fechaVencimiento);
       if (date.isAfter(DateTime.now())) {
         if (date.difference(DateTime.now()).inDays > 0) {
           return date;
@@ -181,13 +181,13 @@ class VehiculoEspecifico extends StatelessWidget {
     try {
       var logOk = box.values.firstWhere(
         (element) {
-          var date = DateFormat(constants.dateTimeFormat).parse(element.fecha!);
+          var date = DateFormat(dateTimeFormat).parse(element.fecha!);
           var dateSubstract = DateTime.now().subtract(Duration(days: intervaloDias));
 
           return dateSubstract.isBefore(date);
         },
       );
-      return DateFormat(constants.dateTimeFormatNoSeconds).parse(logOk.fecha!).add(Duration(days: intervaloDias));
+      return DateFormat(dateTimeFormatNoSeconds).parse(logOk.fecha!).add(Duration(days: intervaloDias));
     } catch (e) {}
 
     return null;

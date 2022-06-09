@@ -1,12 +1,13 @@
-import 'package:carmind_app/login/view/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
-import 'package:carmind_app/widgets/custom_elevated_button.dart';
-import 'package:carmind_app/widgets/custom_input.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../constants.dart' as constants;
-import '../../main.dart';
+
+import '../../constants.dart';
+import '../../widgets/widgets.dart';
 import '../../services/form_service.dart';
+import 'package:carmind_app/login/view/login_screen.dart';
+import 'package:carmind_app/nueva_contrasena/bloc/nueva_contrasena_bloc.dart';
+
 
 class IngresarContrasena extends StatelessWidget {
 
@@ -34,9 +35,9 @@ class IngresarContrasena extends StatelessWidget {
       child: Column(
             children: [
               const SizedBox(height: 20),
-              const Text('Crea tu nueva contraseña', style: constants.titleStyle),
+              const Text('Crea tu nueva contraseña', style: titleStyle),
               const SizedBox(height: 20),
-              const Align(alignment: Alignment.centerLeft,child: Text('Ingresa tu nueva contraseña', style: constants.subtitleStyle)),
+              const Align(alignment: Alignment.centerLeft,child: Text('Ingresa tu nueva contraseña', style: subtitleStyle)),
               const SizedBox(height: 20),
               CustomInput(controller: newPassCon, label: 'Nueva contraseña', isPassword: true, validator: state.arePassEquals ? null : (_) => 'Las contraseñas no coinciden'),
               const SizedBox(height: 20),

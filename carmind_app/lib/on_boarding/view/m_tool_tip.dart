@@ -1,9 +1,12 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/on_boarding/bloc/on_boarding_bloc.dart';
 import 'package:flutter/material.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
+
+import '../../constants.dart';
+import 'package:carmind_app/on_boarding/on_boarding.dart';
+
 
 class MTooltip extends StatelessWidget {
   final TooltipController controller;
@@ -43,7 +46,7 @@ class MTooltip extends StatelessWidget {
           ),
           const SizedBox(height: 23),
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: 100, maxWidth: 215),
+            constraints: const BoxConstraints(maxHeight: 100, maxWidth: 215),
             child: AutoSizeText(
               title,
               textAlign: TextAlign.center,

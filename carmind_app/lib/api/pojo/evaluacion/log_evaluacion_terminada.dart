@@ -1,6 +1,7 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:carmind_app/api/api.dart';
 
 part 'log_evaluacion_terminada.g.dart';
 

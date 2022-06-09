@@ -1,13 +1,13 @@
+import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';
 
-import '../api/api_client.dart';
-import '../constants.dart' as constants;
 import '../main.dart';
+import '../api/api.dart';
+import '../constants.dart';
 
 class VersionService {
   static Version? _currentVersion;
@@ -38,9 +38,9 @@ class VersionService {
     api = ApiClient(staticDio!);
 
     if (Platform.isAndroid) {
-      currentPlatform = constants.androidPlatform;
+      currentPlatform = androidPlatform;
     } else {
-      currentPlatform = constants.iosPlatform;
+      currentPlatform = iosPlatform;
     }
     String lastVersion = await api.getLastVersionByPlatform(currentPlatform!);
     _lastVersion = Version.parse(lastVersion);
@@ -92,7 +92,7 @@ class VersionService {
                 'Actualizar',
                 style: TextStyle(color: carMindAccent2Color),
               ),
-              onPressed: () async => await launchUrl(Uri.parse(constants.appStoreLinks[currentPlatform]!)),
+              onPressed: () async => await launchUrl(Uri.parse(appStoreLinks[currentPlatform]!)),
             ),
           ],
         );
