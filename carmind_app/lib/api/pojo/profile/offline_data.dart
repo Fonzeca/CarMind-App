@@ -1,8 +1,6 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/api/pojo/profile/logged_user.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'package:carmind_app/api/api.dart';
 
 part 'offline_data.g.dart';
 

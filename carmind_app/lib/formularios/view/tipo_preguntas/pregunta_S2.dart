@@ -1,13 +1,13 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
-import 'package:carmind_app/formularios/bloc/realiazar_evaluacion_bloc.dart';
-import 'package:carmind_app/formularios/view/tipo_preguntas/pregunta_base.dart';
-import 'package:carmind_app/formularios/view/util/CustomRadio.dart';
-import 'package:carmind_app/formularios/view/util/pregunta_interface.dart';
-import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../constants.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+
+
 
 class PreguntaS2 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
@@ -24,7 +24,7 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RealiazarEvaluacionBloc, RealiazarEvaluacionState>(
+    return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(
@@ -70,7 +70,7 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
                         iconSize: 23,
                         onPressed: listIds.isNotEmpty
                             ? () {
-                                BlocProvider.of<RealiazarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                                BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                                 preguntaFinalizada = true;
                               }
                             : null,
@@ -117,7 +117,7 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
                 : null,
           ),
           Text(
-            value.texto!,
+            value.opcion!,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
           )
         ],

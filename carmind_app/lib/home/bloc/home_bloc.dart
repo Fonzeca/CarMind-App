@@ -40,6 +40,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(showFab: true));
     });
 
+    on<DejarDeUsarVehiculoEvent>((event, emit) {
+      emit(state.copyWith(showDejarDeUsarVehiculo: event.showDejarDeUsarVehiculo));
+    });
+
     on<LogOutEvent>((event, emit) async {
       var shr = await SharedPreferences.getInstance();
       shr.remove("token");

@@ -1,19 +1,19 @@
-import 'package:carmind_app/formularios/view/content_main.dart';
-import 'package:carmind_app/formularios/view/formulario.dart';
-import 'package:carmind_app/formularios/view/util/check_animation.dart';
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/login/view/login_screen.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/profile/view/profile_content.dart';
-import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
-import 'package:carmind_app/vehiculo/view/vehiculo_especifico.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../vehiculo/bloc/qr_scanner_bloc.dart';
+import '../../constants.dart';
+import '../../services/version_service.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/profile/profile.dart';
+
+
 
 class CarMindNavigationBar extends StatelessWidget {
   CarMindNavigationBar({Key? key}) : super(key: key);
@@ -25,11 +25,17 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      VersionService.isNewVersionAvailable().then((isNewVersion) {
+        if (isNewVersion) VersionService.showVersionAvailableAlert(context);
+      });
+    });
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
         }
       },
       child: WillPopScope(
@@ -80,7 +86,7 @@ class CarMindNavigationBar extends StatelessWidget {
               builder: (context, state) {
                 switch (state.selectedPageView) {
                   case 0:
-                    return FormuarioContent(context);
+                    return FormularioContent(context);
                   case 1:
                     return VehiculoEspecifico();
                   case 2:
@@ -97,7 +103,7 @@ class CarMindNavigationBar extends StatelessWidget {
               },
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) => previous.showFab != current.showFab,
+              buildWhen: (previous, current) => (previous.showFab != current.showFab) || (previous.showDejarDeUsarVehiculo != current.showDejarDeUsarVehiculo),
               builder: (context, state) {
                 return SpeedDial(
                   openCloseDial: isDialOpen,
@@ -128,6 +134,7 @@ class CarMindNavigationBar extends StatelessWidget {
                       labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
                       onTap: () => onTapDialChild(0),
                     ),
+                    if(state.showDejarDeUsarVehiculo)
                     SpeedDialChild(
                       child: SvgPicture.asset(
                         "assets/logout_vehicle.svg",
@@ -187,7 +194,7 @@ class CarMindNavigationBar extends StatelessWidget {
   }
 
   onTapLogoutVehicle() async {
-    Navigator.push(context!, MaterialPageRoute(builder: (context) => const ChechAnimation(texto: "Has dejado de usar el vehículo")));
-    BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar());
+    Navigator.push(context!, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Has dejado de usar el vehículo")));
+    BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
   }
 }

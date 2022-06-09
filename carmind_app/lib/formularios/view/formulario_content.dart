@@ -1,12 +1,14 @@
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/formularios/bloc/formulario_bloc.dart';
-import 'package:carmind_app/formularios/view/util/card_formulario.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class FormuarioContent extends StatelessWidget {
-  FormuarioContent(BuildContext context, {Key? key}) : super(key: key) {
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+
+
+class FormularioContent extends StatelessWidget {
+  FormularioContent(BuildContext context, {Key? key}) : super(key: key) {
     BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
   }
   @override

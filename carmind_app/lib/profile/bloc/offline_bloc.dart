@@ -1,19 +1,13 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/profile/logged_user.dart';
-import 'package:carmind_app/api/pojo/profile/sync_view.dart';
-import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:carmind_app/main.dart';
+import 'package:carmind_app/api/api.dart';
 
 part 'offline_event.dart';
 part 'offline_state.dart';

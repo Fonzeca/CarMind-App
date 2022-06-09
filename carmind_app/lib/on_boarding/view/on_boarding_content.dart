@@ -1,18 +1,19 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/formularios/view/util/card_formulario.dart';
-import 'package:carmind_app/home/view/navigation_bar.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/on_boarding/bloc/on_boarding_bloc.dart';
-import 'package:carmind_app/on_boarding/view/m_tool_tip.dart';
-import 'package:carmind_app/vehiculo/view/card_vehiculo.dart';
 import 'package:flutter/material.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:overlay_tooltip/overlay_tooltip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
+
+import '../../constants.dart';
+import 'package:carmind_app/on_boarding/on_boarding.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/home/home.dart';
+
 
 class OnBoardingContent extends StatelessWidget {
   final TooltipController _controller = TooltipController();
@@ -141,7 +142,7 @@ class OnBoardingContent extends StatelessWidget {
                   children: [
                     CardFormulario(
                         log: LogEvaluacion()
-                          ..fecha = "09/03/2022 09:47"
+                          ..fecha = "09/03/2022 09:47:00"
                           ..nombre_evaluacion = "Chequeo de ingreso",
                         loading: false),
                   ],

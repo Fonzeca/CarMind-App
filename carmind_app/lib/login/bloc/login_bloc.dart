@@ -5,14 +5,16 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'login_bloc_event.dart';
-part 'login_bloc_state.dart';
+import '../../api/pojo/login_pojo.dart';
 
-class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
-  LoginBlocBloc() : super(LoginBlocInitial()) {
+part 'login_event.dart';
+part 'login_state.dart';
+
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  LoginBloc() : super(LoginBlocInitial()) {
     final client = ApiClient(staticDio!);
 
-    on<LoginBlocEvent>((event, emit) {
+    on<LoginEvent>((event, emit) {
       // TODO: implement event handler
     });
 
@@ -21,14 +23,19 @@ class LoginBlocBloc extends Bloc<LoginBlocEvent, LoginBlocState> {
       String email = event.email.trim();
       String pass = event.password.trim();
 
-      await client.login(email, pass).then((value) async {
-        await saveToken(value.token!);
-
-        emit(LoginOk());
+      try{
+        TokenLogin tokenLogin = await client.login(email, pass);
+        await saveToken(tokenLogin.token!);
+        if(tokenLogin.mustChangePassword!){
+          emit(FirstLogin());
+        }else{
+          emit(LoginOk());
+        }
         EasyLoading.dismiss();
-      }).onError((error, stackTrace) {
+      } on Exception catch(_){
         removeToken();
-      });
+      }
+
     });
 
     on<ValidateSavedToken>((event, emit) async {

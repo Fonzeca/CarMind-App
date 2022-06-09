@@ -1,10 +1,12 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../../main.dart';
+import '../../constants.dart';
+import 'package:carmind_app/api/api.dart';
+
 
 class card_vehiculo extends StatelessWidget {
   final Vehiculo? vehiculo;

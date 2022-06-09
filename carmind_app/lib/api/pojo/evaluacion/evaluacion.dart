@@ -52,7 +52,7 @@ class OpcionPojo {
   int? id;
 
   @HiveField(1)
-  String? texto;
+  String? opcion;
 
   OpcionPojo();
 

@@ -1,15 +1,17 @@
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/vehiculo/log_uso.dart';
-import 'package:carmind_app/home/bloc/home_bloc.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
+import 'package:equatable/equatable.dart';
+
+import '../../api/api.dart';
+import '../../constants.dart';
+import '../../home/home.dart';
+import '../../main.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
 
 part 'qr_scanner_event.dart';
 part 'qr_scanner_state.dart';
@@ -44,7 +46,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         var log = LogUso()
           ..enUso = true
           ..vehiculoId = idVehiculo
-          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now());
+          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
         box.add(log);
       } else {
         try {
@@ -58,7 +60,9 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
       EasyLoading.dismiss();
 
       BlocProvider.of<HomeBloc>(event.context).add(HomeNavigationEvent(1));
-      BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent());
+      BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent(event.context));
+      final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
+      BlocProvider.of<HomeBloc>(event.context).add(DejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
     });
   }
 }

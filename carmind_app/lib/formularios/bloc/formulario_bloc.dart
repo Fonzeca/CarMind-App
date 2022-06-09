@@ -1,26 +1,27 @@
 import 'package:bloc/bloc.dart';
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants.dart';
+import 'package:carmind_app/main.dart';
+import 'package:carmind_app/api/api.dart';
 
 part 'formulario_event.dart';
 part 'formulario_state.dart';
 
 class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
   late ApiClient api;
+  DateTime? lastTimeFetched;
+  List<LogEvaluacion>? logs;
 
   FormularioBloc() : super(const FormularioState(logs: [], loading: true)) {
     api = ApiClient(staticDio!);
     on<FormularioBuscarDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      List<LogEvaluacion> logs;
+      
 
       var sh = await SharedPreferences.getInstance();
 
@@ -31,7 +32,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
         var boxLogsOffline = Hive.box<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
         var boxEvaluaciones = Hive.box<Evaluacion>('evaluaciones');
 
-        logs.addAll(boxLogsOffline.values.map((e) {
+        logs!.addAll(boxLogsOffline.values.map((e) {
           var log = LogEvaluacion();
           log.evaluacion_id = e.evaluacionId;
           log.fecha = e.fecha;
@@ -40,14 +41,19 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
           return log;
         }));
 
-        var format = DateFormat("dd/MM/yyyy HH:mm:ss");
+        var format = DateFormat(dateTimeFormat);
 
-        logs.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
+        logs!.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
       } else {
-        logs = await api.getLogEvaluacionesByLoggedUser();
-      }
 
-      emit(state.copyWith(loading: false, logs: logs));
+        lastTimeFetched ??= DateTime.now();
+        if(logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5)){
+          //Si no esta offline, le preguntamos al server
+          logs = await api.getLogEvaluacionesByLoggedUser('50');
+          lastTimeFetched = DateTime.now();
+        }
+        emit(state.copyWith(loading: false, logs: logs));
+      }
     });
   }
 }

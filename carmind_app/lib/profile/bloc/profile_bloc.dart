@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/profile/logged_user.dart';
-import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
+
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/main.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';

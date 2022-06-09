@@ -1,9 +1,14 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion.dart';
-import 'package:carmind_app/main.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import '../../../constants.dart';
+import 'package:carmind_app/api/api.dart';
+
+
 
 class CardFormulario extends StatelessWidget {
   final LogEvaluacion? log;
@@ -60,7 +65,7 @@ class CardFormulario extends StatelessWidget {
                       ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 25),
                         child: AutoSizeText(
-                          "Fecha: ${log!.fecha}",
+                          "Fecha: ${_readableDate()}",
                           maxFontSize: 11,
                           minFontSize: 3,
                           maxLines: 1,
@@ -85,5 +90,18 @@ class CardFormulario extends StatelessWidget {
         width: 140,
       ),
     );
+  }
+
+  String _readableDate() {
+    var dateTimeForm = DateFormat(dateTimeFormat);
+    var dateForm = DateFormat(dateFormat);
+    String todayDate = dateForm.format(DateTime.now());
+    String yesterdayDate = dateForm.format(DateTime.now().subtract(const Duration(days: 1)));
+    String logDate = dateForm.format(dateTimeForm.parse(log!.fecha!));
+    int isToday = logDate.compareTo(todayDate);
+    int isYesterday = logDate.compareTo(yesterdayDate);
+    if (isToday == 0) return 'Hoy';
+    if (isYesterday == 0) return 'Ayer';
+    return log!.fecha!;
   }
 }

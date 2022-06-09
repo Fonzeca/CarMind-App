@@ -1,24 +1,22 @@
+import 'package:flutter/material.dart';
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
-import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion.dart';
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/evaluacion/log_evaluacion_terminada.dart';
-import 'package:carmind_app/api/pojo/vehiculo/vehiculo.dart';
-import 'package:carmind_app/formularios/view/formulario.dart';
-import 'package:carmind_app/main.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:bloc/bloc.dart';
 
-part 'realiazar_evaluacion_event.dart';
-part 'realiazar_evaluacion_state.dart';
+import '../../constants.dart';
+import 'package:carmind_app/main.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
 
-class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEvaluacionState> {
+part 'realizar_evaluacion_event.dart';
+part 'realizar_evaluacion_state.dart';
+
+class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvaluacionState> {
   Evaluacion? evaluacion;
 
   EvaluacionTerminadaPojo? evaluacionTerminada;
@@ -27,10 +25,17 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
 
   ApiClient? api;
 
-  RealiazarEvaluacionBloc()
-      : super(const RealiazarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false)) {
+  RealizarEvaluacionBloc()
+      : super(const RealizarEvaluacionState(
+            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false)) {
     api = ApiClient(staticDio!);
+
+    on<ValidarTextFieldEvent>((event, emit) async {
+        emit(state.copyWith(
+           isFieldEmptyError: event.isFieldEmptyError,
+           isFieldNotNumberError: event.isFieldNotNumberError
+        ));
+    });
 
     on<IniciarEvaluacionEvent>((event, emit) {
       //Steamos en 0 las variables
@@ -73,7 +78,7 @@ class RealiazarEvaluacionBloc extends Bloc<RealiazarEvaluacionEvent, RealiazarEv
         var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
         var log = LogEvaluacionTerminadaPojo()
           ..evaluacionId = evaluacion!.id!
-          ..fecha = DateFormat("dd/MM/yyyy HH:mm:ss").format(DateTime.now())
+          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now())
           ..respuesta = evaluacionTerminada!;
 
         box.add(log);

@@ -1,4 +1,5 @@
-import 'package:carmind_app/api/pojo/evaluacion/evaluacion_terminada.dart';
+
+import 'package:carmind_app/api/api.dart';
 
 abstract class PreguntaInterface {
   RespuestaPojo setearRespuesta();
