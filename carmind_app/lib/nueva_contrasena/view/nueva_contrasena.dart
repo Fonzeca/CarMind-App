@@ -22,6 +22,7 @@ class NuevaConstrasena extends StatelessWidget {
                 appBar: CustomAppBar(
                 onPressed: (){
                   BlocProvider.of<NuevaConstrasenaBloc>(context).add(PopEvent());
+                  FocusScope.of(context).unfocus();
                   Navigator.pop(context);
                   },
                   title: appBarTitle,

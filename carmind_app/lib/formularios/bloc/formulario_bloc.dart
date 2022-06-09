@@ -13,13 +13,15 @@ part 'formulario_state.dart';
 
 class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
   late ApiClient api;
+  DateTime? lastTimeFetched;
+  List<LogEvaluacion>? logs;
 
   FormularioBloc() : super(const FormularioState(logs: [], loading: true)) {
     api = ApiClient(staticDio!);
     on<FormularioBuscarDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      List<LogEvaluacion> logs;
+      
 
       var sh = await SharedPreferences.getInstance();
 
@@ -30,7 +32,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
         var boxLogsOffline = Hive.box<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
         var boxEvaluaciones = Hive.box<Evaluacion>('evaluaciones');
 
-        logs.addAll(boxLogsOffline.values.map((e) {
+        logs!.addAll(boxLogsOffline.values.map((e) {
           var log = LogEvaluacion();
           log.evaluacion_id = e.evaluacionId;
           log.fecha = e.fecha;
@@ -41,12 +43,17 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
 
         var format = DateFormat(dateTimeFormat);
 
-        logs.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
+        logs!.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
       } else {
-        logs = await api.getLogEvaluacionesByLoggedUser('50');
-      }
 
-      emit(state.copyWith(loading: false, logs: logs));
+        lastTimeFetched ??= DateTime.now();
+        if(logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5)){
+          //Si no esta offline, le preguntamos al server
+          logs = await api.getLogEvaluacionesByLoggedUser('50');
+          lastTimeFetched = DateTime.now();
+        }
+        emit(state.copyWith(loading: false, logs: logs));
+      }
     });
   }
 }

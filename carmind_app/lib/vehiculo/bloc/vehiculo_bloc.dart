@@ -17,6 +17,7 @@ part 'vehiculo_state.dart';
 
 class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
   late ApiClient api;
+  DateTime? lastTimeFetched;
 
   Vehiculo? vehiculo;
   VehiculoBloc() : super(const VehiculoState(loading: true)) {
@@ -49,15 +50,21 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           vehiculo = proccessPrendientes(vehiculo!);
         }
       } else {
-        //Si no esta offline, le preguntamos al server
-        vehiculo = await api.getCurrent().catchError((err) {
-          switch (err.runtimeType) {
-            case DioError:
-              final res = (err as DioError).response;
-              break;
-            default:
-          }
-        });
+
+        lastTimeFetched ??= DateTime.now();
+        if( (vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5)){
+          //Si no esta offline, le preguntamos al server
+          vehiculo = await api.getCurrent().catchError((err) {
+            switch (err.runtimeType) {
+              case DioError:
+                final res = (err as DioError).response;
+                break;
+              default:
+            }
+          });
+          lastTimeFetched = DateTime.now();
+        }
+
       }
       final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(DejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));

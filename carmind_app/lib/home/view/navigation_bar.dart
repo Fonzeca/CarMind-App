@@ -35,7 +35,7 @@ class CarMindNavigationBar extends StatelessWidget {
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
         }
       },
       child: WillPopScope(
