@@ -5,15 +5,13 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
+import '../../profile/profile.dart';
+import '../../services/services.dart';
 import '../../widgets/widgets.dart';
-import '../../nueva_contrasena/view/nueva_contrasena.dart';
-import '../../nueva_contrasena/view/ingresar_email.dart';
-import 'package:carmind_app/home/view/navigation_bar.dart';
-import 'package:carmind_app/login/bloc/login_bloc.dart';
-import 'package:carmind_app/nueva_contrasena/view/ingresar_contrasena.dart';
-import 'package:carmind_app/on_boarding/view/on_boarding_content.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
-import 'package:carmind_app/profile/bloc/profile_bloc.dart';
+import '../login.dart';
+import 'package:carmind_app/on_boarding/on_boarding.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 
 
 
@@ -26,13 +24,14 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     configEasyLoading();
     BlocProvider.of<LoginBloc>(context).add(ValidateSavedToken(offline ?? false));
-
+    FormService formServiceEmail = FormService();
+    FormService formServicePass = FormService();
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
         if (state is FirstLogin) {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')), (obj) => false);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')));
         } else if (state is LoginOk) {
           //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
@@ -59,7 +58,7 @@ class LoginScreen extends StatelessWidget {
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Material(
-            child: _LoginView(emailCon: emailCon, passwordCon: passwordCon),
+            child: _LoginView(emailCon: emailCon, passwordCon: passwordCon, formServiceEmail: formServiceEmail, formServicePass: formServicePass),
           );
         },
       ),
@@ -79,11 +78,13 @@ class _LoginView extends StatelessWidget {
   const _LoginView({
     Key? key,
     required this.emailCon,
-    required this.passwordCon,
+    required this.passwordCon, required this.formServiceEmail, required this.formServicePass,
   }) : super(key: key);
 
   final TextEditingController emailCon;
   final TextEditingController passwordCon;
+  final FormService formServiceEmail;
+  final FormService formServicePass;
 
   @override
   Widget build(BuildContext context) {
@@ -110,14 +111,14 @@ class _LoginView extends StatelessWidget {
                 style: subtitleStyle,
               ),
               const SizedBox(height: 20),
-              CustomInput(controller: emailCon, label: 'E-mail'),
+              Form(key: formServiceEmail.keyForm, autovalidateMode: AutovalidateMode.onUserInteraction,child: CustomInput(controller: emailCon, label: 'E-mail')),
               const SizedBox(
                 height: 16,
               ),
-              CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true),
+              Form(key: formServicePass.keyForm, autovalidateMode: AutovalidateMode.onUserInteraction, child: CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true)),
               const SizedBox(height: 52 - 18),
               CustomElevatedButton(text: 'Iniciar sesión',shapeColor: carMindTopBar, textColor: Colors.white
-              , onPressed:  () => BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text))),
+              , onPressed:  () =>  ( formServiceEmail.isValidForm() && formServicePass.isValidForm() ) ? BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text)) : null),
               const SizedBox(height: 27 - 8),
               TextButton(
                   onPressed: (() => Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
