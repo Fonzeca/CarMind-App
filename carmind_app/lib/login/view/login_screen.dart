@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
         if (state is FirstLogin) {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')), (obj) => false);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')));
         } else if (state is LoginOk) {
           //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
