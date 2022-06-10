@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     configEasyLoading();
     BlocProvider.of<LoginBloc>(context).add(ValidateSavedToken(offline ?? false));
-
+    FormService formService = FormService();
     final emailCon = TextEditingController();
     final passwordCon = TextEditingController();
     return BlocListener<LoginBloc, LoginState>(
@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
       child: BlocBuilder<LoginBloc, LoginState>(
         builder: (context, state) {
           return Material(
-            child: _LoginView(emailCon: emailCon, passwordCon: passwordCon),
+            child: _LoginView(emailCon: emailCon, passwordCon: passwordCon, formService: formService),
           );
         },
       ),
@@ -77,15 +77,15 @@ class _LoginView extends StatelessWidget {
   const _LoginView({
     Key? key,
     required this.emailCon,
-    required this.passwordCon,
+    required this.passwordCon, required this.formService,
   }) : super(key: key);
 
   final TextEditingController emailCon;
   final TextEditingController passwordCon;
+  final FormService formService;
 
   @override
   Widget build(BuildContext context) {
-    FormService formService = FormService();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
