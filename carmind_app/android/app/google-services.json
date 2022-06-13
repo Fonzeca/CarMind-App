@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "679930430701",
+    "project_id": "carmind-46f12",
+    "storage_bucket": "carmind-46f12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679930430701:android:1370e00aa59b07605778e4",
+        "android_client_info": {
+          "package_name": "com.mindia.carmind_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679930430701-abg919unse978knvlloioj5eagpk8khj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtYQRfZL-FjgdDzGPcUDR6_ghl7AsCplQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679930430701-abg919unse978knvlloioj5eagpk8khj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "679930430701-mqnk9up7rrb66bp0ohm1bchso29ekh1g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mindia.carmind-app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

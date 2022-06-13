@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dio/adapter.dart';
@@ -6,6 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'firebase_options.dart';
 
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
@@ -16,29 +22,40 @@ import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 
 void main() async {
-  await Hive.initFlutter();
 
-  Hive.registerAdapter(VehiculoAdapter());
-  Hive.registerAdapter(EvaluacionesPendientesAdapter());
-  Hive.registerAdapter(EvaluacionAdapter());
-  Hive.registerAdapter(PreguntaPojoAdapter());
-  Hive.registerAdapter(OpcionPojoAdapter());
-  Hive.registerAdapter(LogEvaluacionAdapter());
-  Hive.registerAdapter(LoggedUserAdapter());
-  Hive.registerAdapter(LogUsoAdapter());
-  Hive.registerAdapter(LogEvaluacionTerminadaPojoAdapter());
-  Hive.registerAdapter(EvaluacionTerminadaPojoAdapter());
-  Hive.registerAdapter(RespuestaPojoAdapter());
-  Hive.registerAdapter(RespuestaOpcionPojoAdapter());
+  runZonedGuarded<Future<void>>(() async {
 
-  await Hive.openBox<Vehiculo>('vehiculos');
-  await Hive.openBox<LogEvaluacion>('logs');
-  await Hive.openBox<LoggedUser>('loggedUser');
-  await Hive.openBox<Evaluacion>('evaluaciones');
-  await Hive.openBox<LogUso>('logUso');
-  await Hive.openBox<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  runApp(MyApp());
+    await Hive.initFlutter();
+
+    Hive.registerAdapter(VehiculoAdapter());
+    Hive.registerAdapter(EvaluacionesPendientesAdapter());
+    Hive.registerAdapter(EvaluacionAdapter());
+    Hive.registerAdapter(PreguntaPojoAdapter());
+    Hive.registerAdapter(OpcionPojoAdapter());
+    Hive.registerAdapter(LogEvaluacionAdapter());
+    Hive.registerAdapter(LoggedUserAdapter());
+    Hive.registerAdapter(LogUsoAdapter());
+    Hive.registerAdapter(LogEvaluacionTerminadaPojoAdapter());
+    Hive.registerAdapter(EvaluacionTerminadaPojoAdapter());
+    Hive.registerAdapter(RespuestaPojoAdapter());
+    Hive.registerAdapter(RespuestaOpcionPojoAdapter());
+
+    await Hive.openBox<Vehiculo>('vehiculos');
+    await Hive.openBox<LogEvaluacion>('logs');
+    await Hive.openBox<LoggedUser>('loggedUser');
+    await Hive.openBox<Evaluacion>('evaluaciones');
+    await Hive.openBox<LogUso>('logUso');
+    await Hive.openBox<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
+
+    runApp(MyApp());
+  }, (error, stack) =>
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
 Dio? staticDio;
 

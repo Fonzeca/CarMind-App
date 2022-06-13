@@ -35,6 +35,9 @@ dependencies:
   dio: ^4.0.4
   email_validator: ^2.0.1
   equatable: ^2.0.3
+  firebase_analytics: ^9.1.9
+  firebase_core: ^1.17.1
+  firebase_crashlytics: ^2.8.1
   flutter:
     sdk: flutter
   flutter_barcode_scanner: ^2.0.0
