@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -8,9 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../constants.dart';
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/vehiculo/vehiculo.dart';
-
 
 class VehiculoEspecifico extends StatelessWidget {
   BuildContext? context;
@@ -56,7 +54,7 @@ class VehiculoEspecifico extends StatelessWidget {
                   return const SizedBox(
                     height: 34,
                     child: Text(
-                      "Formularios",
+                      "Elegí un formulario:",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   );

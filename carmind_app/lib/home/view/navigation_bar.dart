@@ -1,5 +1,9 @@
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -7,13 +11,6 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../constants.dart';
 import '../../services/version_service.dart';
-import 'package:carmind_app/vehiculo/vehiculo.dart';
-import 'package:carmind_app/home/home.dart';
-import 'package:carmind_app/login/login.dart';
-import 'package:carmind_app/formularios/formularios.dart';
-import 'package:carmind_app/profile/profile.dart';
-
-
 
 class CarMindNavigationBar extends StatelessWidget {
   CarMindNavigationBar({Key? key}) : super(key: key);
@@ -26,7 +23,7 @@ class CarMindNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
       });
@@ -103,7 +100,8 @@ class CarMindNavigationBar extends StatelessWidget {
               },
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) => (previous.showFab != current.showFab) || (previous.showDejarDeUsarVehiculo != current.showDejarDeUsarVehiculo),
+              buildWhen: (previous, current) =>
+                  (previous.showFab != current.showFab) || (previous.showDejarDeUsarVehiculo != current.showDejarDeUsarVehiculo),
               builder: (context, state) {
                 return SpeedDial(
                   openCloseDial: isDialOpen,
@@ -134,18 +132,18 @@ class CarMindNavigationBar extends StatelessWidget {
                       labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
                       onTap: () => onTapDialChild(0),
                     ),
-                    if(state.showDejarDeUsarVehiculo)
-                    SpeedDialChild(
-                      child: SvgPicture.asset(
-                        "assets/logout_vehicle.svg",
-                        width: 18,
-                        height: 18,
-                      ),
-                      backgroundColor: carMindGrey,
-                      foregroundColor: carMindPrimaryButton,
-                      labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
-                      onTap: () => onTapDialChild(1),
-                    )
+                    if (state.showDejarDeUsarVehiculo)
+                      SpeedDialChild(
+                        child: SvgPicture.asset(
+                          "assets/logout_vehicle.svg",
+                          width: 18,
+                          height: 18,
+                        ),
+                        backgroundColor: carMindGrey,
+                        foregroundColor: carMindPrimaryButton,
+                        labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
+                        onTap: () => onTapDialChild(1),
+                      )
                   ],
                 );
               },

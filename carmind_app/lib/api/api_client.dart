@@ -1,14 +1,13 @@
+import 'package:carmind_app/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
 
-import 'package:carmind_app/api/api.dart';
-
 part 'api_client.g.dart';
 
 //@RestApi(baseUrl: "http://localhost:8090/") // LOCAL
-@RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
-// @RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
+// @RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
+@RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 

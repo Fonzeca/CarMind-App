@@ -10,7 +10,7 @@ part of 'api_client.dart';
 
 class _ApiClient implements ApiClient {
   _ApiClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://66.97.44.3:2233/';
+    baseUrl ??= 'https://66.97.43.111:2233/';
   }
 
   final Dio _dio;
@@ -270,13 +270,15 @@ class _ApiClient implements ApiClient {
   @override
   Future<String> getLastVersionByPlatform(storeType) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'platform': storeType};
+    final queryParameters = <String, dynamic>{r'storeType': storeType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>?>(_setStreamType<String>(Options(method: 'GET', headers: _headers, extra: _extra)
-    .compose(_dio.options, '/public/lastVersion', queryParameters: queryParameters, data: _data)
-    .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = _result.data!["storeVersion"];
+    final _result = await _dio.fetch<String>(_setStreamType<String>(
+        Options(method: 'GET', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/public/lastVersion?platform={storeType}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data!;
     return value;
   }
 
