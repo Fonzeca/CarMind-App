@@ -46,8 +46,11 @@ class FormularioPreguntas extends StatelessWidget {
           if (state.preguntasRespondidas.length == evaluacion.preguntas!.length) {
             finishEvaluacionEnabled.value = true;
           }
-          if (state.evaluacionTerminada) {
+          if (state.evaluacionTerminada && !state.isErrorOnEvaluacionTerminada) {
             finalizarFormulario(context);
+          }
+          if (state.evaluacionTerminada && state.isErrorOnEvaluacionTerminada) {
+            EasyLoading.showError("No hay conexión a Internet");
           }
           if (state.mandandoEvaluacion) {
             EasyLoading.show();
@@ -197,5 +200,6 @@ class FormularioPreguntas extends StatelessWidget {
       ..add(const PopEvent())
       ..add(ShowFab());
   }
+
 }
 

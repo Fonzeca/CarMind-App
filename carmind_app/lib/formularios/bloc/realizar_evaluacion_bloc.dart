@@ -27,7 +27,7 @@ class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvalu
 
   RealizarEvaluacionBloc()
       : super(const RealizarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false)) {
+            evaluacionIniciada: false, evaluacionTerminada: false, isErrorOnEvaluacionTerminada: false,preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false)) {
     api = ApiClient(staticDio!);
 
     on<ValidarTextFieldEvent>((event, emit) async {
@@ -71,6 +71,7 @@ class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvalu
 
     on<FinalizarEvaluacionEvent>((event, emit) async {
       emit(state.copyWith(pMandandoEvaluacion: true));
+      bool isError = false;
 
       var sh = await SharedPreferences.getInstance();
 
@@ -83,21 +84,15 @@ class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvalu
 
         box.add(log);
       } else {
-        await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!).catchError((obj) {
-          switch (obj.runtimeType) {
-            case DioError:
-              // Here's the sample to get the failed response error code and message
-              final res = (obj as DioError).response;
-              log("Got error : ${res!.statusCode} -> ${res.statusMessage}");
-              break;
-            default:
-              break;
-          }
-        });
+        try{
+          await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!);
+        }catch(e){
+          isError = true;
+        }
       }
-
+      isError = true;
       emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: true, pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: []));
+          pMandandoEvaluacion: false, pEvaluacionTerminada: true, pIsErrorOnEvaluacionTerminada: isError,pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: []));
 
       respondidas = [];
       evaluacion = null;
