@@ -4,6 +4,7 @@ import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../api/pojo/login_pojo.dart';
 
@@ -22,6 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       EasyLoading.show();
       String email = event.email.trim();
       String pass = event.password.trim();
+      FirebaseCrashlytics.instance.setUserIdentifier(email);
 
       try{
         TokenLogin tokenLogin = await client.login(email, pass);
@@ -32,8 +34,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginOk());
         }
         EasyLoading.dismiss();
-      } on Exception catch(_){
+      } on Exception catch(e){
         removeToken();
+        FirebaseCrashlytics.instance.recordError(
+          'Detalles: ${e.toString()}',
+          StackTrace.current,
+          reason: 'Error al intentar logearse'
+        );
       }
 
     });

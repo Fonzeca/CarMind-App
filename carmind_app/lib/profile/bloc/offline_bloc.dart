@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/api/api.dart';
@@ -85,8 +84,12 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
           }
         });
       } catch (e) {
-        log(e.toString());
         emit(state.copyWith(loading: false));
+        FirebaseCrashlytics.instance.recordError(
+          'Detalles: ${e.toString()}',
+          StackTrace.current,
+          reason: 'Error al intentar sincronizar datos'
+        );
         return;
       }
 

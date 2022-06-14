@@ -114,6 +114,11 @@ class MyApp extends StatelessWidget {
     }, onError: (e, handler) {
       if(e.error is SocketException){
         EasyLoading.showError('No hay conexión a internet');
+        FirebaseCrashlytics.instance.recordError(
+          'Ruta: ${e.requestOptions.path.toString()} Mensaje: ${e.error.toString()}',
+          StackTrace.current,
+          reason: 'No hay conexión a internet'
+        );
       }else{
         Response r = e.response!;
         if (r.statusCode != 200) {

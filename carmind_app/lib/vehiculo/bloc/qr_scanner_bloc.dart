@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../api/api.dart';
 import '../../constants.dart';
@@ -53,6 +54,11 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
           await api.iniciarUso(idVehiculo);
         } catch (e) {
           emit(QrScannerInitial());
+          FirebaseCrashlytics.instance.recordError(
+            'Detalles: ${e.toString()}',
+            StackTrace.current,
+            reason: 'Error al intentar iniciar uso de un vehiculo'
+          );
           return;
         }
       }
