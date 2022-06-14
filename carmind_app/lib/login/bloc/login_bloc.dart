@@ -34,6 +34,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         EasyLoading.dismiss();
       } on Exception catch(_){
         removeToken();
+        EasyLoading.dismiss();
+        EasyLoading.showError('No Hay conexión a internet');
       }
 
     });
