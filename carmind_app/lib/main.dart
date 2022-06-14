@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -111,13 +112,17 @@ class MyApp extends StatelessWidget {
       }
       handler.next(r);
     }, onError: (e, handler) {
-      Response r = e.response!;
-      if (r.statusCode != 200) {
-        String message = r.data.toString();
-        if (r.data["message"] != null) {
-          message = r.data["message"].toString();
+      if(e.error is SocketException){
+        EasyLoading.showError('No hay conexión a internet');
+      }else{
+        Response r = e.response!;
+        if (r.statusCode != 200) {
+          String message = r.data.toString();
+          if (r.data["message"] != null) {
+            message = r.data["message"].toString();
+          }
+          EasyLoading.showError(message);
         }
-        EasyLoading.showError(message);
       }
       handler.next(e);
     }));

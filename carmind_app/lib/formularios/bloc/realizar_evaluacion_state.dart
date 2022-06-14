@@ -6,7 +6,6 @@ class RealizarEvaluacionState extends Equatable {
   final bool evaluacionIniciada;
   final bool mandandoEvaluacion;
   final bool evaluacionTerminada;
-  final bool isErrorOnEvaluacionTerminada;
   final bool isFieldEmptyError;
   final bool isFieldNotNumberError;
 
@@ -15,19 +14,17 @@ class RealizarEvaluacionState extends Equatable {
       required this.preguntaActual,
       required this.preguntasRespondidas,
       required this.evaluacionTerminada,
-      required this.isErrorOnEvaluacionTerminada,
       required this.mandandoEvaluacion,
       required this.isFieldEmptyError,
       required this.isFieldNotNumberError
       });
 
   RealizarEvaluacionState copyWith(
-      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? pIsErrorOnEvaluacionTerminada,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError}) {
+      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError}) {
     return RealizarEvaluacionState(
         preguntaActual: pPreguntaActual ?? preguntaActual,
         preguntasRespondidas: pPreguntasRespondidas ?? preguntasRespondidas,
         evaluacionTerminada: pEvaluacionTerminada ?? evaluacionTerminada,
-        isErrorOnEvaluacionTerminada: pIsErrorOnEvaluacionTerminada ?? isErrorOnEvaluacionTerminada,
         evaluacionIniciada: pEvaluaconIniciada ?? evaluacionIniciada,
         mandandoEvaluacion: pMandandoEvaluacion ?? mandandoEvaluacion,
         isFieldEmptyError: isFieldEmptyError ?? this.isFieldEmptyError,
@@ -36,5 +33,5 @@ class RealizarEvaluacionState extends Equatable {
   }
 
   @override
-  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada, isErrorOnEvaluacionTerminada,evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError];
+  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada,evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError];
 }
