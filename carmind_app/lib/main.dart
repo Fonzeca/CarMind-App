@@ -54,6 +54,12 @@ void main() async {
     await Hive.openBox<LogUso>('logUso');
     await Hive.openBox<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
 
+    //Setear el comportamineto a oofline off hasta que se implemente la función
+    var sh = await SharedPreferences.getInstance();
+    if (sh.getBool("offline") != null && sh.getBool("offline")!) {
+      sh.setBool("offline", false);
+    }
+
     runApp(MyApp());
   }, (error, stack) =>
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
