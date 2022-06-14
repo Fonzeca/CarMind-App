@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
-import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:dio/dio.dart';
 
+import 'package:carmind_app/main.dart';
 import '../../api/pojo/login_pojo.dart';
 
 part 'login_event.dart';
@@ -34,7 +35,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           emit(LoginOk());
         }
         EasyLoading.dismiss();
-      } on Exception catch(e){
+      } on DioError catch(e) {
+        removeToken();
+        FirebaseCrashlytics.instance.recordError(
+          'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',
+          StackTrace.current,
+          reason: 'No hay conexión a internet'
+        );
+      }on Exception catch(e){
         removeToken();
         FirebaseCrashlytics.instance.recordError(
           'Detalles: ${e.toString()}',
