@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,12 +21,15 @@ class IngresarEmail extends StatelessWidget {
     FormService formService = FormService();
     return BlocListener<NuevaConstrasenaBloc, NuevaContrasenaState>(
     listener: (context, state) async {
-        if (!state.inputChangedValue && state.email.isNotEmpty){
+        if (state.email.isNotEmpty){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NuevaConstrasena(child: IngresarCodigo(email: state.email), appBarTitle: 'Restaurar Contraseña',)));
         }
     },
     child: BlocBuilder<NuevaConstrasenaBloc, NuevaContrasenaState>(
       builder: (context, state) {
+      if(state.timeLeft == -1 && state.email.isEmpty){
+        BlocProvider.of<NuevaConstrasenaBloc>(context).add(StartCountEvent());
+      }
       return Form(
       key: formService.keyForm,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -42,17 +46,27 @@ class IngresarEmail extends StatelessWidget {
                   text: 'Restaurar contraseña',
                   shapeColor: carMindPrimaryButton, 
                   textColor: Colors.black, 
-                  onPressed: (){
+                  onPressed: (state.timeLeft > -1) ? null : (){
                     if ( formService.isValidForm() ){
-                       BlocProvider.of<NuevaConstrasenaBloc>(context).add(RestaurarContrasenaEvent(emailCon.text));
+                      BlocProvider.of<NuevaConstrasenaBloc>(context).add(RestaurarContrasenaEvent(emailCon.text));
                     }
                   }
-                )
+                ),
+                if(state.timeLeft >= 0 && state.timeLeft < 60)...[
+                  const SizedBox(height:30),
+                  const Text('Espera antes de volver a intentarlo'),
+                  const SizedBox(height:8),
+                  LinearProgressIndicator(
+                    value: state.timeLeft/60,
+                    backgroundColor: carMindTopBar,
+                    color: carMindPrimaryButton,
+                ),
+                ]
               ],
             ),
       );
         },
       ),
      );
-    }
+  }
 }
