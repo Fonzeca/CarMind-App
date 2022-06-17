@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../constants.dart';
 
@@ -186,7 +187,13 @@ class VehiculoEspecifico extends StatelessWidget {
         },
       );
       return DateFormat(dateTimeFormatNoSeconds).parse(logOk.fecha!).add(Duration(days: intervaloDias));
-    } catch (e) {}
+    } catch (e) {
+       FirebaseCrashlytics.instance.recordError(
+          'Detalles: ${e.toString()}',
+          StackTrace.current,
+          reason: 'Error al guardar la evaluacion localmente'
+        );
+    }
 
     return null;
   }

@@ -13,6 +13,14 @@ class RestaurarContrasenaEvent extends NuevaConstrasenaEvent{
   const RestaurarContrasenaEvent(this.email);
 }
 
+class StartCountEvent extends NuevaConstrasenaEvent{}
+
+class IncrementCountEvent extends NuevaConstrasenaEvent{
+  final double timeLeft;
+
+  const IncrementCountEvent(this.timeLeft);
+}
+
 class VerificarCodigoEvent extends NuevaConstrasenaEvent{
   final String email;
   final String codigo;

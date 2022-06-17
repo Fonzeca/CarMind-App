@@ -21,10 +21,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
     on<FormularioBuscarDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      
-
       var sh = await SharedPreferences.getInstance();
-
       if (sh.getBool("offline") != null && sh.getBool("offline")!) {
         var box = Hive.box<LogEvaluacion>("logs").values;
         logs = box.toList();

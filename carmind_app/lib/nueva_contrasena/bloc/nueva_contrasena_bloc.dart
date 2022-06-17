@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../api/api_client.dart';
 import '../../api/pojo/profile/recover_password_user.dart';
 import '../../main.dart';
+
 part 'nueva_contrasena_event.dart';
 part 'nueva_contrasena_state.dart';
 
@@ -10,10 +14,29 @@ class NuevaConstrasenaBloc extends Bloc<NuevaConstrasenaEvent, NuevaContrasenaSt
   NuevaConstrasenaBloc() : super(const NuevaConstrasenaInitial()) {
      final client = ApiClient(staticDio!);
 
-     on<RestaurarContrasenaEvent>((event, emit) async {
+    on<RestaurarContrasenaEvent>((event, emit) async {
         await client.recuperarContrasena(event.email);
-        emit(state.copyWith(email: event.email, inputChangedValue: false));
-  });
+        emit(state.copyWith(email: event.email, inputChangedValue: false, timeLeft: -1));
+    });
+
+    on<StartCountEvent>((event, emit){
+      double time = 0;
+      add(IncrementCountEvent(time));
+      Timer.periodic(const Duration(seconds: 1), 
+        (Timer timer) {
+          if(time >= 60){
+            time = -2;
+            timer.cancel();
+          }else{
+            time ++;
+          }
+          add(IncrementCountEvent(time));
+      });
+    });
+
+    on<IncrementCountEvent>((event, emit) async  {
+        emit(state.copyWith(timeLeft: event.timeLeft));
+    });
 
     on<VerificarCodigoEvent>((event, emit) async  {
       RecoverPasswordUserPojo pojo = RecoverPasswordUserPojo();

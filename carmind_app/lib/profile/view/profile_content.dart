@@ -139,7 +139,6 @@ class ProfileContent extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 19),
-                          offline_toggle(),
                           const SizedBox(height: 19),
                           BlocBuilder<OfflineBloc, OfflineState>(
                             builder: (context, state) {
@@ -182,30 +181,6 @@ class ProfileContent extends StatelessWidget {
       },
     );
   }
-
-  Widget offline_toggle() => BlocBuilder<OfflineBloc, OfflineState>(
-        builder: (context, state) {
-          return Row(
-            children: [
-              Image.asset(
-                "assets/offline_cloud.png",
-                color: state.offline ? Colors.black : Colors.grey,
-              ),
-              Switch(
-                value: state.offline,
-                onChanged: (valueChanged) {
-                  if (valueChanged) {
-                    BlocProvider.of<OfflineBloc>(context).add(SetOffline());
-                  } else {
-                    BlocProvider.of<OfflineBloc>(context).add(SetOnline());
-                  }
-                },
-              ),
-              Text(state.offline ? "Estas en modo sin internet" : "Estas en modo con internet")
-            ],
-          );
-        },
-      );
 
   Widget _buildLoading() {
     return Stack(

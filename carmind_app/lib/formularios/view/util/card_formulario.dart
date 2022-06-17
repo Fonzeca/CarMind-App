@@ -95,13 +95,14 @@ class CardFormulario extends StatelessWidget {
   String _readableDate() {
     var dateTimeForm = DateFormat(dateTimeFormat);
     var dateForm = DateFormat(dateFormat);
+    DateTime logDate = dateTimeForm.parse(log!.fecha!);
     String todayDate = dateForm.format(DateTime.now());
     String yesterdayDate = dateForm.format(DateTime.now().subtract(const Duration(days: 1)));
-    String logDate = dateForm.format(dateTimeForm.parse(log!.fecha!));
-    int isToday = logDate.compareTo(todayDate);
-    int isYesterday = logDate.compareTo(yesterdayDate);
-    if (isToday == 0) return 'Hoy';
-    if (isYesterday == 0) return 'Ayer';
+    String logDateString = dateForm.format(logDate);
+    int isToday = logDateString.compareTo(todayDate);
+    int isYesterday = logDateString.compareTo(yesterdayDate);
+    if (isToday == 0) return 'Hoy ${logDate.hour}:${logDate.minute}';
+    if (isYesterday == 0) return 'Ayer ${logDate.hour}:${logDate.minute}';
     return log!.fecha!;
   }
 }

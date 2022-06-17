@@ -4,7 +4,6 @@ class RealizarEvaluacionState extends Equatable {
   final int preguntaActual;
   final List<int> preguntasRespondidas;
   final bool evaluacionIniciada;
-
   final bool mandandoEvaluacion;
   final bool evaluacionTerminada;
   final bool isFieldEmptyError;
@@ -21,7 +20,7 @@ class RealizarEvaluacionState extends Equatable {
       });
 
   RealizarEvaluacionState copyWith(
-      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError}) {
+      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError}) {
     return RealizarEvaluacionState(
         preguntaActual: pPreguntaActual ?? preguntaActual,
         preguntasRespondidas: pPreguntasRespondidas ?? preguntasRespondidas,
@@ -34,5 +33,5 @@ class RealizarEvaluacionState extends Equatable {
   }
 
   @override
-  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada, evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError];
+  List<Object> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada,evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError];
 }

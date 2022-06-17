@@ -83,21 +83,11 @@ class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvalu
 
         box.add(log);
       } else {
-        await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!).catchError((obj) {
-          switch (obj.runtimeType) {
-            case DioError:
-              // Here's the sample to get the failed response error code and message
-              final res = (obj as DioError).response;
-              log("Got error : ${res!.statusCode} -> ${res.statusMessage}");
-              break;
-            default:
-              break;
-          }
-        });
+        await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!);
       }
 
       emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: true, pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: []));
+          pMandandoEvaluacion: false, pEvaluacionTerminada: true,pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: []));
 
       respondidas = [];
       evaluacion = null;

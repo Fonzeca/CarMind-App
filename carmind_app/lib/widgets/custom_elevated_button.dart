@@ -5,7 +5,7 @@ class CustomElevatedButton extends StatelessWidget {
   final Color shapeColor;
   final Color textColor;
   final String text;
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   const CustomElevatedButton({Key? key, required this.shapeColor, required this.onPressed, required this.textColor, required this.text}) : super(key: key);
 
@@ -16,11 +16,11 @@ class CustomElevatedButton extends StatelessWidget {
               height: 45,
               child: ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(shapeColor),
+                  backgroundColor: MaterialStateProperty.all(onPressed != null ? shapeColor : Colors.grey[10]),
                   textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 ),
                 onPressed: onPressed,
-                child: Text(text, style: TextStyle(color: textColor)),
+                child: Text(text, style: TextStyle(color: onPressed != null ? textColor : Colors.grey[1])),
               ),
             );
   }
