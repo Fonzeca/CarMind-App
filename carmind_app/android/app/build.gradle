@@ -33,6 +33,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion flutter.compileSdkVersion
+    ndkPath = "C:/NVPACK/android-sdk-windows/ndk/24.0.8215888"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -68,6 +69,9 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
         }
     }
 }
