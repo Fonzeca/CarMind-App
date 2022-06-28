@@ -31,7 +31,7 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         bool? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
-        if (savedResponse != null) {
+        if (savedResponse != null && state.isRestoredData) {
           tickCorrecto = savedResponse;
           preguntaFinalizada = true;
         }

@@ -10,7 +10,7 @@ class RealizarEvaluacionState extends Equatable {
   final bool isFieldEmptyError;
   final bool isFieldNotNumberError;
   final EvaluacionTerminadaPojo? evaluacion;
-  final XFile? restoredData;
+  final bool isRestoredData;
 
   const RealizarEvaluacionState(
       {required this.evaluacionIniciada,
@@ -21,11 +21,11 @@ class RealizarEvaluacionState extends Equatable {
       required this.isFieldEmptyError,
       required this.isFieldNotNumberError,
       this.evaluacion,
-      this.restoredData
+      required this.isRestoredData
       });
 
   RealizarEvaluacionState copyWith(
-      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError,EvaluacionTerminadaPojo? evaluacion, XFile? restoredData, bool? resetCache}) {
+      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError,EvaluacionTerminadaPojo? evaluacion, bool? resetCache, bool isRestoredData = false}) {
     return RealizarEvaluacionState(
         preguntaActual: pPreguntaActual ?? preguntaActual,
         preguntasRespondidas: pPreguntasRespondidas ?? preguntasRespondidas,
@@ -34,13 +34,13 @@ class RealizarEvaluacionState extends Equatable {
         mandandoEvaluacion: pMandandoEvaluacion ?? mandandoEvaluacion,
         isFieldEmptyError: isFieldEmptyError ?? this.isFieldEmptyError,
         isFieldNotNumberError: isFieldNotNumberError ?? this.isFieldNotNumberError,
-        evaluacion: (resetCache != null && resetCache ) ? null : (evaluacion ?? this.evaluacion) ,
-        restoredData: (resetCache != null && resetCache ) ? null : (restoredData ?? this.restoredData),
+        evaluacion: (resetCache != null && resetCache ) ? null : (evaluacion ?? this.evaluacion),
+        isRestoredData: isRestoredData
         );
   }
 
   @override
-  List<Object?> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada,evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError, evaluacion, restoredData];
+  List<Object?> get props => [preguntaActual, preguntasRespondidas, evaluacionIniciada,evaluacionTerminada, mandandoEvaluacion, isFieldEmptyError, isFieldNotNumberError, evaluacion, isRestoredData];
   
 
   Map<String, dynamic> toMap() {
@@ -67,7 +67,8 @@ class RealizarEvaluacionState extends Equatable {
       evaluacionTerminada: map['evaluacionTerminada'] ?? false,
       isFieldEmptyError: map['isFieldEmptyError'] ?? false,
       isFieldNotNumberError: map['isFieldNotNumberError'] ?? false,
-      evaluacion: EvaluacionTerminadaPojo.fromJson(map['evaluacion'])
+      evaluacion: EvaluacionTerminadaPojo.fromJson(map['evaluacion']),
+      isRestoredData: false
     );
   }
 

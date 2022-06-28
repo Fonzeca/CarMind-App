@@ -23,7 +23,7 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         String? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
-        if (savedResponse != null) {
+        if (savedResponse != null && state.isRestoredData) {
           controller.text = savedResponse;
           preguntaFinalizada = true;
         }

@@ -27,7 +27,7 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         bool? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
-         if (savedResponse != null) {
+         if (savedResponse != null && state.isRestoredData) {
            preguntaFinalizada = true;
         }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);

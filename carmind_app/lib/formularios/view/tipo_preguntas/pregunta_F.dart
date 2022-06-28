@@ -30,18 +30,14 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-    
+
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
-        if(state.restoredData != null){
-          _photoToString(state.restoredData!);
-          photoName = state.restoredData!.name;
-          preguntaFinalizada = true;
-          reconstruye.value = !reconstruye.value;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            FormularioPreguntas.scrollToId?.animateTo(pregunta.id.toString(), duration: const Duration(milliseconds: 100), curve: Curves.ease);
-          });
+        String? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
+        if(savedResponse != null && state.isRestoredData){
+          photoName = savedResponse;
+          preguntaFinalizada = true;     //reconstruye.value = !reconstruye.value;
         }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(
@@ -147,6 +143,11 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
     var imageBytes = await photo.readAsBytes();
     photoBase64 = base64Encode(imageBytes);
   }
+
+  String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
+    if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
+  }
+
 
   @override
   RespuestaPojo setearRespuesta() {

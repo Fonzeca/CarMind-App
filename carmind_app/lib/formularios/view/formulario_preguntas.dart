@@ -208,7 +208,7 @@ class FormularioPreguntas extends StatelessWidget {
       return;
     }
     if (response.files != null) {
-      realizarEvaluacionBloc.add(RestoreDataEvent(response.files![0]));
+      realizarEvaluacionBloc.add(RestoreDataEvent(evaluacion, vehiculo, response.files![0]));
     } else {
       EasyLoading.showError(noMemoryError);
       FirebaseCrashlytics.instance.recordError(

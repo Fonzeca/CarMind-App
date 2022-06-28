@@ -46,6 +46,8 @@ class ValidarTextFieldEvent extends RealizarEvaluacionEvent {
 
 class RestoreDataEvent extends RealizarEvaluacionEvent {
   final XFile restoredData;
+  final Evaluacion evaluacion;
+  final Vehiculo vehiculo;
 
-  const RestoreDataEvent(this.restoredData);
+  const RestoreDataEvent(this.evaluacion, this.vehiculo, this.restoredData);
 }

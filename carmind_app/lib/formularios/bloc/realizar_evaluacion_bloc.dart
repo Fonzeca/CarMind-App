@@ -29,7 +29,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
 
   RealizarEvaluacionBloc()
       : super(const RealizarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false)) {
+            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false, isRestoredData: false)) {
     api = ApiClient(staticDio!);
 
     on<ValidarTextFieldEvent>((event, emit) async {
@@ -52,7 +52,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       evaluacionTerminada!.respuestas = [];
 
       //Obtenemos la proxima pregunta
-      int proxima = obtenerPreguntaActual();
+      int proxima = obtenerPreguntaNoRespondida();
 
       //Scrolleamos a la primera pregunta
       FormularioPreguntas.scrollToId?.animateTo(proxima.toString(), duration: const Duration(milliseconds: 300), curve: Curves.ease);
@@ -64,7 +64,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       respondidas.add(event.preguntaId);
       evaluacionTerminada!.respuestas!.add(event.respuesta);
 
-      int proxima = obtenerPreguntaActual();
+      int proxima = obtenerPreguntaNoRespondida();
 
       Future.delayed(const Duration(milliseconds: 100), () {
         FormularioPreguntas.scrollToId?.animateTo(proxima.toString(), duration: const Duration(milliseconds: 300), curve: Curves.ease);
@@ -95,18 +95,27 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       evaluacion = null;
       
       emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: true,pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], evaluacion: evaluacionTerminada, restoredData: null));
+          pMandandoEvaluacion: false, pEvaluacionTerminada: true,pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], resetCache: true));
 
     });
 
     on<RestoreDataEvent>((event, emit) async {
-      emit(state.copyWith(restoredData: event.restoredData));
+      emit(state.copyWith(isRestoredData: true));
+      evaluacion = event.evaluacion;
+      evaluacionTerminada = state.evaluacion;
+      respondidas = state.evaluacion!.respuestas!.map((respuesta) => respuesta.pregunta_id!).toList();
+      RespuestaPojo respuesta = RespuestaPojo();
+      var imageBytes = await event.restoredData.readAsBytes();
+      respuesta.pregunta_id = obtenerPreguntaNoRespondida();
+      respuesta.base64_image = base64Encode(imageBytes);
+      respuesta.texto = event.restoredData.name;
+      add(FinalizarPreguntaEvent(respuesta.pregunta_id! , respuesta));
     });
+
 }
 
-  int obtenerPreguntaActual() {
+  int obtenerPreguntaNoRespondida() {
     int proxima = -1;
-
     evaluacion!.preguntas!.asMap().forEach((ii, pregunta) {
       if (proxima == -1 && !respondidas.contains(pregunta.id)) {
         proxima = pregunta.id!;
@@ -120,5 +129,5 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
   RealizarEvaluacionState? fromJson(Map<String, dynamic> json) => RealizarEvaluacionState.fromMap(json);
   
   @override
-  Map<String, dynamic>? toJson(RealizarEvaluacionState state) => state.toMap();
+  Map<String, dynamic>? toJson(RealizarEvaluacionState state) => evaluacionTerminada != null ? state.toMap() :  null;
 }
