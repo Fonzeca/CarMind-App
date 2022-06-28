@@ -25,12 +25,13 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
       });
     });
+    
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
@@ -95,8 +96,8 @@ class CarMindNavigationBar extends StatelessWidget {
                     return Container();
                   case 4:
                     return FormularioPreguntas(
-                      evalua: state.data[0],
-                      vehiculo: state.data[1],
+                      evaluacion: state.evaluacion!,
+                      vehiculo: state.vehiculo!,
                     );
                 }
                 return Container();
@@ -197,4 +198,5 @@ class CarMindNavigationBar extends StatelessWidget {
     Navigator.push(context!, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
   }
+
 }

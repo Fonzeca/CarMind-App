@@ -103,7 +103,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
       }
 
       BlocProvider.of<HomeBloc>(event.context)
-        ..add(HomeNavigationEvent(4, data: [ev, vehiculo]))
+        ..add(HomeNavigationEvent(4, evaluacion: ev, vehiculo: vehiculo))
         ..add(HideFab());
 
       vehiculo = null;

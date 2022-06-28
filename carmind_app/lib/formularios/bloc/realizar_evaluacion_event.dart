@@ -43,3 +43,9 @@ class ValidarTextFieldEvent extends RealizarEvaluacionEvent {
   @override
   List<Object> get props => [isFieldEmptyError, isFieldNotNumberError];
 }
+
+class RestoreDataEvent extends RealizarEvaluacionEvent {
+  final XFile restoredData;
+
+  const RestoreDataEvent(this.restoredData);
+}

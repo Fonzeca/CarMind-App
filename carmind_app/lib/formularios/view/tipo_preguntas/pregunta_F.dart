@@ -30,10 +30,16 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
+        final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
+        if(state.restoredData != null){
+          FormularioPreguntas.scrollToId?.animateTo(pregunta.id.toString(), duration: const Duration(milliseconds: 100), curve: Curves.ease);
+          _photoToString(state.restoredData!);
+          preguntaFinalizada = true;
+        }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
-
         return PreguntaBase(
           preguntaEnabled: preguntaEnabled!,
           child: Column(
@@ -58,17 +64,17 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                   onTap: preguntaEnabled!
                       ? () async {
                           try {
+
                             final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
 
                             if (photo != null) {
                               photoName = photo.name;
 
-                              var imageBytes = await photo.readAsBytes();
-                              photoBase64 = base64Encode(imageBytes);
+                              _photoToString(photo);
 
                               preguntaFinalizada = true;
                               reconstruye.value = !reconstruye.value;
-                              BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                              realizarEvaluacionBloc.add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                             }
                           } on PlatformException catch (e) {
                             EasyLoading.showError(e.message ?? "Error en camara");
@@ -131,6 +137,11 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
         );
       },
     );
+  }
+
+  void _photoToString(XFile photo) async {
+    var imageBytes = await photo.readAsBytes();
+    photoBase64 = base64Encode(imageBytes);
   }
 
   @override

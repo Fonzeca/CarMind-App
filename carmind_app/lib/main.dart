@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:carmind_app/constants.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -59,8 +62,14 @@ void main() async {
     if (sh.getBool("offline") != null && sh.getBool("offline")!) {
       sh.setBool("offline", false);
     }
-
-    runApp(MyApp());
+    
+    final storage = await HydratedStorage.build(
+    storageDirectory: await getTemporaryDirectory(),
+    );
+    HydratedBlocOverrides.runZoned(
+      () => runApp(MyApp()),
+      storage: storage,
+  );
   }, (error, stack) =>
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
@@ -119,11 +128,11 @@ class MyApp extends StatelessWidget {
       handler.next(r);
     }, onError: (e, handler) {
       if(e.error is SocketException){
-        EasyLoading.showError('No hay conexión a internet');
+        EasyLoading.showError(noInternet);
         FirebaseCrashlytics.instance.recordError(
           'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',
           StackTrace.current,
-          reason: 'No hay conexión a internet'
+          reason: noInternet
         );
       }else{
         Response r = e.response!;

@@ -1,10 +1,12 @@
 import 'package:carmind_app/home/home.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:scroll_to_id/scroll_to_id.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../constants.dart';
 import '../../widgets/widgets.dart';
@@ -18,10 +20,7 @@ class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
   final Vehiculo vehiculo;
 
-  FormularioPreguntas({Key? key, required dynamic evalua, required this.vehiculo})
-      : assert(evalua is Evaluacion),
-        evaluacion = evalua,
-        super(key: key);
+  FormularioPreguntas({Key? key, required  this.evaluacion, required this.vehiculo}): super(key: key);
 
   static ScrollController? controller;
   static ScrollToId? scrollToId;
@@ -36,7 +35,8 @@ class FormularioPreguntas extends StatelessWidget {
     controller = ScrollController();
     scrollToId = ScrollToId(scrollController: controller);
 
-    BlocProvider.of<RealizarEvaluacionBloc>(context).add(IniciarEvaluacionEvent(evaluacion, vehiculo));
+    _checkIfImagePickerCrashed(context);
+
     return Scaffold(
       appBar: CustomAppBar(
         onPressed: () => BlocProvider.of<HomeBloc>(context).add(const PopEvent()),
@@ -197,6 +197,28 @@ class FormularioPreguntas extends StatelessWidget {
       ..add(const PopEvent())
       ..add(ShowFab());
   }
+
+  Future<void> _checkIfImagePickerCrashed(BuildContext context) async {
+    final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
+    final ImagePicker picker = ImagePicker();
+    final LostDataResponse response =
+        await picker.retrieveLostData();
+    if (response.isEmpty) {
+      realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));
+      return;
+    }
+    if (response.files != null) {
+      realizarEvaluacionBloc.add(RestoreDataEvent(response.files![0]));
+    } else {
+      EasyLoading.showError(noMemoryError);
+      FirebaseCrashlytics.instance.recordError(
+          'Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}',
+          StackTrace.current,
+          reason: noMemoryError
+        );
+    }
+  }
+
 
 }
 

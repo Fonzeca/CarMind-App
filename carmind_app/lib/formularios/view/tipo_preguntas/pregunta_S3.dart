@@ -8,12 +8,12 @@ import 'package:carmind_app/formularios/formularios.dart';
 
 class PreguntaS3 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
-
+  final int? respuesta;
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
 
   TextEditingController controller = TextEditingController();
 
-  PreguntaS3({Key? key, required this.pregunta}) : super(key: key);
+  PreguntaS3({Key? key, required this.pregunta, this.respuesta}) : super(key: key);
 
   bool? preguntaEnabled;
 
@@ -30,8 +30,12 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
   Widget build(BuildContext context) {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
+        bool? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
+        if (savedResponse != null) {
+          tickCorrecto = savedResponse;
+          preguntaFinalizada = true;
+        }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
-
         return PreguntaBase(
           preguntaEnabled: preguntaEnabled!,
           child: Column(
@@ -92,7 +96,6 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
                               ? () async {
                                   tickCorrecto = false;
                                   reconstruye.value = !reconstruye.value;
-
                                   await Future.delayed(const Duration(milliseconds: 200));
                                   muestraNota = true;
                                   terminaNota = false;
@@ -179,4 +182,8 @@ class PreguntaS3 extends StatelessWidget with PreguntaInterface {
     }
     return res;
   }
+}
+
+bool? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
+  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
 }

@@ -10,9 +10,10 @@ import 'package:carmind_app/formularios/formularios.dart';
 
 class PreguntaS1 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
+  final int? respuesta;
   ValueNotifier<bool> reconstruye = ValueNotifier(false);
 
-  PreguntaS1({Key? key, required this.pregunta}) : super(key: key);
+  PreguntaS1({Key? key, required this.pregunta, this.respuesta}) : super(key: key);
 
   bool? preguntaEnabled;
 
@@ -24,8 +25,11 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
   Widget build(BuildContext context) {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
+        bool? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
+        if (savedResponse != null) {
+          preguntaFinalizada = true;
+        }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
-
         return PreguntaBase(
           preguntaEnabled: preguntaEnabled!,
           child: Column(
@@ -174,4 +178,8 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
     res.opciones = list;
     return res;
   }
+}
+
+bool? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
+  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
 }

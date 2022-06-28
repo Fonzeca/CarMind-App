@@ -1,14 +1,16 @@
-import 'package:bloc/bloc.dart';
+import 'dart:convert';
+import 'package:carmind_app/api/api.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
-class HomeBloc extends Bloc<HomeEvent, HomeState> {
+class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
   List<int> pageHistorial = [0];
 
-  HomeBloc() : super(HomeInitial()) {
+  HomeBloc() : super(const HomeInitial()) {
     on<HomeNavigationEvent>((event, emit) {
       int indexPageView = event.buttonId;
       int indexNavButton = resolveNavButton(event.buttonId);
@@ -17,7 +19,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         pageHistorial.add(indexPageView);
       }
 
-      emit(state.copyWith(selectedPageView: pageHistorial.last, selectedNavButton: indexNavButton, data: event.data));
+      emit(state.copyWith(selectedPageView: pageHistorial.last, selectedNavButton: indexNavButton, vehiculo: event.vehiculo, evaluacion: event.evaluacion));
     });
 
     on<PopEvent>((event, emit) {
@@ -48,7 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var shr = await SharedPreferences.getInstance();
       shr.remove("token");
       shr.remove("on_boarding_finish");
-      emit(HomeLogoutState());
+      emit(const HomeLogoutState());
     });
   }
 
@@ -73,4 +75,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
     return indexNavButton;
   }
+  
+  @override
+  HomeState? fromJson(Map<String, dynamic> json) => HomeState.fromMap(json);
+  
+  @override
+  Map<String, dynamic>? toJson(HomeState state) => state.toMap();
 }

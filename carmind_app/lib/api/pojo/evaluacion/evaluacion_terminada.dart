@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,7 +6,7 @@ part 'evaluacion_terminada.g.dart';
 
 @JsonSerializable()
 @HiveType(typeId: 11)
-class EvaluacionTerminadaPojo {
+class EvaluacionTerminadaPojo extends Equatable {
   @HiveField(0)
   int? vehiculo_id;
 
@@ -16,11 +17,15 @@ class EvaluacionTerminadaPojo {
 
   factory EvaluacionTerminadaPojo.fromJson(Map<String, dynamic> json) => _$EvaluacionTerminadaPojoFromJson(json);
   Map<String, dynamic> toJson() => _$EvaluacionTerminadaPojoToJson(this);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [vehiculo_id, respuestas];
 }
 
 @JsonSerializable()
 @HiveType(typeId: 12)
-class RespuestaPojo {
+class RespuestaPojo extends Equatable{
   @HiveField(0)
   int? pregunta_id;
 
@@ -40,11 +45,15 @@ class RespuestaPojo {
 
   factory RespuestaPojo.fromJson(Map<String, dynamic> json) => _$RespuestaPojoFromJson(json);
   Map<String, dynamic> toJson() => _$RespuestaPojoToJson(this);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [pregunta_id, tick_correcto, base64_image, texto, opciones];
 }
 
 @JsonSerializable()
 @HiveType(typeId: 13)
-class RespuestaOpcionPojo {
+class RespuestaOpcionPojo extends Equatable {
   @HiveField(0)
   int? opcion_id;
 
@@ -55,4 +64,8 @@ class RespuestaOpcionPojo {
 
   factory RespuestaOpcionPojo.fromJson(Map<String, dynamic> json) => _$RespuestaOpcionPojoFromJson(json);
   Map<String, dynamic> toJson() => _$RespuestaOpcionPojoToJson(this);
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => [opcion_id, tick_correcto];
 }

@@ -23,6 +23,11 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
   Widget build(BuildContext context) {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
+        String? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
+        if (savedResponse != null) {
+          controller.text = savedResponse;
+          preguntaFinalizada = true;
+        }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(
           preguntaEnabled: preguntaEnabled!,
@@ -44,7 +49,6 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                     width: double.infinity,
                     height: 64,
                     child: TextField(
-
                       minLines: null,
                       maxLines: 1,
                       textAlign: TextAlign.start,
@@ -150,4 +154,8 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
     return int.tryParse(controller.text) == null;
   }
 
+}
+
+String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
+  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
 }
