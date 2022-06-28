@@ -43,7 +43,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     on<IniciarEvaluacionEvent>((event, emit) {
       //Steamos en 0 las variables
       emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: false, pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], restoredData: null, evaluacion: null));
+          pMandandoEvaluacion: false, pEvaluacionTerminada: false, pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], resetCache: true));
       
       respondidas = [];
       evaluacion = event.evaluacion;

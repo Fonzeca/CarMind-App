@@ -25,7 +25,7 @@ class RealizarEvaluacionState extends Equatable {
       });
 
   RealizarEvaluacionState copyWith(
-      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError, EvaluacionTerminadaPojo? evaluacion, XFile? restoredData}) {
+      {int? pPreguntaActual, List<int>? pPreguntasRespondidas, bool? pEvaluaconIniciada, bool? pEvaluacionTerminada, bool? p,bool? pMandandoEvaluacion, bool? isFieldEmptyError, bool? isFieldNotNumberError,EvaluacionTerminadaPojo? evaluacion, XFile? restoredData, bool? resetCache}) {
     return RealizarEvaluacionState(
         preguntaActual: pPreguntaActual ?? preguntaActual,
         preguntasRespondidas: pPreguntasRespondidas ?? preguntasRespondidas,
@@ -34,8 +34,8 @@ class RealizarEvaluacionState extends Equatable {
         mandandoEvaluacion: pMandandoEvaluacion ?? mandandoEvaluacion,
         isFieldEmptyError: isFieldEmptyError ?? this.isFieldEmptyError,
         isFieldNotNumberError: isFieldNotNumberError ?? this.isFieldNotNumberError,
-        evaluacion: evaluacion ?? this.evaluacion,
-        restoredData: restoredData ?? this.restoredData
+        evaluacion: (resetCache != null && resetCache ) ? null : (evaluacion ?? this.evaluacion) ,
+        restoredData: (resetCache != null && resetCache ) ? null : (restoredData ?? this.restoredData),
         );
   }
 

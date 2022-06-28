@@ -35,9 +35,13 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
       builder: (context, state) {
         final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
         if(state.restoredData != null){
-          FormularioPreguntas.scrollToId?.animateTo(pregunta.id.toString(), duration: const Duration(milliseconds: 100), curve: Curves.ease);
           _photoToString(state.restoredData!);
+          photoName = state.restoredData!.name;
           preguntaFinalizada = true;
+          reconstruye.value = !reconstruye.value;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            FormularioPreguntas.scrollToId?.animateTo(pregunta.id.toString(), duration: const Duration(milliseconds: 100), curve: Curves.ease);
+          });
         }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(
