@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:carmind_app/constants.dart';
+import 'package:carmind_app/formularios/bloc/pregunta_KM_bloc.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
@@ -97,7 +98,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => HomeBloc()),
         BlocProvider(create: (context) => LoginBloc()),
-         BlocProvider(create: (context) => NuevaConstrasenaBloc()),
+        BlocProvider(create: (context) => NuevaConstrasenaBloc()),
         BlocProvider(create: (context) => FormularioBloc()),
         BlocProvider(create: (context) => RealizarEvaluacionBloc()),
         BlocProvider(create: (context) => QrScannerBloc()),

@@ -32,14 +32,6 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
             evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false, isRestoredData: false)) {
     api = ApiClient(staticDio!);
 
-    on<ValidarTextFieldEvent>((event, emit) async {
-        emit(state.copyWith(
-           isFieldEmptyError: event.isFieldEmptyError,
-           isFieldNotNumberError: event.isFieldNotNumberError
-        ));
-
-    });
-
     on<IniciarEvaluacionEvent>((event, emit) {
       //Steamos en 0 las variables
       emit(state.copyWith(

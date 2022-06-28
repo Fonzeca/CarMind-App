@@ -34,17 +34,6 @@ class FinalizarEvaluacionEvent extends RealizarEvaluacionEvent {
   @override
   List<Object> get props => [];
 }
-
-class ValidarTextFieldEvent extends RealizarEvaluacionEvent {
-  final bool isFieldEmptyError;
-  final bool isFieldNotNumberError;
-
-  const ValidarTextFieldEvent(this.isFieldEmptyError, this.isFieldNotNumberError);
-
-  @override
-  List<Object> get props => [isFieldEmptyError, isFieldNotNumberError];
-}
-
 class RestoreDataEvent extends RealizarEvaluacionEvent {
   final XFile restoredData;
   final Evaluacion evaluacion;

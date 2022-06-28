@@ -1,3 +1,4 @@
+import 'package:carmind_app/formularios/bloc/pregunta_KM_bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +14,11 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
 
   PreguntaKM({Key? key, required this.pregunta}) : super(key: key);
 
+  final PreguntaKMBloc textBloc = PreguntaKMBloc();
+
   bool? preguntaEnabled;
 
   bool preguntaFinalizada = false;
-
-  Color errorColor = Colors.red;
 
   @override
   Widget build(BuildContext context) {
@@ -48,32 +49,37 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                   SizedBox(
                     width: double.infinity,
                     height: 64,
-                    child: TextField(
-                      minLines: null,
-                      maxLines: 1,
-                      textAlign: TextAlign.start,
-                      keyboardType: TextInputType.number,
-                      textAlignVertical: TextAlignVertical.top,
-                      controller: controller,
-                      enabled: preguntaEnabled!,
-                      onChanged: (value) {
-                        preguntaFinalizada = false;
-                        reconstruye.value = !reconstruye.value;
-                         BlocProvider.of<RealizarEvaluacionBloc>(context).add(ValidarTextFieldEvent(_isFieldEmptyError(), _isFieldNotNumberError()));
-                      },
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                      decoration:   InputDecoration(
-                        border:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        focusedBorder:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                        contentPadding:  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        hintText: "Añadir kilometraje...",
-                        errorText: (state.isFieldEmptyError || state.isFieldNotNumberError) ? _errorTextToShow() : null,
-                        errorStyle: TextStyle(color: errorColor),
-                        errorBorder: _renderBorder(state),
-                        enabledBorder: _renderBorder(state),
-                        focusedErrorBorder: _renderBorder(state)
-                      ),
-                      
+                    child: StreamBuilder(
+                      stream: textBloc.textStream,
+                      builder: (ctxt, AsyncSnapshot<String> textStream){
+                        return TextField(
+                          minLines: null,
+                          maxLines: 1,
+                          textAlign: TextAlign.start,
+                          keyboardType: TextInputType.number,
+                          textAlignVertical: TextAlignVertical.top,
+                          controller: controller,
+                          enabled: preguntaEnabled!,
+                          onChanged: (value) {
+                            preguntaFinalizada = false;
+                            reconstruye.value = !reconstruye.value;
+                            textBloc.updateText(value);
+                          },
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                          decoration:   InputDecoration(
+                            border:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                            focusedBorder:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                            contentPadding:  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                            hintText: "Añadir kilometraje...",
+                            errorText: textStream.hasError ? textStream.error.toString() : null,
+                            errorStyle: TextStyle(color: textBloc.errorColor),
+                            errorBorder: _renderBorder(state),
+                            enabledBorder: _renderBorder(state),
+                            focusedErrorBorder: _renderBorder(state)
+                          ),
+                          
+                        );
+                      }
                     ),
                     
                   ),
@@ -85,7 +91,7 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
-                            onPressed: preguntaEnabled! && !state.isFieldEmptyError && !state.isFieldNotNumberError
+                            onPressed: preguntaEnabled! && !textBloc.hasError
                                 ? () {
                                     preguntaFinalizada = true;
                                     reconstruye.value = !reconstruye.value;
@@ -126,33 +132,9 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
   UnderlineInputBorder _renderBorder(RealizarEvaluacionState state) =>
       UnderlineInputBorder(
         borderSide: BorderSide(
-            color: (state.isFieldEmptyError || state.isFieldNotNumberError) ? errorColor : Colors.black,
+            color: textBloc.errorColor,
             width: 1),
       );
-
-
-  String _errorTextToShow(){
-
-    if( _isFieldEmptyError()){
-      errorColor = const Color(0xFF6F6F6F);
-      return "Este campo no puede estar vacío";
-    } 
-
-    if(_isFieldNotNumberError()){
-      errorColor = Colors.red;
-      return  "Debes ingresar un número válido";
-    } 
-
-    return "";
-  }
-
-  bool _isFieldEmptyError(){
-    return controller.text.isEmpty;
-  }
-
-  bool _isFieldNotNumberError(){
-    return int.tryParse(controller.text) == null;
-  }
 
 }
 
