@@ -30,12 +30,11 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
         final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
-        String? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
-        if(savedResponse != null && state.isRestoredData){
+        String? savedResponse = state.isRestoredData ? _getSavedResponse(state.evaluacion, pregunta.id) : null;
+        if(savedResponse != null){
           photoName = savedResponse;
           preguntaFinalizada = true;     //reconstruye.value = !reconstruye.value;
         }

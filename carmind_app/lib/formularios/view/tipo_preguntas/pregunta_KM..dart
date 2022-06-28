@@ -23,12 +23,10 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
   Widget build(BuildContext context) {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
-        String? savedResponse =_getSavedResponse(state.evaluacion, pregunta.id);
-        if (savedResponse != null && state.isRestoredData) {
+        String? savedResponse = state.isRestoredData ? _getSavedResponse(state.evaluacion, pregunta.id) : null;
+        if (savedResponse != null) {
           controller.text = savedResponse;
           preguntaFinalizada = true;
-        }else if(!state.isRestoredData ){
-          controller.text = '';
         }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(

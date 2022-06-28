@@ -70,7 +70,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
         FormularioPreguntas.scrollToId?.animateTo(proxima.toString(), duration: const Duration(milliseconds: 300), curve: Curves.ease);
       });
 
-      emit(state.copyWith(pPreguntasRespondidas: respondidas, pPreguntaActual: proxima, evaluacion: evaluacionTerminada));
+      emit(state.copyWith(pPreguntasRespondidas: respondidas, pPreguntaActual: proxima, evaluacion: evaluacionTerminada, isRestoredData: event.isRestoredData ? true : false));
     });
 
     on<FinalizarEvaluacionEvent>((event, emit) async {
@@ -100,7 +100,6 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     });
 
     on<RestoreDataEvent>((event, emit) async {
-      emit(state.copyWith(isRestoredData: true));
       evaluacion = event.evaluacion;
       evaluacionTerminada = state.evaluacion;
       respondidas = state.evaluacion!.respuestas!.map((respuesta) => respuesta.pregunta_id!).toList();
@@ -109,7 +108,7 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       respuesta.pregunta_id = obtenerPreguntaNoRespondida();
       respuesta.base64_image = base64Encode(imageBytes);
       respuesta.texto = event.restoredData.name;
-      add(FinalizarPreguntaEvent(respuesta.pregunta_id! , respuesta));
+      add(FinalizarPreguntaEvent(respuesta.pregunta_id! , respuesta, isRestoredData: true));
     });
 
 }

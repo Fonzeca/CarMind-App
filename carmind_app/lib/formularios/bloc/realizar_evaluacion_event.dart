@@ -20,8 +20,9 @@ class IniciarEvaluacionEvent extends RealizarEvaluacionEvent {
 class FinalizarPreguntaEvent extends RealizarEvaluacionEvent {
   final int preguntaId;
   final RespuestaPojo respuesta;
+  final bool isRestoredData;
 
-  const FinalizarPreguntaEvent(this.preguntaId, this.respuesta);
+  const FinalizarPreguntaEvent(this.preguntaId, this.respuesta, {this.isRestoredData = false});
 
   @override
   List<Object> get props => [preguntaId, respuesta];
