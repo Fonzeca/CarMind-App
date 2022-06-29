@@ -18,6 +18,8 @@ const Map<String, String> appStoreLinks = {
 const titleStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.w400);
 const subtitleStyle = TextStyle(fontSize: 15, fontWeight: FontWeight.w400);
 
+const expiredSessionMessage = "La sesión ha expirado, vuelva a loguearse";
+
 const noInternet = "No Hay conexión a Internet";
 const noFoundError = "Http status error [400]";
 const noMemoryError = "Tu dispositivo se quedó sin memoria y cerró CarMind";

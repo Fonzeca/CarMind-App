@@ -119,7 +119,10 @@ class MyApp extends StatelessWidget {
       }
       handler.next(options);
     }, onResponse: (r, handler) {
-      if (r.statusCode != 200) {
+      if(r.statusCode == 403){
+        EasyLoading.showError(expiredSessionMessage);
+        BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
+      }else if (r.statusCode != 200) {
         String message = r.data.toString();
         if (r.data.message != null) {
           message = r.data.message;
