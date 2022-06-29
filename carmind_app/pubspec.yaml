@@ -38,6 +38,7 @@ dependencies:
   firebase_analytics: ^9.1.9
   firebase_core: ^1.17.1
   firebase_crashlytics: ^2.8.1
+  firebase_messaging: ^11.4.2
   flutter:
     sdk: flutter
   flutter_barcode_scanner: ^2.0.0

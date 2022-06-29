@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "679930430701-mqnk9up7rrb66bp0ohm1bchso29ekh1g.apps.googleusercontent.com",
+              "client_id": "679930430701-8e03ndjjk98ariuh3n7i7pfslfrjgnf6.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.mindia.carmind-app"
+                "bundle_id": "com.mindia.carmind"
               }
             }
           ]

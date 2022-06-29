@@ -13,7 +13,7 @@ abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
   @POST("/login")
-  Future<TokenLogin> login(@Query("username") String email, @Query("password") String password);
+  Future<TokenLogin> login(@Query("username") String email, @Query("password") String password, @Query("FCMToken") String fcmToken);
 
   @GET("/loggedUser")
   Future<LoggedUser> loggedUser();

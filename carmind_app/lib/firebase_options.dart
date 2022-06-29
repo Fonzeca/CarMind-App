@@ -66,11 +66,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDd3TkERpX7AMvqZixOVMQKWBtbypF8VFk',
-    appId: '1:679930430701:ios:654b02b3352571eb5778e4',
+    appId: '1:679930430701:ios:cfdf736ef544c1355778e4',
     messagingSenderId: '679930430701',
     projectId: 'carmind-46f12',
     storageBucket: 'carmind-46f12.appspot.com',
-    iosClientId: '679930430701-mqnk9up7rrb66bp0ohm1bchso29ekh1g.apps.googleusercontent.com',
-    iosBundleId: 'com.mindia.carmind-app',
+    iosClientId: '679930430701-8e03ndjjk98ariuh3n7i7pfslfrjgnf6.apps.googleusercontent.com',
+    iosBundleId: 'com.mindia.carmind',
   );
 }
