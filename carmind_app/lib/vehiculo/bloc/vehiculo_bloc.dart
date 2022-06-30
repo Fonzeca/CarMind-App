@@ -19,6 +19,8 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
   late ApiClient api;
   DateTime? lastTimeFetched;
 
+  bool needToUpdate = false;
+
   Vehiculo? vehiculo;
   VehiculoBloc() : super(const VehiculoState(loading: true)) {
     api = ApiClient(staticDio!);
@@ -52,7 +54,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
       } else {
 
         lastTimeFetched ??= DateTime.now();
-        if( (vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5)){
+        if( (vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)){
           //Si no esta offline, le preguntamos al server
           vehiculo = await api.getCurrent().catchError((err) {
             switch (err.runtimeType) {
@@ -106,7 +108,6 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         ..add(HomeNavigationEvent(4, evaluacion: ev, vehiculo: vehiculo))
         ..add(HideFab());
 
-      vehiculo = null;
       emit(state.copyWith(vehiculo: vehiculo));
     });
   }

@@ -25,19 +25,25 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
     BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
       });
     });
+
+    final VehiculoBloc vehiculoBloc =  BlocProvider.of<VehiculoBloc>(context);
     
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
+
+        if(vehiculoBloc.needToUpdate) {
+          vehiculoBloc.needToUpdate = false;
+          vehiculoBloc.add(GetCurrent(context, forceWaiting: true));
         }
       },
       child: WillPopScope(
@@ -79,7 +85,7 @@ class CarMindNavigationBar extends StatelessWidget {
                         BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
                         break;
                       case 1:
-                        BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+                        vehiculoBloc.add(GetCurrent(context));
                         break;
                       }
                     BlocProvider.of<HomeBloc>(context)

@@ -1,4 +1,3 @@
-import 'package:carmind_app/home/home.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +11,8 @@ import '../../constants.dart';
 import '../../widgets/widgets.dart';
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:carmind_app/home/home.dart';
 
 
 
@@ -192,6 +193,7 @@ class FormularioPreguntas extends StatelessWidget {
 
   void finalizarFormulario(BuildContext context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Completaste el formulario")));
+    BlocProvider.of<VehiculoBloc>(context).needToUpdate = true;
     await Future.delayed(const Duration(milliseconds: 300));
     BlocProvider.of<HomeBloc>(context)
       ..add(const PopEvent())
