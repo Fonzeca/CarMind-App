@@ -79,19 +79,18 @@ Dio? staticDio;
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final GlobalKey _scaffoldKey = GlobalKey();
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    configDio(context);
     return MultiBlocProvider(
       child: MaterialApp(
-        key: _scaffoldKey,
         title: 'CarMind',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(
-          body: LoginScreen(),
+          body: Builder(builder:(currentContext) {
+            configDio(currentContext);
+            return LoginScreen();
+          })
         ),
         builder: EasyLoading.init(),
       ),
@@ -119,10 +118,7 @@ class MyApp extends StatelessWidget {
       }
       handler.next(options);
     }, onResponse: (r, handler) {
-      if(r.statusCode == 403){
-        EasyLoading.showError(expiredSessionMessage);
-        BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
-      }else if (r.statusCode != 200) {
+      if (r.statusCode != 200) {
         String message = r.data.toString();
         if (r.data.message != null) {
           message = r.data.message;
@@ -130,8 +126,13 @@ class MyApp extends StatelessWidget {
         EasyLoading.showError(message);
       }
       handler.next(r);
-    }, onError: (e, handler) {
-      if(e.error is SocketException){
+    }, onError: (e, handler) async {
+      if(e.response != null && e.response!.statusCode == 403){
+        EasyLoading.showError(expiredSessionError);
+        //TODO hacer posible esto
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        //BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
+      }else if(e.error is SocketException){
         EasyLoading.showError(noInternet);
         FirebaseCrashlytics.instance.recordError(
           'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',

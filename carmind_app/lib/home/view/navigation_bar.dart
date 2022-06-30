@@ -25,7 +25,8 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+    BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
@@ -73,6 +74,14 @@ class CarMindNavigationBar extends StatelessWidget {
                   selectedFontSize: 14,
                   unselectedFontSize: 14,
                   onTap: (value) {
+                    switch (value) {
+                      case 0:
+                        BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
+                        break;
+                      case 1:
+                        BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+                        break;
+                      }
                     BlocProvider.of<HomeBloc>(context)
                       ..add(HomeNavigationEvent(value))
                       ..add(ShowFab());
@@ -87,7 +96,7 @@ class CarMindNavigationBar extends StatelessWidget {
               builder: (context, state) {
                 switch (state.selectedPageView) {
                   case 0:
-                    return FormularioContent(context);
+                    return const FormularioContent();
                   case 1:
                     return VehiculoEspecifico();
                   case 2:
