@@ -18,10 +18,10 @@ class HideFab extends HomeEvent {}
 
 class ShowFab extends HomeEvent {}
 
-class DejarDeUsarVehiculoEvent extends HomeEvent{
+class ShowDejarDeUsarVehiculoEvent extends HomeEvent{
   final bool showDejarDeUsarVehiculo;
 
-  const DejarDeUsarVehiculoEvent(this.showDejarDeUsarVehiculo);
+  const ShowDejarDeUsarVehiculoEvent(this.showDejarDeUsarVehiculo);
 }
 
 class LogOutEvent extends HomeEvent {}

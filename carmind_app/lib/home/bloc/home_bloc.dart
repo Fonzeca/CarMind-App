@@ -42,7 +42,7 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
       emit(state.copyWith(showFab: true));
     });
 
-    on<DejarDeUsarVehiculoEvent>((event, emit) {
+    on<ShowDejarDeUsarVehiculoEvent>((event, emit) {
       emit(state.copyWith(showDejarDeUsarVehiculo: event.showDejarDeUsarVehiculo));
     });
 

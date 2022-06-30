@@ -41,7 +41,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         EasyLoading.dismiss();
       } on DioError catch(e) {
         removeToken();
-        if (e.error.code != noFoundError) {
+        if (e.response != null && e.response!.statusCode == 400 ) {
           FirebaseCrashlytics.instance.recordError(
           'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',
           StackTrace.current,

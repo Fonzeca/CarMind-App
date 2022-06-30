@@ -21,6 +21,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
     on<FormularioBuscarDataEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
 
+      var format = DateFormat(dateTimeFormat);
       var sh = await SharedPreferences.getInstance();
       if (sh.getBool("offline") != null && sh.getBool("offline")!) {
         var box = Hive.box<LogEvaluacion>("logs").values;
@@ -38,9 +39,6 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
           return log;
         }));
 
-        var format = DateFormat(dateTimeFormat);
-
-        logs!.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
       } else {
 
         lastTimeFetched ??= DateTime.now();
@@ -51,6 +49,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
         }
         emit(state.copyWith(loading: false, logs: logs));
       }
+      logs!.sort((a, b) => format.parse(b.fecha!).compareTo(format.parse(a.fecha!)));
     });
   }
 }
