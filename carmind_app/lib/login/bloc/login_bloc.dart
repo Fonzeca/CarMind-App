@@ -33,6 +33,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try{
         TokenLogin tokenLogin = await client.login(email, pass, fcmToken ?? '');
         await saveToken(tokenLogin.token!);
+
+        //TODO borrar esto en el proximo update
+        var sh = await SharedPreferences.getInstance();
+        bool isFCMNeeded = isFCMTokenNeeded(sh);
+        if(fcmToken != null && isFCMNeeded) await saveNeedFCMToken();
+
         if(tokenLogin.mustChangePassword!){
           emit(FirstLogin());
         }else{
@@ -62,10 +68,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<ValidateSavedToken>((event, emit) async {
       EasyLoading.show();
 
+
+      var sh = await SharedPreferences.getInstance();
+      bool isFCMNeeded = isFCMTokenNeeded(sh);
+
+      if(isFCMNeeded){
+        EasyLoading.dismiss();
+        emit(LoginBlocInitial());
+        return;
+      }
+
       //Si el inicio de sesion es para ponerlo en online, no verificamos si esta offline, porque si esta.
       if (!event.offlineMode) {
         //Verifico si pasa offline
-        var sh = await SharedPreferences.getInstance();
+        
         var offline = sh.getBool("offline");
 
         if (offline != null && offline) {
@@ -110,5 +126,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<bool> verifyToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey("token");
+  }
+
+  saveNeedFCMToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isFCMNeeded", true);
+  }
+
+  bool isFCMTokenNeeded(sh) {
+    return !sh.containsKey("isFCMNeeded");
   }
 }

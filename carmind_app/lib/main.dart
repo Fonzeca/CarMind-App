@@ -79,16 +79,19 @@ Dio? staticDio;
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
+  final GlobalKey _materialAppKey = GlobalKey();
+  
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       child: MaterialApp(
+        key: _materialAppKey,
         title: 'CarMind',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(
-          body: Builder(builder:(currentContext) {
-            configDio(currentContext);
+          body: Builder(builder:(_) {
+            configDio(_materialAppKey.currentContext!);
             return LoginScreen();
           })
         ),
@@ -128,10 +131,9 @@ class MyApp extends StatelessWidget {
       handler.next(r);
     }, onError: (e, handler) async {
       if(e.response != null && e.response!.statusCode == 403){
-        EasyLoading.showError(expiredSessionError);
-        //TODO hacer posible esto
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
-        //BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
+        EasyLoading.showError(expiredSessionError, duration: const Duration(seconds: 3));
+        await Future.delayed(const Duration(seconds: 3));
+        BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
       }else if(e.error is SocketException){
         EasyLoading.showError(noInternet);
         FirebaseCrashlytics.instance.recordError(
