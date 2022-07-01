@@ -150,8 +150,8 @@ class MyApp extends StatelessWidget {
           }
           EasyLoading.showError(message);
         }
+        handler.next(e);
       }
-      handler.next(e);
     }));
 
     //TODO: Agujero en la seguridad.
