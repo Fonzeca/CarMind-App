@@ -22,17 +22,25 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<VehiculoBloc>(context).add(GetCurrent(context));
+    BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
       });
     });
+
+    final VehiculoBloc vehiculoBloc =  BlocProvider.of<VehiculoBloc>(context);
+    
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
+
+        if(vehiculoBloc.needToUpdate) {
+          vehiculoBloc.needToUpdate = false;
+          vehiculoBloc.add(GetCurrent(context, forceWaiting: true));
         }
       },
       child: WillPopScope(
@@ -69,6 +77,14 @@ class CarMindNavigationBar extends StatelessWidget {
                   selectedFontSize: 14,
                   unselectedFontSize: 14,
                   onTap: (value) {
+                    switch (value) {
+                      case 0:
+                        BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
+                        break;
+                      case 1:
+                        vehiculoBloc.add(GetCurrent(context));
+                        break;
+                      }
                     BlocProvider.of<HomeBloc>(context)
                       ..add(HomeNavigationEvent(value))
                       ..add(ShowFab());
@@ -83,7 +99,7 @@ class CarMindNavigationBar extends StatelessWidget {
               builder: (context, state) {
                 switch (state.selectedPageView) {
                   case 0:
-                    return FormularioContent(context);
+                    return const FormularioContent();
                   case 1:
                     return VehiculoEspecifico();
                   case 2:
@@ -92,8 +108,8 @@ class CarMindNavigationBar extends StatelessWidget {
                     return Container();
                   case 4:
                     return FormularioPreguntas(
-                      evalua: state.data[0],
-                      vehiculo: state.data[1],
+                      evaluacion: state.evaluacion!,
+                      vehiculo: state.vehiculo!,
                     );
                 }
                 return Container();
@@ -195,4 +211,5 @@ class CarMindNavigationBar extends StatelessWidget {
     Navigator.push(context!, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
   }
+
 }

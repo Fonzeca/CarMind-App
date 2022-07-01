@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:carmind_app/api/api_client.dart';
+import 'package:carmind_app/constants.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -22,13 +24,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<AttemptToLogin>((event, emit) async {
       EasyLoading.show();
-      String email = event.email.trim();
-      String pass = event.password.trim();
-      FirebaseCrashlytics.instance.setUserIdentifier(email);
+      final String email = event.email.trim();
+      final String pass = event.password.trim();
 
+      FirebaseCrashlytics.instance.setUserIdentifier(email);
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+      
       try{
-        TokenLogin tokenLogin = await client.login(email, pass);
+        TokenLogin tokenLogin = await client.login(email, pass, fcmToken ?? '');
         await saveToken(tokenLogin.token!);
+
+        //TODO borrar esto en el proximo update
+        var sh = await SharedPreferences.getInstance();
+        bool isFCMNeeded = isFCMTokenNeeded(sh);
+        if(fcmToken != null && isFCMNeeded) await saveNeedFCMToken();
+
         if(tokenLogin.mustChangePassword!){
           emit(FirstLogin());
         }else{
@@ -37,11 +47,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         EasyLoading.dismiss();
       } on DioError catch(e) {
         removeToken();
-        FirebaseCrashlytics.instance.recordError(
+        if (e.response != null && e.response!.statusCode == 400 ) {
+          FirebaseCrashlytics.instance.recordError(
           'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',
           StackTrace.current,
-          reason: 'No hay conexión a internet'
+          reason: noInternet
         );
+        }
       }on Exception catch(e){
         removeToken();
         FirebaseCrashlytics.instance.recordError(
@@ -56,10 +68,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<ValidateSavedToken>((event, emit) async {
       EasyLoading.show();
 
+
+      var sh = await SharedPreferences.getInstance();
+      bool isFCMNeeded = isFCMTokenNeeded(sh);
+
+      if(isFCMNeeded){
+        EasyLoading.dismiss();
+        emit(LoginBlocInitial());
+        return;
+      }
+
       //Si el inicio de sesion es para ponerlo en online, no verificamos si esta offline, porque si esta.
       if (!event.offlineMode) {
         //Verifico si pasa offline
-        var sh = await SharedPreferences.getInstance();
+        
         var offline = sh.getBool("offline");
 
         if (offline != null && offline) {
@@ -104,5 +126,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<bool> verifyToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.containsKey("token");
+  }
+
+  saveNeedFCMToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isFCMNeeded", true);
+  }
+
+  bool isFCMTokenNeeded(sh) {
+    return !sh.containsKey("isFCMNeeded");
   }
 }

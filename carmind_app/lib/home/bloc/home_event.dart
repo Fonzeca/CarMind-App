@@ -9,18 +9,19 @@ abstract class HomeEvent extends Equatable {
 
 class HomeNavigationEvent extends HomeEvent {
   final int buttonId;
-  dynamic data;
-  HomeNavigationEvent(this.buttonId, {this.data});
+  final Vehiculo? vehiculo;
+  final Evaluacion? evaluacion;
+  const HomeNavigationEvent(this.buttonId,{this.vehiculo, this.evaluacion});
 }
 
 class HideFab extends HomeEvent {}
 
 class ShowFab extends HomeEvent {}
 
-class DejarDeUsarVehiculoEvent extends HomeEvent{
+class ShowDejarDeUsarVehiculoEvent extends HomeEvent{
   final bool showDejarDeUsarVehiculo;
 
-  const DejarDeUsarVehiculoEvent(this.showDejarDeUsarVehiculo);
+  const ShowDejarDeUsarVehiculoEvent(this.showDejarDeUsarVehiculo);
 }
 
 class LogOutEvent extends HomeEvent {}

@@ -40,6 +40,7 @@ dependencies:
   firebase_analytics: ^9.1.9
   firebase_core: ^1.17.1
   firebase_crashlytics: ^2.8.1
+  firebase_messaging: ^11.4.2
   flutter:
     sdk: flutter
   flutter_barcode_scanner: ^2.0.0
@@ -49,12 +50,14 @@ dependencies:
   flutter_svg: ^1.0.3
   hive: ^2.1.0
   hive_flutter: ^1.1.0
-  image_picker: ^0.8.4+9
+  hydrated_bloc: ^8.1.0
+  image_picker: ^0.8.5+3
   intl: ^0.17.0
   logger: any
   lottie: ^1.2.2
   overlay_tooltip: ^0.1.0
   package_info_plus: ^1.4.2
+  path_provider: ^2.0.11
   retrofit: ^3.0.1+1
   scroll_to_id: ^1.5.1
   scroll_to_index: ^2.1.1

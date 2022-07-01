@@ -32,8 +32,13 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
   Widget build(BuildContext context) {
     return BlocBuilder<RealizarEvaluacionBloc, RealizarEvaluacionState>(
       builder: (context, state) {
+        final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
+        String? savedResponse = state.isRestoredData ? _getSavedResponse(state.evaluacion, pregunta.id) : null;
+        if(savedResponse != null){
+          photoName = savedResponse;
+          preguntaFinalizada = true;     //reconstruye.value = !reconstruye.value;
+        }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
-
         return PreguntaBase(
           preguntaEnabled: preguntaEnabled!,
           child: Column(
@@ -58,17 +63,17 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                   onTap: preguntaEnabled!
                       ? () async {
                           try {
+
                             final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
 
                             if (photo != null) {
                               photoName = photo.name;
 
-                              var imageBytes = await photo.readAsBytes();
-                              photoBase64 = base64Encode(imageBytes);
+                              _photoToString(photo);
 
                               preguntaFinalizada = true;
                               reconstruye.value = !reconstruye.value;
-                              BlocProvider.of<RealizarEvaluacionBloc>(context).add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
+                              realizarEvaluacionBloc.add(FinalizarPreguntaEvent(pregunta.id!, setearRespuesta()));
                             }
                           } on PlatformException catch (e) {
                             EasyLoading.showError(e.message ?? "Error en camara");
@@ -132,6 +137,16 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
       },
     );
   }
+
+  void _photoToString(XFile photo) async {
+    var imageBytes = await photo.readAsBytes();
+    photoBase64 = base64Encode(imageBytes);
+  }
+
+  String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
+    if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
+  }
+
 
   @override
   RespuestaPojo setearRespuesta() {

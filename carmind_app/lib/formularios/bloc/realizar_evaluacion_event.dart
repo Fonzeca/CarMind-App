@@ -20,8 +20,9 @@ class IniciarEvaluacionEvent extends RealizarEvaluacionEvent {
 class FinalizarPreguntaEvent extends RealizarEvaluacionEvent {
   final int preguntaId;
   final RespuestaPojo respuesta;
+  final bool isRestoredData;
 
-  const FinalizarPreguntaEvent(this.preguntaId, this.respuesta);
+  const FinalizarPreguntaEvent(this.preguntaId, this.respuesta, {this.isRestoredData = false});
 
   @override
   List<Object> get props => [preguntaId, respuesta];
@@ -33,13 +34,10 @@ class FinalizarEvaluacionEvent extends RealizarEvaluacionEvent {
   @override
   List<Object> get props => [];
 }
+class RestoreDataEvent extends RealizarEvaluacionEvent {
+  final XFile restoredData;
+  final Evaluacion evaluacion;
+  final Vehiculo vehiculo;
 
-class ValidarTextFieldEvent extends RealizarEvaluacionEvent {
-  final bool isFieldEmptyError;
-  final bool isFieldNotNumberError;
-
-  const ValidarTextFieldEvent(this.isFieldEmptyError, this.isFieldNotNumberError);
-
-  @override
-  List<Object> get props => [isFieldEmptyError, isFieldNotNumberError];
+  const RestoreDataEvent(this.evaluacion, this.vehiculo, this.restoredData);
 }

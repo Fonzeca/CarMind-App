@@ -18,11 +18,12 @@ class _ApiClient implements ApiClient {
   String? baseUrl;
 
   @override
-  Future<TokenLogin> login(email, password) async {
+  Future<TokenLogin> login(email, password, fcmToken) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'username': email,
-      r'password': password
+      r'password': password,
+      r'FCMToken': fcmToken
     };
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};

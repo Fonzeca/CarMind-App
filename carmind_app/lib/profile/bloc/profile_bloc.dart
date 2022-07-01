@@ -17,6 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(loading: true));
 
       LoggedUser user = await api.loggedUser();
+
       if(user.username != null) FirebaseCrashlytics.instance.setUserIdentifier(user.username!);
 
       emit(state.copyWith(loading: false, logged: user));

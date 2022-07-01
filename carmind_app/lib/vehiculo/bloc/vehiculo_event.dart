@@ -9,8 +9,9 @@ abstract class VehiculoEvent extends Equatable {
 
 class GetCurrent extends VehiculoEvent {
   final BuildContext context;
+  final bool forceWaiting;
 
-  const GetCurrent(this.context);
+  const GetCurrent(this.context, {this.forceWaiting = false});
 }
 
 class TapEvaluacion extends VehiculoEvent {

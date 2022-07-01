@@ -7,10 +7,10 @@ import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 
 
+
 class FormularioContent extends StatelessWidget {
-  FormularioContent(BuildContext context, {Key? key}) : super(key: key) {
-    BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
-  }
+  const FormularioContent({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FormularioBloc, FormularioState>(
