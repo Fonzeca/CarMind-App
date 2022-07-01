@@ -15,6 +15,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
   late ApiClient api;
   DateTime? lastTimeFetched;
   List<LogEvaluacion>? logs;
+  bool needToUpdate = false;
 
   FormularioBloc() : super(const FormularioState(logs: [], loading: true)) {
     api = ApiClient(staticDio!);
@@ -42,7 +43,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
       } else {
 
         lastTimeFetched ??= DateTime.now();
-        if(logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5)){
+        if(logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)){
           //Si no esta offline, le preguntamos al server
           logs = await api.getLogEvaluacionesByLoggedUser('50');
           lastTimeFetched = DateTime.now();

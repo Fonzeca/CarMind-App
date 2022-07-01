@@ -194,6 +194,7 @@ class FormularioPreguntas extends StatelessWidget {
   void finalizarFormulario(BuildContext context) async {
     Navigator.push(context, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Completaste el formulario")));
     BlocProvider.of<VehiculoBloc>(context).needToUpdate = true;
+    BlocProvider.of<FormularioBloc>(context).needToUpdate = true;
     await Future.delayed(const Duration(milliseconds: 300));
     BlocProvider.of<HomeBloc>(context)
       ..add(const PopEvent())
