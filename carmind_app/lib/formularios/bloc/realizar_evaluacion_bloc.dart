@@ -103,6 +103,10 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       add(FinalizarPreguntaEvent(respuesta.pregunta_id! , respuesta, isRestoredData: true));
     });
 
+    on<AbortRestoreDataEvent>((event, emit) async {
+       emit(state.copyWith(isRestoredData: false));
+    });
+
 }
 
   int obtenerPreguntaNoRespondida() {

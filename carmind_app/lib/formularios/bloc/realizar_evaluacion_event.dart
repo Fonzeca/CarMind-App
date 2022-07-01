@@ -41,3 +41,5 @@ class RestoreDataEvent extends RealizarEvaluacionEvent {
 
   const RestoreDataEvent(this.evaluacion, this.vehiculo, this.restoredData);
 }
+
+class AbortRestoreDataEvent extends RealizarEvaluacionEvent {}
