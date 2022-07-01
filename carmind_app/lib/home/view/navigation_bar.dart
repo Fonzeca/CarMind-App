@@ -25,7 +25,6 @@ class CarMindNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       VersionService.isNewVersionAvailable().then((isNewVersion) {
         if (isNewVersion) VersionService.showVersionAvailableAlert(context);
@@ -33,6 +32,9 @@ class CarMindNavigationBar extends StatelessWidget {
     });
 
     final VehiculoBloc vehiculoBloc =  BlocProvider.of<VehiculoBloc>(context);
+    final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
+    
+    formularioBloc.add(const FormularioBuscarDataEvent());
     
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
@@ -45,6 +47,13 @@ class CarMindNavigationBar extends StatelessWidget {
           vehiculoBloc.needToUpdate = false;
           vehiculoBloc.add(GetCurrent(context, forceWaiting: true));
         }
+
+        if(formularioBloc.needToUpdate) {
+          formularioBloc.needToUpdate = false;
+          formularioBloc.add(const FormularioBuscarDataEvent(forceWaiting: true));
+        }
+
+
       },
       child: WillPopScope(
         onWillPop: () async {
@@ -82,7 +91,7 @@ class CarMindNavigationBar extends StatelessWidget {
                   onTap: (value) {
                     switch (value) {
                       case 0:
-                        BlocProvider.of<FormularioBloc>(context).add(FormularioBuscarDataEvent());
+                       formularioBloc.add(const FormularioBuscarDataEvent());
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));
