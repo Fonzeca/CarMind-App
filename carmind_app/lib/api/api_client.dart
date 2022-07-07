@@ -1,8 +1,7 @@
+import 'package:carmind_app/api/api.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
-
-import 'package:carmind_app/api/api.dart';
 
 part 'api_client.g.dart';
 
@@ -65,6 +64,6 @@ abstract class ApiClient {
   Future<Vehiculo?> getCurrent();
 
   //----------------------------VERSION----------------------------
-  @GET("/public/lastVersion?platform={storeType}")
-  Future<String> getLastVersionByPlatform(@Query("storeType") String storeType);
+  @GET("/public/lastVersion?platform={platform}")
+  Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
 }

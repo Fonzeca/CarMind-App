@@ -269,15 +269,19 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<String> getLastVersionByPlatform(storeType) async {
+  Future<VersionView> getLastVersionByPlatform(storeType) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'platform': storeType};
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>?>(_setStreamType<String>(Options(method: 'GET', headers: _headers, extra: _extra)
-    .compose(_dio.options, '/public/lastVersion', queryParameters: queryParameters, data: _data)
-    .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = _result.data!["storeVersion"];
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<VersionView>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(
+                    _dio.options, '/public/lastVersion?platform=${storeType}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = VersionView.fromJson(_result.data!);
     return value;
   }
 

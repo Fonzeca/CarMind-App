@@ -1,38 +1,36 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carmind_app/constants.dart';
-import 'package:carmind_app/formularios/bloc/pregunta_KM_bloc.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/material.dart';
-
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'firebase_options.dart';
-
 import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
-
   runZonedGuarded<Future<void>>(() async {
-
     WidgetsFlutterBinding.ensureInitialized();
-    
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
@@ -63,24 +61,24 @@ void main() async {
     if (sh.getBool("offline") != null && sh.getBool("offline")!) {
       sh.setBool("offline", false);
     }
-    
+
     final storage = await HydratedStorage.build(
-    storageDirectory: await getTemporaryDirectory(),
+      storageDirectory: await getTemporaryDirectory(),
     );
     HydratedBlocOverrides.runZoned(
       () => runApp(MyApp()),
       storage: storage,
-  );
-  }, (error, stack) =>
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
+    );
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
 }
+
 Dio? staticDio;
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   final GlobalKey _materialAppKey = GlobalKey();
-  
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -89,12 +87,10 @@ class MyApp extends StatelessWidget {
         key: _materialAppKey,
         title: 'CarMind',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
-        home: Scaffold(
-          body: Builder(builder:(_) {
-            configDio(_materialAppKey.currentContext!);
-            return LoginScreen();
-          })
-        ),
+        home: Scaffold(body: Builder(builder: (_) {
+          configDio(_materialAppKey.currentContext!);
+          return LoginScreen();
+        })),
         builder: EasyLoading.init(),
       ),
       providers: [
@@ -130,18 +126,15 @@ class MyApp extends StatelessWidget {
       }
       handler.next(r);
     }, onError: (e, handler) async {
-      if(e.response != null && e.response!.statusCode == 403){
+      if (e.response != null && e.response!.statusCode == 403) {
         EasyLoading.showError(expiredSessionError, duration: const Duration(seconds: 3));
         await Future.delayed(const Duration(seconds: 3));
         BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
-      }else if(e.error is SocketException){
+      } else if (e.error is SocketException) {
         EasyLoading.showError(noInternet);
-        FirebaseCrashlytics.instance.recordError(
-          'Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}',
-          StackTrace.current,
-          reason: noInternet
-        );
-      }else{
+        FirebaseCrashlytics.instance
+            .recordError('Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}', StackTrace.current, reason: noInternet);
+      } else {
         Response r = e.response!;
         if (r.statusCode != 200) {
           String message = r.data.toString();
