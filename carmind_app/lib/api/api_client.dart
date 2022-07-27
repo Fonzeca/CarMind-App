@@ -64,6 +64,6 @@ abstract class ApiClient {
   Future<Vehiculo?> getCurrent();
 
   //----------------------------VERSION----------------------------
-  @GET("/public/lastVersion?platform={platform}")
+  @GET("/public/lastVersion_new?platform={platform}")
   Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
 }
