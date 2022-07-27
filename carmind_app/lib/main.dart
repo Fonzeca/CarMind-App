@@ -138,7 +138,7 @@ class MyApp extends StatelessWidget {
         Response r = e.response!;
         if (r.statusCode != 200) {
           String message = r.data.toString();
-          if (r.data["message"] != null) {
+          if (r.data is Map<String, dynamic> && r.data["message"] != null) {
             message = r.data["message"].toString();
           }
           EasyLoading.showError(message);
