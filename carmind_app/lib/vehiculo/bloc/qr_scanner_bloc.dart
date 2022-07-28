@@ -1,18 +1,17 @@
+import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:equatable/equatable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/api.dart';
 import '../../constants.dart';
 import '../../home/home.dart';
 import '../../main.dart';
-import 'package:carmind_app/vehiculo/vehiculo.dart';
 
 part 'qr_scanner_event.dart';
 part 'qr_scanner_state.dart';
@@ -54,11 +53,8 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
           await api.iniciarUso(idVehiculo);
         } catch (e) {
           emit(QrScannerInitial());
-          FirebaseCrashlytics.instance.recordError(
-            'Detalles: ${e.toString()}',
-            StackTrace.current,
-            reason: 'Error al intentar iniciar uso de un vehiculo'
-          );
+          FirebaseCrashlytics.instance
+              .recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar iniciar uso de un vehiculo');
           return;
         }
       }
@@ -66,6 +62,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
       EasyLoading.dismiss();
 
       BlocProvider.of<HomeBloc>(event.context).add(const HomeNavigationEvent(1));
+      BlocProvider.of<VehiculoBloc>(event.context).vehiculo = null;
       BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent(event.context));
       final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
