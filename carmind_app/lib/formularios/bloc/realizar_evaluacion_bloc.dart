@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-
 
 import '../../constants.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/formularios/formularios.dart';
 
 part 'realizar_evaluacion_event.dart';
 part 'realizar_evaluacion_state.dart';
 
-class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, RealizarEvaluacionState>{
+class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, RealizarEvaluacionState> {
   Evaluacion? evaluacion;
 
   EvaluacionTerminadaPojo? evaluacionTerminada;
@@ -29,14 +29,26 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
 
   RealizarEvaluacionBloc()
       : super(const RealizarEvaluacionState(
-            evaluacionIniciada: false, evaluacionTerminada: false, preguntaActual: -1, preguntasRespondidas: [], mandandoEvaluacion: false, isFieldEmptyError: true, isFieldNotNumberError: false, isRestoredData: false)) {
+            evaluacionIniciada: false,
+            evaluacionTerminada: false,
+            preguntaActual: -1,
+            preguntasRespondidas: [],
+            mandandoEvaluacion: false,
+            isFieldEmptyError: true,
+            isFieldNotNumberError: false,
+            isRestoredData: false)) {
     api = ApiClient(staticDio!);
 
     on<IniciarEvaluacionEvent>((event, emit) {
       //Steamos en 0 las variables
       emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: false, pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], resetCache: true));
-      
+          pMandandoEvaluacion: false,
+          pEvaluacionTerminada: false,
+          pEvaluaconIniciada: false,
+          pPreguntaActual: -1,
+          pPreguntasRespondidas: [],
+          resetCache: true));
+
       respondidas = [];
       evaluacion = event.evaluacion;
       evaluacionTerminada = EvaluacionTerminadaPojo();
@@ -53,8 +65,14 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     });
 
     on<FinalizarPreguntaEvent>((event, emit) {
-      respondidas.add(event.preguntaId);
-      evaluacionTerminada!.respuestas!.add(event.respuesta);
+      //Se hace esto para evitar respuestas repetidas
+      if (respondidas.contains(event.preguntaId)) {
+        int index = evaluacionTerminada!.respuestas!.indexWhere((element) => element.pregunta_id == event.preguntaId);
+        evaluacionTerminada!.respuestas![index] = event.respuesta;
+      } else {
+        respondidas.add(event.preguntaId);
+        evaluacionTerminada!.respuestas!.add(event.respuesta);
+      }
 
       int proxima = obtenerPreguntaNoRespondida();
 
@@ -62,7 +80,11 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
         FormularioPreguntas.scrollToId?.animateTo(proxima.toString(), duration: const Duration(milliseconds: 300), curve: Curves.ease);
       });
 
-      emit(state.copyWith(pPreguntasRespondidas: respondidas, pPreguntaActual: proxima, evaluacion: evaluacionTerminada, isRestoredData: event.isRestoredData ? true : false));
+      emit(state.copyWith(
+          pPreguntasRespondidas: respondidas,
+          pPreguntaActual: proxima,
+          evaluacion: evaluacionTerminada,
+          isRestoredData: event.isRestoredData ? true : false));
     });
 
     on<FinalizarEvaluacionEvent>((event, emit) async {
@@ -85,10 +107,14 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       evaluacionTerminada = null;
       respondidas = [];
       evaluacion = null;
-      
-      emit(state.copyWith(
-          pMandandoEvaluacion: false, pEvaluacionTerminada: true,pEvaluaconIniciada: false, pPreguntaActual: -1, pPreguntasRespondidas: [], resetCache: true));
 
+      emit(state.copyWith(
+          pMandandoEvaluacion: false,
+          pEvaluacionTerminada: true,
+          pEvaluaconIniciada: false,
+          pPreguntaActual: -1,
+          pPreguntasRespondidas: [],
+          resetCache: true));
     });
 
     on<RestoreDataEvent>((event, emit) async {
@@ -100,14 +126,13 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       respuesta.pregunta_id = obtenerPreguntaNoRespondida();
       respuesta.base64_image = base64Encode(imageBytes);
       respuesta.texto = event.restoredData.name;
-      add(FinalizarPreguntaEvent(respuesta.pregunta_id! , respuesta, isRestoredData: true));
+      add(FinalizarPreguntaEvent(respuesta.pregunta_id!, respuesta, isRestoredData: true));
     });
 
     on<AbortRestoreDataEvent>((event, emit) async {
-       emit(state.copyWith(isRestoredData: false));
+      emit(state.copyWith(isRestoredData: false));
     });
-
-}
+  }
 
   int obtenerPreguntaNoRespondida() {
     int proxima = -1;
@@ -119,10 +144,10 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     });
     return proxima;
   }
-  
+
   @override
   RealizarEvaluacionState? fromJson(Map<String, dynamic> json) => RealizarEvaluacionState.fromMap(json);
-  
+
   @override
-  Map<String, dynamic>? toJson(RealizarEvaluacionState state) => evaluacionTerminada != null ? state.toMap() :  null;
+  Map<String, dynamic>? toJson(RealizarEvaluacionState state) => evaluacionTerminada != null ? state.toMap() : null;
 }

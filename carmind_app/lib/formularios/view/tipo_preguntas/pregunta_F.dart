@@ -1,18 +1,16 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../../constants.dart';
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/formularios/formularios.dart';
-
-
 
 class PreguntaF extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
@@ -34,9 +32,9 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
       builder: (context, state) {
         final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
         String? savedResponse = state.isRestoredData ? _getSavedResponse(state.evaluacion, pregunta.id) : null;
-        if(savedResponse != null){
+        if (savedResponse != null) {
           photoName = savedResponse;
-          preguntaFinalizada = true;     //reconstruye.value = !reconstruye.value;
+          preguntaFinalizada = true; //reconstruye.value = !reconstruye.value;
         }
         preguntaEnabled = state.preguntaActual == pregunta.id || state.preguntasRespondidas.contains(pregunta.id);
         return PreguntaBase(
@@ -63,13 +61,12 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                   onTap: preguntaEnabled!
                       ? () async {
                           try {
-
                             final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 20);
 
                             if (photo != null) {
                               photoName = photo.name;
 
-                              _photoToString(photo);
+                              await _photoToString(photo);
 
                               preguntaFinalizada = true;
                               reconstruye.value = !reconstruye.value;
@@ -77,11 +74,8 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                             }
                           } on PlatformException catch (e) {
                             EasyLoading.showError(e.message ?? "Error en camara");
-                            FirebaseCrashlytics.instance.recordError(
-                              'Detalles: ${e.details} Mensaje: ${e.message}',
-                              StackTrace.current,
-                              reason: 'Error en la cámara'
-                            );
+                            FirebaseCrashlytics.instance
+                                .recordError('Detalles: ${e.details} Mensaje: ${e.message}', StackTrace.current, reason: 'Error en la cámara');
                           }
                         }
                       : null,
@@ -138,15 +132,15 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
     );
   }
 
-  void _photoToString(XFile photo) async {
+  Future<void> _photoToString(XFile photo) async {
     var imageBytes = await photo.readAsBytes();
     photoBase64 = base64Encode(imageBytes);
   }
 
   String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
-    if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
+    if (evaluacion != null && evaluacion.respuestas != null)
+      return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
   }
-
 
   @override
   RespuestaPojo setearRespuesta() {
