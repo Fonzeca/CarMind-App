@@ -28,11 +28,13 @@ class CarMindNavigationBar extends StatelessWidget {
       });
     });
 
-    final VehiculoBloc vehiculoBloc =  BlocProvider.of<VehiculoBloc>(context);
+    final VehiculoBloc vehiculoBloc = BlocProvider.of<VehiculoBloc>(context);
     final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
-    
+
     formularioBloc.add(const FormularioBuscarDataEvent());
-    
+
+    vehiculoBloc.add(GetCurrent(context));
+
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
@@ -40,17 +42,15 @@ class CarMindNavigationBar extends StatelessWidget {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
         }
 
-        if(vehiculoBloc.needToUpdate) {
+        if (vehiculoBloc.needToUpdate) {
           vehiculoBloc.needToUpdate = false;
           vehiculoBloc.add(GetCurrent(context, forceWaiting: true));
         }
 
-        if(formularioBloc.needToUpdate) {
+        if (formularioBloc.needToUpdate) {
           formularioBloc.needToUpdate = false;
           formularioBloc.add(const FormularioBuscarDataEvent(forceWaiting: true));
         }
-
-
       },
       child: WillPopScope(
         onWillPop: () async {
@@ -220,5 +220,4 @@ class CarMindNavigationBar extends StatelessWidget {
     Navigator.push(context!, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
   }
-
 }

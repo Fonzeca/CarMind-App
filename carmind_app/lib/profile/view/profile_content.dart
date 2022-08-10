@@ -1,15 +1,15 @@
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../constants.dart';
-import 'package:carmind_app/profile/profile.dart';
-import 'package:carmind_app/login/login.dart';
-import 'package:carmind_app/home/home.dart';
-
 
 class ProfileContent extends StatelessWidget {
   bool isVideo = false;
@@ -146,6 +146,8 @@ class ProfileContent extends StatelessWidget {
                                 onPressed: state.offline
                                     ? null
                                     : () {
+                                        BlocProvider.of<FormularioBloc>(context).logs = null;
+                                        BlocProvider.of<VehiculoBloc>(context).vehiculo = null;
                                         BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
                                       },
                                 style: state.offline

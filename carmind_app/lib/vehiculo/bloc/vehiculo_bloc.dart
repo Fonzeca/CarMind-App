@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
+import 'package:carmind_app/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../api/api.dart';
 import '../../home/home.dart';
 import '../../main.dart';
-import '../../api/api.dart';
-import 'package:carmind_app/constants.dart';
 
 part 'vehiculo_event.dart';
 part 'vehiculo_state.dart';
@@ -52,9 +51,8 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           vehiculo = proccessPrendientes(vehiculo!);
         }
       } else {
-
         lastTimeFetched ??= DateTime.now();
-        if( (vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)){
+        if ((vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)) {
           //Si no esta offline, le preguntamos al server
           vehiculo = await api.getCurrent().catchError((err) {
             switch (err.runtimeType) {
@@ -66,7 +64,6 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           });
           lastTimeFetched = DateTime.now();
         }
-
       }
       final bool showDejarDeUsarVehiculo = vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
@@ -94,14 +91,28 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     });
 
     on<TapEvaluacion>((event, emit) async {
-      Evaluacion ev;
+      var ev;
+
+      bool deletedEvaluation = false;
 
       var sh = await SharedPreferences.getInstance();
       if (sh.getBool("offline") != null && sh.getBool("offline")!) {
         var box = Hive.box<Evaluacion>("evaluaciones");
         ev = box.get(event.id)!;
       } else {
-        ev = await api.getEvaluacionById(event.id);
+        try {
+          ev = await api.getEvaluacionById(event.id);
+        } on DioError catch (e) {
+          if (e.response!.statusCode == 404) {
+            deletedEvaluation = true;
+            vehiculo = null;
+          }
+        }
+      }
+
+      if (deletedEvaluation) {
+        add(GetCurrent(event.context));
+        return;
       }
 
       BlocProvider.of<HomeBloc>(event.context)

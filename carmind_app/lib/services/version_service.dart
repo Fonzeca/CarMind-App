@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';
 
-import '../main.dart';
 import '../api/api.dart';
 import '../constants.dart';
+import '../main.dart';
 
 class VersionService {
   static Version? _currentVersion;
@@ -42,8 +42,8 @@ class VersionService {
     } else {
       currentPlatform = iosPlatform;
     }
-    String lastVersion = await api.getLastVersionByPlatform(currentPlatform!);
-    _lastVersion = Version.parse(lastVersion);
+    VersionView lastVersion = await api.getLastVersionByPlatform(currentPlatform!);
+    _lastVersion = Version.parse(lastVersion.storeVersion);
   }
 
   static Future<void> showVersionAvailableAlert(BuildContext context) async {
@@ -52,7 +52,7 @@ class VersionService {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Nueva Versión Disponible',style: TextStyle(color: carMindTopBar)),
+          title: const Text('Nueva Versión Disponible', style: TextStyle(color: carMindTopBar)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -92,7 +92,7 @@ class VersionService {
                 'Actualizar',
                 style: TextStyle(color: carMindAccent2Color),
               ),
-              onPressed: () async => await launchUrl(Uri.parse(appStoreLinks[currentPlatform]!)),
+              onPressed: () async => await launchUrl(Uri.parse(appStoreLinks[currentPlatform]!), mode: LaunchMode.externalApplication),
             ),
           ],
         );
