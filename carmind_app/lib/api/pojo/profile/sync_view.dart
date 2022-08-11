@@ -1,17 +1,21 @@
-import 'package:json_annotation/json_annotation.dart';
-
 import 'package:carmind_app/api/api.dart';
-
-part 'sync_view.g.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class SyncView {
-  List<LogUso>? logUso;
+  final List<LogUso>? logUso;
 
-  List<LogEvaluacionTerminadaPojo>? evaluacionesRealizadas;
+  final List<LogEvaluacionTerminadaPojo>? evaluacionesRealizadas;
 
-  SyncView();
+  SyncView({this.logUso, this.evaluacionesRealizadas});
 
-  factory SyncView.fromJson(Map<String, dynamic> json) => _$SyncViewFromJson(json);
-  Map<String, dynamic> toJson() => _$SyncViewToJson(this);
+  factory SyncView.fromJson(Map<String, dynamic> json) => SyncView(
+      logUso: List<LogUso>.from(json["logUso"].map((x) => LogUso.fromJson(x))),
+      evaluacionesRealizadas:
+          List<LogEvaluacionTerminadaPojo>.from(json["evaluacionesRealizadas"].map((x) => LogEvaluacionTerminadaPojo.fromJson(x))));
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'logUso': logUso,
+        'evaluacionesRealizadas': evaluacionesRealizadas,
+      };
 }

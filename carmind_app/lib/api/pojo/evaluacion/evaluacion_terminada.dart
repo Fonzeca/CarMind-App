@@ -1,70 +1,76 @@
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'evaluacion_terminada.g.dart';
-
 @JsonSerializable()
-@HiveType(typeId: 11)
 class EvaluacionTerminadaPojo extends Equatable {
-  @HiveField(0)
   int? vehiculo_id;
 
-  @HiveField(1)
   List<RespuestaPojo>? respuestas;
 
-  EvaluacionTerminadaPojo();
+  EvaluacionTerminadaPojo({int? vehiculo_id, List<RespuestaPojo>? respuestas});
 
-  factory EvaluacionTerminadaPojo.fromJson(Map<String, dynamic> json) => _$EvaluacionTerminadaPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$EvaluacionTerminadaPojoToJson(this);
-  
+  factory EvaluacionTerminadaPojo.fromJson(Map<String, dynamic> json) => EvaluacionTerminadaPojo(
+      vehiculo_id: json['vehiculo_id'], respuestas: List<RespuestaPojo>.from(json["respuestas"].map((x) => RespuestaPojo.fromJson(x))));
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'vehiculo_id': vehiculo_id,
+        'respuestas': respuestas,
+      };
+
   @override
   // TODO: implement props
   List<Object?> get props => [vehiculo_id, respuestas];
 }
 
 @JsonSerializable()
-@HiveType(typeId: 12)
-class RespuestaPojo extends Equatable{
-  @HiveField(0)
+class RespuestaPojo extends Equatable {
   int? pregunta_id;
 
-  @HiveField(1)
   bool? tick_correcto;
 
-  @HiveField(2)
   String? base64_image;
 
-  @HiveField(3)
   String? texto;
 
-  @HiveField(4)
   List<RespuestaOpcionPojo>? opciones;
 
-  RespuestaPojo();
+  RespuestaPojo({this.pregunta_id, this.tick_correcto, this.base64_image, this.texto, this.opciones});
 
-  factory RespuestaPojo.fromJson(Map<String, dynamic> json) => _$RespuestaPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$RespuestaPojoToJson(this);
-  
+  factory RespuestaPojo.fromJson(Map<String, dynamic> json) => RespuestaPojo(
+      pregunta_id: json['pregunta_id'],
+      tick_correcto: json['tick_correcto'],
+      base64_image: json['base64_image'],
+      texto: json['texto'],
+      opciones: List<RespuestaOpcionPojo>.from(json["opciones"].map((x) => RespuestaOpcionPojo.fromJson(x))));
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'pregunta_id': pregunta_id,
+        'tick_correcto': tick_correcto,
+        'base64_image': base64_image,
+        'texto': texto,
+        'opciones': opciones,
+      };
+
   @override
   // TODO: implement props
   List<Object?> get props => [pregunta_id, tick_correcto, base64_image, texto, opciones];
 }
 
 @JsonSerializable()
-@HiveType(typeId: 13)
 class RespuestaOpcionPojo extends Equatable {
-  @HiveField(0)
   int? opcion_id;
 
-  @HiveField(1)
   bool? tick_correcto;
 
-  RespuestaOpcionPojo();
+  RespuestaOpcionPojo({this.opcion_id, this.tick_correcto});
 
-  factory RespuestaOpcionPojo.fromJson(Map<String, dynamic> json) => _$RespuestaOpcionPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$RespuestaOpcionPojoToJson(this);
-  
+  factory RespuestaOpcionPojo.fromJson(Map<String, dynamic> json) =>
+      RespuestaOpcionPojo(opcion_id: json['opcion_id'], tick_correcto: json['tick_correcto']);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'opcion_id': opcion_id,
+        'tick_correcto': tick_correcto,
+      };
   @override
   // TODO: implement props
   List<Object?> get props => [opcion_id, tick_correcto];

@@ -7,7 +7,19 @@ abstract class OfflineEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SetOffline extends OfflineEvent {}
+class GetOfflineData extends OfflineEvent {}
+
+class IniciarUsoVehiculoOffline extends OfflineEvent {
+  final int id;
+
+  const IniciarUsoVehiculoOffline(this.id);
+}
+
+class TerminarUsoVehiculoOffline extends OfflineEvent {
+  final int id;
+
+  const TerminarUsoVehiculoOffline(this.id);
+}
 
 class SetOnline extends OfflineEvent {}
 

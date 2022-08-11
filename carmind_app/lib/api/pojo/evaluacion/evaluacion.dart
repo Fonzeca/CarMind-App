@@ -1,61 +1,72 @@
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'evaluacion.g.dart';
-
 @JsonSerializable()
-@HiveType(typeId: 4)
 class Evaluacion {
-  @HiveField(0)
-  int? id;
+  final int? id;
 
-  @HiveField(1)
-  List<int>? vehiculo_id;
+  final List<int>? vehiculo_id;
 
-  @HiveField(2)
-  String? titulo;
+  final String? titulo;
 
-  @HiveField(3)
-  List<PreguntaPojo>? preguntas;
+  final List<PreguntaPojo>? preguntas;
 
-  Evaluacion();
+  Evaluacion({this.id, this.vehiculo_id, this.titulo, this.preguntas});
 
-  factory Evaluacion.fromJson(Map<String, dynamic> json) => _$EvaluacionFromJson(json);
-  Map<String, dynamic> toJson() => _$EvaluacionToJson(this);
+  factory Evaluacion.fromJson(Map<String, dynamic> json) => Evaluacion(
+      id: json['id'],
+      vehiculo_id: List<int>.from(json["vehiculo_id"].map((x) => x)),
+      titulo: json['titulo'],
+      preguntas: List<PreguntaPojo>.from(json["preguntas"].map((x) => PreguntaPojo.fromJson(x))));
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'vehiculo_id': vehiculo_id,
+        'titulo': titulo,
+        'preguntas': preguntas,
+      };
 }
 
 @JsonSerializable()
-@HiveType(typeId: 6)
 class PreguntaPojo {
-  @HiveField(0)
-  int? id;
+  final int? id;
 
-  @HiveField(1)
-  String? descripcion;
+  final String? descripcion;
 
-  @HiveField(2)
-  String? tipo;
+  final String? tipo;
 
-  @HiveField(3)
-  List<OpcionPojo>? opciones;
+  final List<OpcionPojo>? opciones;
 
-  PreguntaPojo();
+  PreguntaPojo({this.id, this.descripcion, this.opciones, this.tipo});
 
-  factory PreguntaPojo.fromJson(Map<String, dynamic> json) => _$PreguntaPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$PreguntaPojoToJson(this);
+  factory PreguntaPojo.fromJson(Map<String, dynamic> json) => PreguntaPojo(
+      id: json['id'],
+      descripcion: json['descripcion'],
+      tipo: json['tipo'],
+      opciones: List<OpcionPojo>.from(json["opciones"].map((x) => OpcionPojo.fromJson(x))));
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'descripcion': descripcion,
+        'tipo': tipo,
+        'opciones': opciones,
+      };
 }
 
 @JsonSerializable()
-@HiveType(typeId: 7)
 class OpcionPojo {
-  @HiveField(0)
-  int? id;
+  final int? id;
 
-  @HiveField(1)
-  String? opcion;
+  final String? opcion;
 
-  OpcionPojo();
+  OpcionPojo({this.id, this.opcion});
 
-  factory OpcionPojo.fromJson(Map<String, dynamic> json) => _$OpcionPojoFromJson(json);
-  Map<String, dynamic> toJson() => _$OpcionPojoToJson(this);
+  factory OpcionPojo.fromJson(Map<String, dynamic> json) => OpcionPojo(
+        id: json['id'],
+        opcion: json['opcion'],
+      );
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'opcion': opcion,
+      };
 }

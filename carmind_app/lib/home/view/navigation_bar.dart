@@ -1,6 +1,7 @@
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../constants.dart';
-import '../../services/version_service.dart';
+import '../../services/services.dart';
 
 class CarMindNavigationBar extends StatelessWidget {
   CarMindNavigationBar({Key? key}) : super(key: key);
@@ -28,10 +29,12 @@ class CarMindNavigationBar extends StatelessWidget {
       });
     });
 
+    BlocProvider.of<OfflineBloc>(context).add(GetOfflineData());
+
     final VehiculoBloc vehiculoBloc = BlocProvider.of<VehiculoBloc>(context);
     final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
 
-    formularioBloc.add(const FormularioBuscarDataEvent());
+    formularioBloc.add(FormularioBuscarDataEvent(context));
 
     vehiculoBloc.add(GetCurrent(context));
 
@@ -39,7 +42,7 @@ class CarMindNavigationBar extends StatelessWidget {
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
         }
 
         if (vehiculoBloc.needToUpdate) {
@@ -49,7 +52,7 @@ class CarMindNavigationBar extends StatelessWidget {
 
         if (formularioBloc.needToUpdate) {
           formularioBloc.needToUpdate = false;
-          formularioBloc.add(const FormularioBuscarDataEvent(forceWaiting: true));
+          formularioBloc.add(FormularioBuscarDataEvent(context, forceWaiting: true));
         }
       },
       child: WillPopScope(
@@ -88,12 +91,12 @@ class CarMindNavigationBar extends StatelessWidget {
                   onTap: (value) {
                     switch (value) {
                       case 0:
-                       formularioBloc.add(const FormularioBuscarDataEvent());
+                        formularioBloc.add(FormularioBuscarDataEvent(context));
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));
                         break;
-                      }
+                    }
                     BlocProvider.of<HomeBloc>(context)
                       ..add(HomeNavigationEvent(value))
                       ..add(ShowFab());

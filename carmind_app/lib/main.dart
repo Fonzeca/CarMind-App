@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:dio/adapter.dart';
@@ -17,12 +17,12 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firebase_options.dart';
+import 'services/services.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
@@ -34,33 +34,8 @@ void main() async {
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-    await Hive.initFlutter();
-
-    Hive.registerAdapter(VehiculoAdapter());
-    Hive.registerAdapter(EvaluacionesPendientesAdapter());
-    Hive.registerAdapter(EvaluacionAdapter());
-    Hive.registerAdapter(PreguntaPojoAdapter());
-    Hive.registerAdapter(OpcionPojoAdapter());
-    Hive.registerAdapter(LogEvaluacionAdapter());
-    Hive.registerAdapter(LoggedUserAdapter());
-    Hive.registerAdapter(LogUsoAdapter());
-    Hive.registerAdapter(LogEvaluacionTerminadaPojoAdapter());
-    Hive.registerAdapter(EvaluacionTerminadaPojoAdapter());
-    Hive.registerAdapter(RespuestaPojoAdapter());
-    Hive.registerAdapter(RespuestaOpcionPojoAdapter());
-
-    await Hive.openBox<Vehiculo>('vehiculos');
-    await Hive.openBox<LogEvaluacion>('logs');
-    await Hive.openBox<LoggedUser>('loggedUser');
-    await Hive.openBox<Evaluacion>('evaluaciones');
-    await Hive.openBox<LogUso>('logUso');
-    await Hive.openBox<LogEvaluacionTerminadaPojo>('evaluacionesTerminadas');
-
-    //Setear el comportamineto a oofline off hasta que se implemente la función
     var sh = await SharedPreferences.getInstance();
-    if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-      sh.setBool("offline", false);
-    }
+    sh.setBool("offline", false);
 
     final storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory(),
@@ -102,7 +77,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => QrScannerBloc()),
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(create: (context) => OfflineBloc()),
+        BlocProvider(create: (context) => OfflineBloc())
       ],
     );
   }
@@ -131,9 +106,14 @@ class MyApp extends StatelessWidget {
         await Future.delayed(const Duration(seconds: 3));
         BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
       } else if (e.error is SocketException) {
-        EasyLoading.showError(noInternet);
-        FirebaseCrashlytics.instance
-            .recordError('Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}', StackTrace.current, reason: noInternet);
+        if (!OfflineModeService.isOffline) {
+          EasyLoading.dismiss();
+          OfflineModeService.setOffline();
+          EasyLoading.showInfo(noInternet, duration: const Duration(seconds: 3));
+          Future.delayed(const Duration(seconds: 3), () {
+            BlocProvider.of<LoginBloc>(context).add(const ValidateSavedToken());
+          });
+        }
       } else {
         Response r = e.response!;
         if (r.statusCode != 200) {

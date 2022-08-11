@@ -9,6 +9,7 @@ abstract class FormularioEvent extends Equatable {
 
 class FormularioBuscarDataEvent extends FormularioEvent {
   final bool forceWaiting;
+  final BuildContext context;
 
-  const FormularioBuscarDataEvent({this.forceWaiting = false});
+  const FormularioBuscarDataEvent(this.context, {this.forceWaiting = false});
 }

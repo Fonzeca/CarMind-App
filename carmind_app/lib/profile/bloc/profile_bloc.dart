@@ -1,9 +1,12 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/services/services.dart';
+import 'package:equatable/equatable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -16,11 +19,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<GetLoggedEvent>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      LoggedUser user = await api.loggedUser();
+      LoggedUser? user;
 
-      if(user.username != null) FirebaseCrashlytics.instance.setUserIdentifier(user.username!);
+      if (OfflineModeService.isOffline) {
+        user = BlocProvider.of<OfflineBloc>(event.context).state.loggedUser;
+      } else {
+        user = await api.loggedUser();
+      }
+
+      if (user != null && user.username != null) FirebaseCrashlytics.instance.setUserIdentifier(user.username!);
 
       emit(state.copyWith(loading: false, logged: user));
+      EasyLoading.dismiss();
     });
   }
 }

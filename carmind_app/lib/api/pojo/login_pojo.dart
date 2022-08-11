@@ -1,14 +1,16 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'login_pojo.g.dart';
-
 @JsonSerializable()
 class TokenLogin {
-  String? token;
-  bool? mustChangePassword;
-  
-  TokenLogin();
+  final String? token;
+  final bool? mustChangePassword;
 
-  factory TokenLogin.fromJson(Map<String, dynamic> json) => _$TokenLoginFromJson(json);
-  Map<String, dynamic> toJson() => _$TokenLoginToJson(this);
+  TokenLogin({this.token, this.mustChangePassword});
+
+  factory TokenLogin.fromJson(Map<String, dynamic> json) => TokenLogin(token: json['token'], mustChangePassword: json['mustChangePassword']);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'token': token,
+        'mustChangePassword': mustChangePassword,
+      };
 }

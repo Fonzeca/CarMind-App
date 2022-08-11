@@ -9,9 +9,9 @@ class VehiculoState extends Equatable {
   @override
   List<Object?> get props => [loading, vehiculo];
 
-  VehiculoState copyWith({Vehiculo? vehiculo, bool? loading}) {
+  VehiculoState copyWith({Vehiculo? vehiculo, bool? loading, bool updateVehicle = false}) {
     return VehiculoState(
-      vehiculo: vehiculo,
+      vehiculo: (updateVehicle) ? vehiculo : this.vehiculo,
       loading: loading ?? this.loading,
     );
   }

@@ -7,4 +7,8 @@ abstract class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetLoggedEvent extends ProfileEvent {}
+class GetLoggedEvent extends ProfileEvent {
+  final BuildContext context;
+
+  const GetLoggedEvent(this.context);
+}

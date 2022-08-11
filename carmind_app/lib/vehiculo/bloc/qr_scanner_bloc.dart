@@ -1,15 +1,13 @@
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/services/services.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/api.dart';
-import '../../constants.dart';
 import '../../home/home.dart';
 import '../../main.dart';
 
@@ -40,17 +38,12 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         return;
       }
 
-      var sh = await SharedPreferences.getInstance();
-      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-        var box = Hive.box<LogUso>("logUso");
-        var log = LogUso()
-          ..enUso = true
-          ..vehiculoId = idVehiculo
-          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
-        box.add(log);
+      if (OfflineModeService.isOffline) {
+        BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
       } else {
         try {
           await api.iniciarUso(idVehiculo);
+          BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
         } catch (e) {
           emit(QrScannerInitial());
           FirebaseCrashlytics.instance

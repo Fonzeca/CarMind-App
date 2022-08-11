@@ -1,34 +1,39 @@
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'logged_user.g.dart';
-
 @JsonSerializable()
-@HiveType(typeId: 3)
 class LoggedUser {
-  @HiveField(0)
-  int? id;
+  final int? id;
 
-  @HiveField(1)
-  String? nombre;
+  final String? nombre;
 
-  @HiveField(2)
-  String? apellido;
+  final String? apellido;
 
-  @HiveField(3)
-  String? username;
+  final String? username;
 
-  @HiveField(4)
-  String? dni;
+  final String? dni;
 
-  @HiveField(5)
-  int? empresa;
+  final int? empresa;
 
-  @HiveField(6)
-  bool? administrador;
+  final bool? administrador;
 
-  LoggedUser();
+  LoggedUser({this.id, this.nombre, this.apellido, this.username, this.dni, this.empresa, this.administrador});
 
-  factory LoggedUser.fromJson(Map<String, dynamic> json) => _$LoggedUserFromJson(json);
-  Map<String, dynamic> toJson() => _$LoggedUserToJson(this);
+  factory LoggedUser.fromJson(Map<String, dynamic> json) => LoggedUser(
+      id: json['id'],
+      nombre: json['nombre'],
+      apellido: json['apellido'],
+      username: json['username'],
+      dni: json['dni'],
+      empresa: json['empresa'],
+      administrador: json['administrador']);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'id': id,
+        'nombre': nombre,
+        'apellido': apellido,
+        'username': username,
+        'dni': dni,
+        'empresa': empresa,
+        'administrador': administrador,
+      };
 }

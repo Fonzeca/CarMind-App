@@ -1,13 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'version_view.g.dart';
-
 @JsonSerializable()
 class VersionView {
-  String? storeVersion;
+  final String? storeVersion;
 
-  VersionView();
+  VersionView({this.storeVersion});
 
-  factory VersionView.fromJson(Map<String, dynamic> json) => _$VersionViewFromJson(json);
-  Map<String, dynamic> toJson() => _$VersionViewToJson(this);
+  factory VersionView.fromJson(Map<String, dynamic> json) => VersionView(storeVersion: json['storeVersion']);
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'storeVersion': storeVersion,
+      };
 }

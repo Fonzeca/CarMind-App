@@ -1,11 +1,9 @@
-import 'package:carmind_app/constants.dart';
+import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/services/services.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/api.dart';
 import '../../home/home.dart';
@@ -25,64 +23,47 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     api = ApiClient(staticDio!);
 
     on<GetCurrent>((event, emit) async {
-      emit(state.copyWith(loading: true, vehiculo: null));
+      emit(state.copyWith(loading: true));
+      lastTimeFetched ??= DateTime.now();
+
+      if (vehiculo != null && (DateTime.now().difference(lastTimeFetched!).inMinutes < 3 && !event.forceWaiting)) {
+        emit(state.copyWith(loading: false));
+        return;
+      }
 
       //Validamos si esta en modo offline
-      var sh = await SharedPreferences.getInstance();
-      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-        var box = Hive.box<LogUso>("logUso");
-        var log = box.values.isEmpty ? null : box.values.last;
-
-        //Buscamos el vehiculos
-        if (log != null && log.enUso!) {
-          vehiculo = Hive.box<Vehiculo>("vehiculos").get(log.vehiculoId);
-        } else {
-          int? idVehiculoOffline = sh.getInt("current-offline");
-
-          if (idVehiculoOffline != null) {
-            vehiculo = Hive.box<Vehiculo>("vehiculos").get(idVehiculoOffline);
-          } else {
-            //Si el log es de "desuso" lo dejamos en null
-            vehiculo = null;
-          }
-        }
-
-        if (vehiculo != null) {
-          vehiculo = proccessPrendientes(vehiculo!);
+      if (OfflineModeService.isOffline) {
+        OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
+        int? idVehiculoActual = offlineBloc.state.idVehiculoActual;
+        if (idVehiculoActual != null && offlineBloc.state.vehiculos != null) {
+          vehiculo = offlineBloc.state.vehiculos!.firstWhere((vehicle) => vehicle.id == idVehiculoActual);
         }
       } else {
-        lastTimeFetched ??= DateTime.now();
-        if ((vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)) {
-          //Si no esta offline, le preguntamos al server
-          vehiculo = await api.getCurrent().catchError((err) {
-            switch (err.runtimeType) {
-              case DioError:
-                final res = (err as DioError).response;
-                break;
-              default:
-            }
-          });
-          lastTimeFetched = DateTime.now();
-        }
+        //Si no esta offline, le preguntamos al server
+        vehiculo = await api.getCurrent().catchError((err) {
+          switch (err.runtimeType) {
+            case DioError:
+              final res = (err as DioError).response;
+              break;
+            default:
+          }
+        });
       }
+
+      lastTimeFetched = DateTime.now();
       final bool showDejarDeUsarVehiculo = vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
-      emit(state.copyWith(vehiculo: vehiculo, loading: false));
+      emit(state.copyWith(vehiculo: vehiculo, loading: false, updateVehicle: true));
     });
 
     on<DejarUsar>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      var sh = await SharedPreferences.getInstance();
-      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-        var box = Hive.box<LogUso>("logUso");
-        var log = LogUso()
-          ..enUso = false
-          ..vehiculoId = vehiculo!.id!
-          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
-        box.add(log);
+      if (OfflineModeService.isOffline) {
+        BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!));
       } else {
         await api.terminarUso(vehiculo!.id!);
+        BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!));
       }
 
       lastTimeFetched ??= DateTime.now();
@@ -95,10 +76,9 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
 
       bool deletedEvaluation = false;
 
-      var sh = await SharedPreferences.getInstance();
-      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-        var box = Hive.box<Evaluacion>("evaluaciones");
-        ev = box.get(event.id)!;
+      if (OfflineModeService.isOffline) {
+        /*   var box = Hive.box<Evaluacion>("evaluaciones");
+        ev = box.get(event.id)!; */
       } else {
         try {
           ev = await api.getEvaluacionById(event.id);
@@ -123,9 +103,8 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     });
   }
 
-  Vehiculo proccessPrendientes(Vehiculo vehiculo) {
-    var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
-
+/*   Vehiculo proccessPrendientes(Vehiculo vehiculo) {
+    
     //Obtenemos la lista de logs de este vehiculo
     var listLogs = box.values.where((element) => element.respuesta?.vehiculo_id! == vehiculo.id).toList();
 
@@ -178,5 +157,5 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     //Le asignamos la lista neuva al vehiculo
     vehiculo.pendientes = nuevaLista;
     return vehiculo;
-  }
+  } */
 }

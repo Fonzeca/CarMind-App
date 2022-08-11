@@ -1,5 +1,7 @@
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
+import 'package:carmind_app/on_boarding/on_boarding.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,21 +11,14 @@ import '../../profile/profile.dart';
 import '../../services/services.dart';
 import '../../widgets/widgets.dart';
 import '../login.dart';
-import 'package:carmind_app/on_boarding/on_boarding.dart';
-import 'package:carmind_app/home/home.dart';
-import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
-
-
 
 class LoginScreen extends StatelessWidget {
-  bool? offline = false;
-  LoginScreen({Key? key, this.offline}) : super(key: key);
-
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     configEasyLoading();
-    BlocProvider.of<LoginBloc>(context).add(ValidateSavedToken(offline ?? false));
+    BlocProvider.of<LoginBloc>(context).add(const ValidateSavedToken());
     FormService formServiceEmail = FormService();
     FormService formServicePass = FormService();
     final emailCon = TextEditingController();
@@ -31,25 +26,18 @@ class LoginScreen extends StatelessWidget {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) async {
         if (state is FirstLogin) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')));
         } else if (state is LoginOk) {
-          //Si esta ok, hacemos get del loggeduser
-          BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
+          BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent(context));
 
-          //Si se uso para actualizar el token o para iniciar sesion
-          if (offline != null && offline!) {
-            //Seteamos online en true, sincronizando los datos
-            BlocProvider.of<OfflineBloc>(context).add(SetOnline());
-            Navigator.pop(context);
+          final prefs = await SharedPreferences.getInstance();
+          if (prefs.getBool("on_boarding_finish") ?? false) {
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
           } else {
-            //Le damos para adelante a la app
-            final prefs = await SharedPreferences.getInstance();
-            if (prefs.getBool("on_boarding_finish") ?? false) {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
-            } else {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
-            }
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
           }
+
           BlocProvider.of<LoginBloc>(context).add(ResetScreen());
           emailCon.clear();
           passwordCon.clear();
@@ -65,8 +53,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-
-
   void configEasyLoading() {
     EasyLoading.instance
       ..loadingStyle = EasyLoadingStyle.dark
@@ -78,7 +64,9 @@ class _LoginView extends StatelessWidget {
   const _LoginView({
     Key? key,
     required this.emailCon,
-    required this.passwordCon, required this.formServiceEmail, required this.formServicePass,
+    required this.passwordCon,
+    required this.formServiceEmail,
+    required this.formServicePass,
   }) : super(key: key);
 
   final TextEditingController emailCon;
@@ -111,26 +99,38 @@ class _LoginView extends StatelessWidget {
                 style: subtitleStyle,
               ),
               const SizedBox(height: 20),
-              Form(key: formServiceEmail.keyForm, autovalidateMode: AutovalidateMode.onUserInteraction,child: CustomInput(controller: emailCon, label: 'E-mail')),
+              Form(
+                  key: formServiceEmail.keyForm,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: CustomInput(controller: emailCon, label: 'E-mail')),
               const SizedBox(
                 height: 16,
               ),
-              Form(key: formServicePass.keyForm, autovalidateMode: AutovalidateMode.onUserInteraction, child: CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true)),
+              Form(
+                  key: formServicePass.keyForm,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true)),
               const SizedBox(height: 52 - 18),
-              CustomElevatedButton(text: 'Iniciar sesión',shapeColor: carMindTopBar, textColor: Colors.white
-              , onPressed:  () =>  ( formServiceEmail.isValidForm() && formServicePass.isValidForm() ) ? BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text)) : null),
+              CustomElevatedButton(
+                  text: 'Iniciar sesión',
+                  shapeColor: carMindTopBar,
+                  textColor: Colors.white,
+                  onPressed: () => (formServiceEmail.isValidForm() && formServicePass.isValidForm())
+                      ? BlocProvider.of<LoginBloc>(context).add(AttemptToLogin(emailCon.text, passwordCon.text))
+                      : null),
               const SizedBox(height: 27 - 8),
               TextButton(
-                  onPressed: (() => Navigator.push(context, MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
+                  onPressed: (() => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const NuevaConstrasena(appBarTitle: 'Restaurar Contraseña', child: IngresarEmail())))),
                   style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(carMindAccentColor.withOpacity(0.2)), 
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
+                      overlayColor: MaterialStateProperty.all(carMindAccentColor.withOpacity(0.2)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)))),
                   child: const Text(
                     "Olvidé mi contraseña",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),
                   ))
-              ],
-            ),
+            ],
+          ),
         ),
       ),
     );

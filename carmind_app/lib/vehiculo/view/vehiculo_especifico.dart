@@ -1,17 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:skeletons/skeletons.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
-import '../../constants.dart';
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:skeletons/skeletons.dart';
 
+import '../../constants.dart';
 
 class VehiculoEspecifico extends StatelessWidget {
   BuildContext? context;
@@ -177,7 +173,7 @@ class VehiculoEspecifico extends StatelessWidget {
       }
     }
 
-    var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
+    /* var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
     try {
       var logOk = box.values.firstWhere(
         (element) {
@@ -194,7 +190,7 @@ class VehiculoEspecifico extends StatelessWidget {
           StackTrace.current,
           reason: 'Error al guardar la evaluacion localmente'
         );
-    }
+    } */
 
     return null;
   }

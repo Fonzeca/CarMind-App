@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carmind_app/services/services.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +16,8 @@ class VersionService {
   static String? currentPlatform;
 
   static Future<bool> isNewVersionAvailable() async {
+    if (OfflineModeService.isOffline) return false;
+
     if (_currentVersion == null) {
       await _getCurrentVersion();
     }

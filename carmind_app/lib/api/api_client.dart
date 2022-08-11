@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
 
+import 'pojo/profile/sync_view.dart';
+
 part 'api_client.g.dart';
 
 //@RestApi(baseUrl: "http://localhost:8090/") // LOCAL

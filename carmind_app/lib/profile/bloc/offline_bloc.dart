@@ -1,62 +1,71 @@
-import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'dart:convert';
 
-import 'package:carmind_app/main.dart';
 import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/constants.dart';
+import 'package:carmind_app/main.dart';
+import 'package:carmind_app/services/services.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'offline_event.dart';
 part 'offline_state.dart';
 
-class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
+class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
   late ApiClient api;
 
-  OfflineBloc() : super(const OfflineState(offline: false, loading: false, failAuth: false)) {
+  OfflineBloc() : super(OfflineState(newLogEvaluaciones: const [], newLogsUso: const [])) {
     api = ApiClient(staticDio!);
-    on<SyncEvent>((event, emit) async {
-      emit(state.copyWith(loading: true));
 
-      var sh = await SharedPreferences.getInstance();
-      var offline = sh.getBool("offline");
+    on<GetOfflineData>((event, emit) async {
+      if (OfflineModeService.isOffline) return;
 
-      emit(state.copyWith(offline: offline, loading: false));
+      var offlineData = await api.obtenerDatosOffline();
+      emit(state.copyWith(
+          loggedUser: offlineData.loggedUser,
+          idVehiculoActual: offlineData.idVehiculoActual,
+          vehiculos: offlineData.vehiculos,
+          evaluaciones: offlineData.evaluaciones,
+          logEvaluaciones: offlineData.logEvaluacion));
     });
 
-    on<SetOffline>((event, emit) async {
-      emit(state.copyWith(loading: true));
+    on<IniciarUsoVehiculoOffline>((event, emit) async {
+      if (state.vehiculos != null) {
+        int vehicleToUseIndex = state.vehiculos!.indexWhere((vehicle) => vehicle.id == event.id);
+        if (vehicleToUseIndex == -1) {
+          EasyLoading.showError(noVehicle, duration: const Duration(seconds: 3));
+          return;
+        }
+        state.vehiculos![vehicleToUseIndex].en_uso = true;
+        state.idVehiculoActual = state.vehiculos![vehicleToUseIndex].id;
 
-      var datos = await api.obtenerDatosOffline();
-      var sh = await SharedPreferences.getInstance();
+        LogUso newLogUso =
+            LogUso(usuarioId: state.loggedUser!.id, vehiculoId: state.vehiculos![vehicleToUseIndex].id, fechaInicio: DateTime.now().toString());
+        state.newLogsUso.add(newLogUso);
 
-      var boxVehiculos = Hive.box<Vehiculo>("vehiculos");
-      var mapVehiculos = {for (var v in datos.vehiculos!) v.id: v};
-      boxVehiculos.putAll(mapVehiculos);
-
-      var boxEvaluaciones = Hive.box<Evaluacion>("evaluaciones");
-      var mapEvaluaciones = {for (var e in datos.evaluaciones!) e.id: e};
-      boxEvaluaciones.putAll(mapEvaluaciones);
-
-      //No lo mapeamos con el id como key, porque se desordenan.
-      var boxLogsEvaluaciones = Hive.box<LogEvaluacion>("logs");
-      boxLogsEvaluaciones.addAll(datos.logEvaluacion!);
-
-      var boxLoggedUser = Hive.box<LoggedUser>("loggedUser");
-      boxLoggedUser.put(0, datos.loggedUser!);
-
-      if (datos.idVehiculoActual != null) {
-        sh.setInt("current-offline", datos.idVehiculoActual!);
+        emit(state.copyWith(newLogsUso: state.newLogsUso, vehiculos: state.vehiculos!));
       }
+    });
 
-      sh.setBool("offline", true);
+    on<TerminarUsoVehiculoOffline>((event, emit) async {
+      if (state.vehiculos != null) {
+        int vehicleToUnuseIndex = state.vehiculos!.indexWhere((vehicle) => vehicle.id == event.id);
+        if (vehicleToUnuseIndex == -1) {
+          EasyLoading.showError(noVehicle, duration: const Duration(seconds: 3));
+          return;
+        }
+        state.vehiculos![vehicleToUnuseIndex].en_uso = false;
+        state.idVehiculoActual = null;
 
-      emit(state.copyWith(offline: true, loading: false));
+        int logUsoIndex = state.newLogsUso.indexWhere((logUso) => logUso.fechaFin == null);
+        state.newLogsUso[logUsoIndex].fechaFin = DateTime.now().toString();
+
+        emit(state.copyWith(newLogsUso: state.newLogsUso, vehiculos: state.vehiculos!));
+      }
     });
 
     on<SetOnline>((event, emit) async {
-      emit(state.copyWith(loading: true));
+      /*  emit(state.copyWith(loading: true));
 
       var boxVehiculos = Hive.box<Vehiculo>("vehiculos");
       var boxEvaluaciones = Hive.box<Evaluacion>("evaluaciones");
@@ -85,11 +94,7 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
         });
       } catch (e) {
         emit(state.copyWith(loading: false));
-        FirebaseCrashlytics.instance.recordError(
-          'Detalles: ${e.toString()}',
-          StackTrace.current,
-          reason: 'Error al intentar sincronizar datos'
-        );
+        FirebaseCrashlytics.instance.recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar sincronizar datos');
         return;
       }
 
@@ -103,7 +108,13 @@ class OfflineBloc extends Bloc<OfflineEvent, OfflineState> {
         boxLogEvaluaciones.clear();
 
         emit(state.copyWith(offline: false, loading: false));
-      }
+      } */
     });
   }
+
+  @override
+  OfflineState? fromJson(Map<String, dynamic> json) => OfflineState.fromMap(json);
+
+  @override
+  Map<String, dynamic>? toJson(OfflineState state) => state.toMap();
 }
