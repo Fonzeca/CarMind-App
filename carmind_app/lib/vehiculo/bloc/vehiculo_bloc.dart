@@ -33,7 +33,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         return;
       }
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
         int? idVehiculoActual = offlineBloc.state.idVehiculoActual;
         if (idVehiculoActual != null && idVehiculoActual != 0 && offlineBloc.state.vehiculos != null) {
@@ -50,7 +50,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
             }
           });
         } catch (e) {
-          if (OfflineModeService.isOffline) {
+          if (OfflineModeService.isOffline(context: event.context)) {
             add(GetCurrent(event.context, forceWaiting: event.forceWaiting));
             return;
           }
@@ -66,14 +66,14 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     on<DejarUsar>((event, emit) async {
       emit(state.copyWith(loading: true));
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!));
       } else {
         try {
           await api.terminarUso(vehiculo!.id!);
           BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!, deleteLog: true));
         } catch (e) {
-          if (OfflineModeService.isOffline) {
+          if (OfflineModeService.isOffline(context: event.context)) {
             add(DejarUsar(event.context));
             return;
           }
@@ -90,7 +90,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
 
       bool deletedEvaluation = false;
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
         evaluation = offlineBloc.state.evaluaciones!.firstWhere((evaluation) => evaluation.id == event.id, orElse: () => Evaluacion());
         if (evaluation.id == null) {
@@ -101,7 +101,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         try {
           evaluation = await api.getEvaluacionById(event.id);
         } on DioError catch (e) {
-          if (OfflineModeService.isOffline) {
+          if (OfflineModeService.isOffline(context: event.context)) {
             add(TapEvaluacion(event.id, event.context));
             return;
           }

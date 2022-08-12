@@ -30,10 +30,17 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
         return;
       }
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         logs = BlocProvider.of<OfflineBloc>(event.context).state.logEvaluaciones;
       } else {
-        logs = await api.getLogEvaluacionesByLoggedUser('50');
+        try {
+          logs = await api.getLogEvaluacionesByLoggedUser('50');
+        } catch (e) {
+          if (OfflineModeService.isOffline(context: event.context)) {
+            add(FormularioBuscarDataEvent(event.context, forceWaiting: event.forceWaiting));
+            return;
+          }
+        }
       }
 
       lastTimeFetched = DateTime.now();

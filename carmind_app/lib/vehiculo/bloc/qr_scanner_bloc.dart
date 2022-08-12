@@ -38,14 +38,14 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         return;
       }
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
       } else {
         try {
           await api.iniciarUso(idVehiculo);
           BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
         } catch (e) {
-          if (OfflineModeService.isOffline) {
+          if (OfflineModeService.isOffline(context: event.context)) {
             add(QrEscaneoEvent(event.result, event.context));
             return;
           }

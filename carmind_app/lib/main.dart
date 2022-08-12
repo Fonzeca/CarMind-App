@@ -121,7 +121,7 @@ class MyApp extends StatelessWidget {
           EasyLoading.showInfo(noInternet, duration: const Duration(seconds: 3));
           return;
         }
-        if (!OfflineModeService.isOffline) {
+        if (!OfflineModeService.isOffline(context: context)) {
           EasyLoading.dismiss();
           OfflineModeService.setOffline();
           EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));

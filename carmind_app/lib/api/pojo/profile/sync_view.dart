@@ -3,19 +3,18 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class SyncView {
-  final List<LogUso>? logUso;
+  final List<LogUso>? logsUso;
 
-  final List<LogEvaluacionTerminadaPojo>? evaluacionesRealizadas;
+  final List<LogEvaluacion>? logsEvaluaciones;
 
-  SyncView({this.logUso, this.evaluacionesRealizadas});
+  SyncView({this.logsUso, this.logsEvaluaciones});
 
   factory SyncView.fromJson(Map<String, dynamic> json) => SyncView(
-      logUso: List<LogUso>.from(json["logUso"].map((x) => LogUso.fromJson(x))),
-      evaluacionesRealizadas:
-          List<LogEvaluacionTerminadaPojo>.from(json["evaluacionesRealizadas"].map((x) => LogEvaluacionTerminadaPojo.fromJson(x))));
+      logsUso: List<LogUso>.from(json["logUso"].map((x) => LogUso.fromJson(x))),
+      logsEvaluaciones: List<LogEvaluacion>.from(json["evaluacionesRealizadas"].map((x) => LogEvaluacion.fromJson(x))));
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'logUso': logUso,
-        'evaluacionesRealizadas': evaluacionesRealizadas,
+        'logUso': logsUso,
+        'evaluacionesRealizadas': logsEvaluaciones,
       };
 }

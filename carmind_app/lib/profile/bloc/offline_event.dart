@@ -36,4 +36,4 @@ class UpdateOfflineData extends OfflineEvent {
   const UpdateOfflineData(this.vehiculo, this.logEvaluacion);
 }
 
-class SyncEvent extends OfflineEvent {}
+class SyncOfflineData extends OfflineEvent {}

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/api/pojo/profile/sync_view.dart';
 import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/main.dart';
 import 'package:carmind_app/services/services.dart';
@@ -20,7 +22,7 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
     api = ApiClient(staticDio!);
 
     on<GetOfflineData>((event, emit) async {
-      if (OfflineModeService.isOffline) return;
+      if (OfflineModeService.isOffline()) return;
 
       var offlineData = await api.obtenerDatosOffline();
       emit(state.copyWith(
@@ -126,6 +128,15 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
         }
       } else {
         EasyLoading.showError(noEvaluationAssigned, duration: const Duration(seconds: 3));
+      }
+    });
+
+    on<SyncOfflineData>((event, emit) async {
+      try {
+        await api.sincronizarDatos(SyncView(logsUso: state.newLogsUso, logsEvaluaciones: state.newLogsEvaluaciones));
+        OfflineModeService.setOnline();
+      } catch (e) {
+        if (e is SocketException) {}
       }
     });
   }

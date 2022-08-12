@@ -139,7 +139,7 @@ class ProfileContent extends StatelessWidget {
                           TextButton(
                             onPressed: () async {
                               OfflineModeService.isLogged = false;
-                              if (OfflineModeService.isOffline) {
+                              if (OfflineModeService.isOffline(context: context)) {
                                 OfflineModeService.setOnline();
                                 BlocProvider.of<FormularioBloc>(context).logs = null;
                                 BlocProvider.of<VehiculoBloc>(context).vehiculo = null;

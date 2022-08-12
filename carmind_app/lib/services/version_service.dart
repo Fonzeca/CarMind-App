@@ -16,7 +16,7 @@ class VersionService {
   static String? currentPlatform;
 
   static Future<bool> isNewVersionAvailable() async {
-    if (OfflineModeService.isOffline) return false;
+    if (OfflineModeService.isOffline()) return false;
 
     if (_currentVersion == null) {
       await _getCurrentVersion();

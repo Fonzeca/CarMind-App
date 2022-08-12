@@ -21,7 +21,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       LoggedUser? user;
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline(context: event.context)) {
         user = BlocProvider.of<OfflineBloc>(event.context).state.loggedUser;
       } else {
         user = await api.loggedUser();

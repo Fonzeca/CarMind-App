@@ -50,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       OfflineModeService.isChangingPass = false;
       EasyLoading.show();
 
-      if (OfflineModeService.isOffline) {
+      if (OfflineModeService.isOffline()) {
         EasyLoading.dismiss();
         emit(LoginOk());
         return;
