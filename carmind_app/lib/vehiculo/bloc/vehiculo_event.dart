@@ -16,9 +16,9 @@ class GetCurrent extends VehiculoEvent {
 
 class TapEvaluacion extends VehiculoEvent {
   final int id;
-  BuildContext context;
+  final BuildContext context;
 
-  TapEvaluacion(this.id, this.context);
+  const TapEvaluacion(this.id, this.context);
 }
 
 class DejarUsar extends VehiculoEvent {

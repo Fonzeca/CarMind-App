@@ -29,11 +29,14 @@ class FinalizarPreguntaEvent extends RealizarEvaluacionEvent {
 }
 
 class FinalizarEvaluacionEvent extends RealizarEvaluacionEvent {
-  const FinalizarEvaluacionEvent();
+  final BuildContext context;
+
+  const FinalizarEvaluacionEvent(this.context);
 
   @override
   List<Object> get props => [];
 }
+
 class RestoreDataEvent extends RealizarEvaluacionEvent {
   final XFile restoredData;
   final Evaluacion evaluacion;

@@ -6,7 +6,6 @@ import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:dio/adapter.dart';
@@ -18,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +26,7 @@ import 'services/services.dart';
 
 void main() async {
   runZonedGuarded<Future<void>>(() async {
+    initializeDateFormatting('es_AR');
     WidgetsFlutterBinding.ensureInitialized();
 
     await Firebase.initializeApp(
@@ -106,10 +107,24 @@ class MyApp extends StatelessWidget {
         await Future.delayed(const Duration(seconds: 3));
         BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
       } else if (e.error is SocketException) {
+        if (OfflineModeService.isLogged) {
+          EasyLoading.dismiss();
+          OfflineModeService.setOffline();
+          EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
+          Future.delayed(const Duration(seconds: 3), () {
+            //OfflineModeService.lastFunctionCalled();
+            handler.next(e);
+          });
+          return;
+        }
+        if (OfflineModeService.isChangingPass) {
+          EasyLoading.showInfo(noInternet, duration: const Duration(seconds: 3));
+          return;
+        }
         if (!OfflineModeService.isOffline) {
           EasyLoading.dismiss();
           OfflineModeService.setOffline();
-          EasyLoading.showInfo(noInternet, duration: const Duration(seconds: 3));
+          EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
           Future.delayed(const Duration(seconds: 3), () {
             BlocProvider.of<LoginBloc>(context).add(const ValidateSavedToken());
           });

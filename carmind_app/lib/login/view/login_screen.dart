@@ -29,8 +29,8 @@ class LoginScreen extends StatelessWidget {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const NuevaConstrasena(child: IngresarContrasena(), appBarTitle: 'Restaurar Contraseña')));
         } else if (state is LoginOk) {
+          OfflineModeService.isLogged = true;
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent(context));
-
           final prefs = await SharedPreferences.getInstance();
           if (prefs.getBool("on_boarding_finish") ?? false) {
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);

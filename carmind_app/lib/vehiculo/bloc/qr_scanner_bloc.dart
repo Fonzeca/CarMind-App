@@ -1,4 +1,4 @@
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/services/services.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:equatable/equatable.dart';
@@ -45,6 +45,11 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
           await api.iniciarUso(idVehiculo);
           BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
         } catch (e) {
+          if (OfflineModeService.isOffline) {
+            add(QrEscaneoEvent(event.result, event.context));
+            return;
+          }
+
           emit(QrScannerInitial());
           FirebaseCrashlytics.instance
               .recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar iniciar uso de un vehiculo');

@@ -5,27 +5,28 @@ class OfflineState extends Equatable {
   int? idVehiculoActual;
   List<Vehiculo>? vehiculos;
   List<Evaluacion>? evaluaciones;
-  List<LogEvaluacion>? logEvaluaciones;
+  List<LogEvaluacion> logEvaluaciones;
   List<LogUso> newLogsUso;
-  List<LogEvaluacion> newLogEvaluaciones;
+  List<LogEvaluacion> newLogsEvaluaciones;
 
   OfflineState(
       {this.loggedUser,
       this.idVehiculoActual,
       this.vehiculos,
       this.evaluaciones,
-      this.logEvaluaciones,
+      required this.logEvaluaciones,
       required this.newLogsUso,
-      required this.newLogEvaluaciones});
+      required this.newLogsEvaluaciones});
 
   OfflineState copyWith(
       {LoggedUser? loggedUser,
       int? idVehiculoActual,
       List<Vehiculo>? vehiculos,
       List<Evaluacion>? evaluaciones,
+      List<PreguntaPojo>? preguntas,
       List<LogEvaluacion>? logEvaluaciones,
       List<LogUso>? newLogsUso,
-      List<LogEvaluacion>? newLogEvaluaciones}) {
+      List<LogEvaluacion>? newLogsEvaluaciones}) {
     return OfflineState(
         loggedUser: loggedUser ?? this.loggedUser,
         idVehiculoActual: idVehiculoActual ?? this.idVehiculoActual,
@@ -33,11 +34,11 @@ class OfflineState extends Equatable {
         evaluaciones: evaluaciones ?? this.evaluaciones,
         logEvaluaciones: logEvaluaciones ?? this.logEvaluaciones,
         newLogsUso: newLogsUso ?? this.newLogsUso,
-        newLogEvaluaciones: newLogEvaluaciones ?? this.newLogEvaluaciones);
+        newLogsEvaluaciones: newLogsEvaluaciones ?? this.newLogsEvaluaciones);
   }
 
   @override
-  List<Object?> get props => [loggedUser, idVehiculoActual, vehiculos, evaluaciones, logEvaluaciones, newLogsUso, newLogEvaluaciones];
+  List<Object?> get props => [loggedUser, idVehiculoActual, vehiculos, evaluaciones, logEvaluaciones, newLogsUso, newLogsEvaluaciones];
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
@@ -47,7 +48,7 @@ class OfflineState extends Equatable {
     result.addAll({'evaluaciones': evaluaciones});
     result.addAll({'logEvaluaciones': logEvaluaciones});
     result.addAll({'newLogsUso': newLogsUso});
-    result.addAll({'newLogEvaluaciones': newLogEvaluaciones});
+    result.addAll({'newLogsEvaluaciones': newLogsEvaluaciones});
     return result;
   }
 
@@ -59,7 +60,7 @@ class OfflineState extends Equatable {
         evaluaciones: List<Evaluacion>.from(map["evaluaciones"].map((x) => Evaluacion.fromJson(x))),
         logEvaluaciones: List<LogEvaluacion>.from(map["logEvaluaciones"].map((x) => LogEvaluacion.fromJson(x))),
         newLogsUso: List<LogUso>.from(map["newLogsUso"].map((x) => LogUso.fromJson(x))),
-        newLogEvaluaciones: List<LogEvaluacion>.from(map["newLogEvaluaciones"].map((x) => LogEvaluacion.fromJson(x))));
+        newLogsEvaluaciones: List<LogEvaluacion>.from(map["newLogsEvaluaciones"].map((x) => LogEvaluacion.fromJson(x))));
   }
 
   String toJson() => json.encode(toMap());

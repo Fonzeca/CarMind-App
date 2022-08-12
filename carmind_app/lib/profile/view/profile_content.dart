@@ -138,6 +138,7 @@ class ProfileContent extends StatelessWidget {
                           const SizedBox(height: 19),
                           TextButton(
                             onPressed: () async {
+                              OfflineModeService.isLogged = false;
                               if (OfflineModeService.isOffline) {
                                 OfflineModeService.setOnline();
                                 BlocProvider.of<FormularioBloc>(context).logs = null;
