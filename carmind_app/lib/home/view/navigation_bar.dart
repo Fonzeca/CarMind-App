@@ -1,7 +1,6 @@
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';

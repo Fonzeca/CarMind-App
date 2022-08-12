@@ -18,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final client = ApiClient(staticDio!);
 
     on<AttemptToLogin>((event, emit) async {
+      OfflineModeService.isChangingPass = false;
       EasyLoading.show();
       final String email = event.email.trim();
       final String pass = event.password.trim();
@@ -46,6 +47,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<ValidateSavedToken>((event, emit) async {
+      OfflineModeService.isChangingPass = false;
       EasyLoading.show();
 
       if (OfflineModeService.isOffline) {

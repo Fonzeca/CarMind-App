@@ -1,6 +1,7 @@
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/main.dart';
-import 'package:carmind_app/profile/bloc/offline_bloc.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/services/offline_mode_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

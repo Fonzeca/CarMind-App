@@ -4,17 +4,17 @@ import 'package:json_annotation/json_annotation.dart';
 class LogEvaluacion {
   final int? log_id;
 
-  final int? evaluacion_id;
+  int? evaluacion_id;
 
   String? nombre_evaluacion;
 
   String? fecha;
 
-  final int? vehiculo_id;
+  int? vehiculo_id;
 
   final String? nombre_vehiculo;
 
-  final int? usuario_id;
+  int? usuario_id;
 
   final String? nombre_usuario;
 

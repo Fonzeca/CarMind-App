@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/main.dart';
+import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/services/services.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'realizar_evaluacion_event.dart';
 part 'realizar_evaluacion_state.dart';
@@ -86,18 +88,17 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     on<FinalizarEvaluacionEvent>((event, emit) async {
       emit(state.copyWith(pMandandoEvaluacion: true));
 
-      var sh = await SharedPreferences.getInstance();
-
-      if (sh.getBool("offline") != null && sh.getBool("offline")!) {
-        /* var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
-        var log = LogEvaluacionTerminadaPojo()
-          ..evaluacionId = evaluacion!.id!
-          ..fecha = DateFormat(dateTimeFormat).format(DateTime.now())
-          ..respuesta = evaluacionTerminada!;
-
-        box.add(log); */
+      if (OfflineModeService.isOffline) {
+        BlocProvider.of<OfflineBloc>(event.context).add(RealizarEvaluacionOffline(evaluacion!.id!, evaluacionTerminada!));
       } else {
-        await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!);
+        try {
+          await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!);
+        } catch (e) {
+          if (OfflineModeService.isOffline) {
+            add(FinalizarEvaluacionEvent(event.context));
+            return;
+          }
+        }
       }
 
       evaluacionTerminada = null;

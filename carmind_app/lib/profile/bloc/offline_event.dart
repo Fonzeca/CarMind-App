@@ -10,17 +10,30 @@ abstract class OfflineEvent extends Equatable {
 class GetOfflineData extends OfflineEvent {}
 
 class IniciarUsoVehiculoOffline extends OfflineEvent {
-  final int id;
+  final int vehiculoId;
 
-  const IniciarUsoVehiculoOffline(this.id);
+  const IniciarUsoVehiculoOffline(this.vehiculoId);
 }
 
 class TerminarUsoVehiculoOffline extends OfflineEvent {
-  final int id;
+  final int vehiculoId;
+  final bool deleteLog;
 
-  const TerminarUsoVehiculoOffline(this.id);
+  const TerminarUsoVehiculoOffline(this.vehiculoId, {this.deleteLog = false});
 }
 
-class SetOnline extends OfflineEvent {}
+class RealizarEvaluacionOffline extends OfflineEvent {
+  final int evaluacionId;
+  final EvaluacionTerminadaPojo evaluacionTerminada;
+
+  const RealizarEvaluacionOffline(this.evaluacionId, this.evaluacionTerminada);
+}
+
+class UpdateOfflineData extends OfflineEvent {
+  final Vehiculo? vehiculo;
+  final LogEvaluacion? logEvaluacion;
+
+  const UpdateOfflineData(this.vehiculo, this.logEvaluacion);
+}
 
 class SyncEvent extends OfflineEvent {}
