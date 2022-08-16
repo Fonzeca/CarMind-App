@@ -119,6 +119,7 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
           logEvaluacion.fecha = todayDate;
           logEvaluacion.vehiculo_id = state.idVehiculoActual;
           logEvaluacion.usuario_id = state.loggedUser!.id;
+          logEvaluacion.respuestas = event.evaluacionTerminada.respuestas;
 
           state.newLogsEvaluaciones.add(logEvaluacion);
           state.logEvaluaciones.add(logEvaluacion);

@@ -10,9 +10,15 @@ class OfflineModeService {
   static DateTime lastTimeFetched = DateTime.now();
 
   static bool isOffline({BuildContext? context}) {
-    if (context != null && offline && DateTime.now().difference(lastTimeFetched).inMinutes > 2) {
+    if (context == null) {
+      return offline;
+    }
+    final OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(context);
+    if (offline &&
+        (offlineBloc.state.newLogsEvaluaciones.isNotEmpty || offlineBloc.state.newLogsUso.isNotEmpty) &&
+        DateTime.now().difference(lastTimeFetched).inMinutes > 2) {
       lastTimeFetched = DateTime.now();
-      BlocProvider.of<OfflineBloc>(context).add(SyncOfflineData());
+      offlineBloc.add(SyncOfflineData());
     }
     return offline;
   }
