@@ -109,12 +109,15 @@ class MyApp extends StatelessWidget {
       } else if (e.error is SocketException) {
         if (OfflineModeService.isLogged) {
           EasyLoading.dismiss();
-          OfflineModeService.setOffline();
-          EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
-          Future.delayed(const Duration(seconds: 3), () {
-            //OfflineModeService.lastFunctionCalled();
+          if (!OfflineModeService.isOffline(context: context)) {
+            OfflineModeService.setOffline();
+            EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
+            Future.delayed(const Duration(seconds: 3), () {
+              handler.next(e);
+            });
+          } else {
             handler.next(e);
-          });
+          }
           return;
         }
         if (OfflineModeService.isChangingPass) {

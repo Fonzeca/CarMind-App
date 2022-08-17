@@ -21,7 +21,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
     api = ApiClient(staticDio!);
     on<QrEscaneoEvent>((event, emit) async {
       emit(QrCargando());
-      EasyLoading.show();
+      //EasyLoading.show();
 
       var result = event.result;
       int idVehiculo = 0;
@@ -50,14 +50,15 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
             return;
           }
 
+          EasyLoading.dismiss();
           emit(QrScannerInitial());
           FirebaseCrashlytics.instance
               .recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar iniciar uso de un vehiculo');
           return;
         }
       }
-      emit(QrScannerInitial());
       EasyLoading.dismiss();
+      emit(QrScannerInitial());
 
       BlocProvider.of<HomeBloc>(event.context).add(const HomeNavigationEvent(1));
       BlocProvider.of<VehiculoBloc>(event.context).vehiculo = null;

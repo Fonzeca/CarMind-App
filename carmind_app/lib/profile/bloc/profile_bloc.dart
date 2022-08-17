@@ -29,8 +29,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
       if (user != null && user.username != null) FirebaseCrashlytics.instance.setUserIdentifier(user.username!);
 
-      emit(state.copyWith(loading: false, logged: user));
       EasyLoading.dismiss();
+      emit(state.copyWith(loading: false, logged: user));
     });
   }
 }

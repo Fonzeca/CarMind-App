@@ -10,11 +10,11 @@ class SyncView {
   SyncView({this.logsUso, this.logsEvaluaciones});
 
   factory SyncView.fromJson(Map<String, dynamic> json) => SyncView(
-      logsUso: List<LogUso>.from(json["logUso"].map((x) => LogUso.fromJson(x))),
-      logsEvaluaciones: List<LogEvaluacion>.from(json["evaluacionesRealizadas"].map((x) => LogEvaluacion.fromJson(x))));
+      logsUso: List<LogUso>.from(json["logsUso"].map((x) => LogUso.fromJson(x))),
+      logsEvaluaciones: List<LogEvaluacion>.from(json["logsEvaluaciones"].map((x) => LogEvaluacion.fromJson(x))));
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'logUso': logsUso,
-        'evaluacionesRealizadas': logsEvaluaciones,
+        'logsUso': logsUso,
+        'logsEvaluaciones': logsEvaluaciones,
       };
 }

@@ -68,20 +68,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (await verifyToken()) {
         //Llamo a la api para asegurarme que el token anda
         await client.valdiateToken().then((value) async {
+          EasyLoading.dismiss();
           emit(LoginOk());
-          //var offlineData = await client.obtenerDatosOffline();
-          //TODO: implement
-          //var sh = await SharedPreferences.getInstance();
-          //acá hay que guardar todo localmente
         }).catchError((obj) {
           removeToken();
+          EasyLoading.dismiss();
           emit(LoginBlocInitial());
         });
       } else {
+        EasyLoading.dismiss();
         emit(LoginBlocInitial());
       }
-
-      EasyLoading.dismiss();
     });
 
     on<ResetScreen>((event, emit) {

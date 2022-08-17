@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -18,7 +20,7 @@ part 'offline_state.dart';
 class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
   late ApiClient api;
 
-  OfflineBloc() : super(OfflineState(newLogsEvaluaciones: const [], newLogsUso: const [], logEvaluaciones: const [])) {
+  OfflineBloc() : super(OfflineState(newLogsEvaluaciones: [], newLogsUso: [], logEvaluaciones: [])) {
     api = ApiClient(staticDio!);
 
     on<GetOfflineData>((event, emit) async {
@@ -136,6 +138,8 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
       try {
         await api.sincronizarDatos(SyncView(logsUso: state.newLogsUso, logsEvaluaciones: state.newLogsEvaluaciones));
         OfflineModeService.setOnline();
+        state.newLogsUso.removeWhere((log) => log.fechaFin != null);
+        emit(state.copyWith(newLogsUso: state.newLogsUso, logEvaluaciones: []));
       } catch (e) {
         if (e is SocketException) {}
       }
