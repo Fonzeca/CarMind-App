@@ -21,7 +21,7 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
     api = ApiClient(staticDio!);
     on<QrEscaneoEvent>((event, emit) async {
       emit(QrCargando());
-      //EasyLoading.show();
+      EasyLoading.show();
 
       var result = event.result;
       int idVehiculo = 0;
@@ -38,12 +38,14 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         return;
       }
 
+      OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
+
       if (OfflineModeService.isOffline(context: event.context)) {
-        BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
+        offlineBloc.add(IniciarUsoVehiculoOffline(event.context, idVehiculo));
       } else {
         try {
           await api.iniciarUso(idVehiculo);
-          BlocProvider.of<OfflineBloc>(event.context).add(IniciarUsoVehiculoOffline(idVehiculo));
+          offlineBloc.add(IniciarUsoVehiculoOffline(event.context, idVehiculo));
         } catch (e) {
           if (OfflineModeService.isOffline(context: event.context)) {
             add(QrEscaneoEvent(event.result, event.context));
@@ -62,7 +64,6 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
 
       BlocProvider.of<HomeBloc>(event.context).add(const HomeNavigationEvent(1));
       BlocProvider.of<VehiculoBloc>(event.context).vehiculo = null;
-      BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent(event.context));
       final bool showDejarDeUsarVehiculo = BlocProvider.of<VehiculoBloc>(event.context).vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
     });

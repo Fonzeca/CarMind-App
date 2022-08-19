@@ -7,9 +7,9 @@ abstract class FormularioEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FormularioBuscarDataEvent extends FormularioEvent {
+class GetLastFormLogs extends FormularioEvent {
   final bool forceWaiting;
   final BuildContext context;
 
-  const FormularioBuscarDataEvent(this.context, {this.forceWaiting = false});
+  const GetLastFormLogs(this.context, {this.forceWaiting = false});
 }

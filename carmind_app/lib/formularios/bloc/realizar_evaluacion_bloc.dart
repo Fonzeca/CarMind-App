@@ -88,11 +88,14 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
     on<FinalizarEvaluacionEvent>((event, emit) async {
       emit(state.copyWith(pMandandoEvaluacion: true));
 
+      OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
+
       if (OfflineModeService.isOffline(context: event.context)) {
-        BlocProvider.of<OfflineBloc>(event.context).add(RealizarEvaluacionOffline(evaluacion!.id!, evaluacionTerminada!));
+        offlineBloc.add(RealizarEvaluacionOffline(evaluacion!.id!, evaluacionTerminada!, event.context));
       } else {
         try {
           await api!.realizarEvaluacion(evaluacion!.id!, evaluacionTerminada!);
+          add(UpdateEvaluacion());
         } catch (e) {
           if (OfflineModeService.isOffline(context: event.context)) {
             add(FinalizarEvaluacionEvent(event.context));
@@ -100,7 +103,9 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
           }
         }
       }
+    });
 
+    on<UpdateEvaluacion>((event, emit) async {
       evaluacionTerminada = null;
       respondidas = [];
       evaluacion = null;

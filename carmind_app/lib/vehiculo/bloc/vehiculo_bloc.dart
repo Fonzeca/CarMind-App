@@ -33,8 +33,9 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         return;
       }
 
+      OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
+
       if (OfflineModeService.isOffline(context: event.context)) {
-        OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
         int? idVehiculoActual = offlineBloc.state.idVehiculoActual;
         if (idVehiculoActual != null && idVehiculoActual != 0 && offlineBloc.state.vehiculos != null) {
           vehiculo = offlineBloc.state.vehiculos!.firstWhere((vehicle) => vehicle.id == idVehiculoActual);
@@ -49,12 +50,23 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
               default:
             }
           });
+          //Si está usando un vehiculo y no hay logs de uso guardados localmente, es porque la persona borró la cache o desintaló la
+          //app y la volvió a instalar, entonces creamos el log localmente por si despues se desconecta de internet
+          //y quiere dejar de usar el vehiculo
+          if (vehiculo != null && offlineBloc.state.newLogsUso.isEmpty) {
+            offlineBloc.add(IniciarUsoVehiculoOffline(event.context, vehiculo!.id!));
+          }
         } catch (e) {
           if (OfflineModeService.isOffline(context: event.context)) {
             add(GetCurrent(event.context, forceWaiting: event.forceWaiting));
             return;
           }
         }
+      }
+
+      if (needToUpdate) {
+        needToUpdate = false;
+        offlineBloc.add(UpdateVehiculos(vehiculo!));
       }
 
       lastTimeFetched = DateTime.now();
@@ -65,13 +77,14 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
 
     on<DejarUsar>((event, emit) async {
       emit(state.copyWith(loading: true));
+      OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
 
       if (OfflineModeService.isOffline(context: event.context)) {
-        BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!));
+        offlineBloc.add(TerminarUsoVehiculoOffline(event.context, vehiculo!.id!));
       } else {
         try {
           await api.terminarUso(vehiculo!.id!);
-          BlocProvider.of<OfflineBloc>(event.context).add(TerminarUsoVehiculoOffline(vehiculo!.id!, deleteLog: true));
+          offlineBloc.add(TerminarUsoVehiculoOffline(event.context, vehiculo!.id!, deleteLog: true));
         } catch (e) {
           if (OfflineModeService.isOffline(context: event.context)) {
             add(DejarUsar(event.context));
@@ -82,7 +95,6 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
 
       lastTimeFetched ??= DateTime.now();
       vehiculo = null;
-      add(GetCurrent(event.context));
     });
 
     on<TapEvaluacion>((event, emit) async {

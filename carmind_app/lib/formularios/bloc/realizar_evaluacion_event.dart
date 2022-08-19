@@ -37,6 +37,8 @@ class FinalizarEvaluacionEvent extends RealizarEvaluacionEvent {
   List<Object> get props => [];
 }
 
+class UpdateEvaluacion extends RealizarEvaluacionEvent {}
+
 class RestoreDataEvent extends RealizarEvaluacionEvent {
   final XFile restoredData;
   final Evaluacion evaluacion;

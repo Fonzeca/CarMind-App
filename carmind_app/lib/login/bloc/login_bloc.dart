@@ -50,12 +50,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       OfflineModeService.isChangingPass = false;
       EasyLoading.show();
 
-      if (OfflineModeService.isOffline()) {
-        EasyLoading.dismiss();
-        emit(LoginOk());
-        return;
-      }
-
       var sh = await SharedPreferences.getInstance();
       bool isFCMNeeded = isFCMTokenNeeded(sh);
 

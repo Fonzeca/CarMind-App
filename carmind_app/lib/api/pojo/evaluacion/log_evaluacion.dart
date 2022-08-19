@@ -3,34 +3,34 @@ import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
 class LogEvaluacion {
-  int? evaluacion_id;
+  final int? evaluacion_id;
 
-  String? nombre_evaluacion;
+  final String? nombre_evaluacion;
 
-  String? fecha;
+  final String? fecha;
 
-  int? vehiculo_id;
+  final int? vehiculo_id;
 
-  int? usuario_id;
+  final int? usuario_id;
 
-  List<RespuestaPojo>? respuestas;
+  final List<RespuestaPojo>? respuestas;
 
   LogEvaluacion({this.evaluacion_id, this.nombre_evaluacion, this.fecha, this.vehiculo_id, this.usuario_id, this.respuestas});
 
   factory LogEvaluacion.fromJson(Map<String, dynamic> json) => LogEvaluacion(
-      evaluacion_id: json['evaluacion_id'],
+      evaluacion_id: json['evaluacionId'],
       nombre_evaluacion: json['nombre_evaluacion'],
       fecha: json['fecha'],
-      vehiculo_id: json['vehiculo_id'],
-      usuario_id: json['usuario_id'],
+      vehiculo_id: json['vehiculoId'],
+      usuario_id: json['usuarioId'],
       respuestas: json['respuestas']);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'evaluacion_id': evaluacion_id,
+        'evaluacionId': evaluacion_id,
         'nombre_evaluacion': nombre_evaluacion,
         'fecha': fecha,
-        'vehiculo_id': vehiculo_id,
-        'usuario_id': usuario_id,
+        'vehiculoId': vehiculo_id,
+        'usuarioId': usuario_id,
         'respuestas': respuestas,
       };
 }

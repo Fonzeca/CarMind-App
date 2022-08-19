@@ -46,6 +46,20 @@ class Vehiculo extends Equatable {
         'pendientes': pendientes,
       };
 
+  Vehiculo copyWith({List<EvaluacionesPendientes>? pendientes}) {
+    return Vehiculo(
+      id: id,
+      nombre: nombre,
+      en_uso: en_uso,
+      color: color,
+      marca: marca,
+      modelo: modelo,
+      linea: linea,
+      patente: patente,
+      pendientes: pendientes ?? this.pendientes,
+    );
+  }
+
   @override
   List<Object?> get props => [id, nombre, en_uso, color, marca, modelo, linea, patente, pendientes];
 }
@@ -74,6 +88,16 @@ class EvaluacionesPendientes extends Equatable {
         'vencimiento': vencimiento,
         'intervaloDias': intervaloDias,
       };
+
+  EvaluacionesPendientes copyWith({bool? pendiente}) {
+    return EvaluacionesPendientes(
+      id: id,
+      titulo: titulo,
+      pendiente: pendiente ?? this.pendiente,
+      vencimiento: vencimiento,
+      intervaloDias: intervaloDias,
+    );
+  }
 
   @override
   List<Object?> get props => [id, titulo, pendiente, vencimiento, intervaloDias];

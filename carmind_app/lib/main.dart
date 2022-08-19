@@ -109,6 +109,12 @@ class MyApp extends StatelessWidget {
       } else if (e.error is SocketException) {
         if (OfflineModeService.isLogged) {
           EasyLoading.dismiss();
+
+          if (!OfflineModeService.syncAvailable) {
+            OfflineModeService.syncAvailable = true;
+            return;
+          }
+
           if (!OfflineModeService.isOffline(context: context)) {
             OfflineModeService.setOffline();
             EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
@@ -120,17 +126,11 @@ class MyApp extends StatelessWidget {
           }
           return;
         }
-        if (OfflineModeService.isChangingPass) {
+
+        if (OfflineModeService.isChangingPass || !OfflineModeService.isLogged) {
+          EasyLoading.dismiss();
           EasyLoading.showInfo(noInternet, duration: const Duration(seconds: 3));
           return;
-        }
-        if (!OfflineModeService.isOffline(context: context)) {
-          EasyLoading.dismiss();
-          OfflineModeService.setOffline();
-          EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
-          Future.delayed(const Duration(seconds: 3), () {
-            BlocProvider.of<LoginBloc>(context).add(const ValidateSavedToken());
-          });
         }
       } else {
         Response r = e.response!;

@@ -21,7 +21,7 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
 
   FormularioBloc() : super(const FormularioState(logs: [], loading: true)) {
     api = ApiClient(staticDio!);
-    on<FormularioBuscarDataEvent>((event, emit) async {
+    on<GetLastFormLogs>((event, emit) async {
       emit(state.copyWith(loading: true));
       lastTimeFetched ??= DateTime.now();
 
@@ -30,17 +30,24 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
         return;
       }
 
+      OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(event.context);
+
       if (OfflineModeService.isOffline(context: event.context)) {
-        logs = BlocProvider.of<OfflineBloc>(event.context).state.logEvaluaciones;
+        logs = offlineBloc.state.logEvaluaciones;
       } else {
         try {
           logs = await api.getLogEvaluacionesByLoggedUser('50');
         } catch (e) {
           if (OfflineModeService.isOffline(context: event.context)) {
-            add(FormularioBuscarDataEvent(event.context, forceWaiting: event.forceWaiting));
+            add(GetLastFormLogs(event.context, forceWaiting: event.forceWaiting));
             return;
           }
         }
+      }
+
+      if (needToUpdate) {
+        needToUpdate = false;
+        offlineBloc.add(UpdateLogsForms(logs!));
       }
 
       lastTimeFetched = DateTime.now();

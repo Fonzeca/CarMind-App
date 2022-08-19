@@ -28,14 +28,10 @@ class CarMindNavigationBar extends StatelessWidget {
       });
     });
 
-    BlocProvider.of<OfflineBloc>(context).add(GetOfflineData());
+    BlocProvider.of<OfflineBloc>(context).add(GetOfflineData(context));
 
     final VehiculoBloc vehiculoBloc = BlocProvider.of<VehiculoBloc>(context);
     final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
-
-    formularioBloc.add(FormularioBuscarDataEvent(context));
-
-    vehiculoBloc.add(GetCurrent(context));
 
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
@@ -45,13 +41,11 @@ class CarMindNavigationBar extends StatelessWidget {
         }
 
         if (vehiculoBloc.needToUpdate) {
-          vehiculoBloc.needToUpdate = false;
           vehiculoBloc.add(GetCurrent(context, forceWaiting: true));
         }
 
         if (formularioBloc.needToUpdate) {
-          formularioBloc.needToUpdate = false;
-          formularioBloc.add(FormularioBuscarDataEvent(context, forceWaiting: true));
+          formularioBloc.add(GetLastFormLogs(context, forceWaiting: true));
         }
       },
       child: WillPopScope(
@@ -90,7 +84,7 @@ class CarMindNavigationBar extends StatelessWidget {
                   onTap: (value) {
                     switch (value) {
                       case 0:
-                        formularioBloc.add(FormularioBuscarDataEvent(context));
+                        formularioBloc.add(GetLastFormLogs(context));
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));

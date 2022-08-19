@@ -172,26 +172,6 @@ class VehiculoEspecifico extends StatelessWidget {
         }
       }
     }
-
-    /* var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
-    try {
-      var logOk = box.values.firstWhere(
-        (element) {
-          var date = DateFormat(dateTimeFormat).parse(element.fecha!);
-          var dateSubstract = DateTime.now().subtract(Duration(days: intervaloDias));
-
-          return dateSubstract.isBefore(date);
-        },
-      );
-      return DateFormat(dateTimeFormatNoSeconds).parse(logOk.fecha!).add(Duration(days: intervaloDias));
-    } catch (e) {
-       FirebaseCrashlytics.instance.recordError(
-          'Detalles: ${e.toString()}',
-          StackTrace.current,
-          reason: 'Error al guardar la evaluacion localmente'
-        );
-    } */
-
     return null;
   }
 

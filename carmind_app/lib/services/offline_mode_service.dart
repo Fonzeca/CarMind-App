@@ -7,7 +7,7 @@ class OfflineModeService {
   static bool offline = false;
   static bool isChangingPass = false;
   static bool isLogged = false;
-  static DateTime lastTimeFetched = DateTime.now();
+  static bool syncAvailable = true;
 
   static bool isOffline({BuildContext? context}) {
     if (context == null) {
@@ -16,15 +16,14 @@ class OfflineModeService {
     final OfflineBloc offlineBloc = BlocProvider.of<OfflineBloc>(context);
     if (offline &&
         (offlineBloc.state.newLogsEvaluaciones.isNotEmpty || offlineBloc.state.newLogsUso.isNotEmpty) &&
-        DateTime.now().difference(lastTimeFetched).inMinutes > 2) {
-      lastTimeFetched = DateTime.now();
+        OfflineModeService.syncAvailable) {
+      OfflineModeService.syncAvailable = false;
       offlineBloc.add(SyncOfflineData());
     }
     return offline;
   }
 
   static void setOffline() async {
-    lastTimeFetched = DateTime.now();
     var sh = await SharedPreferences.getInstance();
     sh.setBool("offline", true);
     offline = true;

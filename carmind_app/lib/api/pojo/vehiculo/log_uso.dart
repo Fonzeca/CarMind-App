@@ -9,7 +9,7 @@ class LogUso extends Equatable {
 
   final String? fechaInicio;
 
-  String? fechaFin;
+  final String? fechaFin;
 
   LogUso({this.vehiculoId, this.fechaFin, this.fechaInicio, this.usuarioId});
 
@@ -22,6 +22,15 @@ class LogUso extends Equatable {
         'fechaInicio': fechaInicio,
         'fechaFin': fechaFin,
       };
+
+  LogUso copyWith({String? fechaFin}) {
+    return LogUso(
+      vehiculoId: vehiculoId,
+      usuarioId: usuarioId,
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin ?? this.fechaFin,
+    );
+  }
 
   @override
   List<Object?> get props => [vehiculoId, usuarioId, fechaInicio, fechaFin];
