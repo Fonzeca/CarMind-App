@@ -117,10 +117,7 @@ class MyApp extends StatelessWidget {
 
           if (!OfflineModeService.isOffline(context: context)) {
             OfflineModeService.setOffline();
-            EasyLoading.showInfo(changeMode, duration: const Duration(seconds: 3));
-            Future.delayed(const Duration(seconds: 3), () {
-              handler.next(e);
-            });
+            handler.next(e);
           } else {
             handler.next(e);
           }

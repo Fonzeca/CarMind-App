@@ -144,9 +144,6 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
 
   @override
   RespuestaPojo setearRespuesta() {
-    RespuestaPojo res = RespuestaPojo();
-    res.pregunta_id = pregunta.id;
-    res.base64_image = photoBase64;
-    return res;
+    return RespuestaPojo(pregunta_id: pregunta.id, base64_image: photoBase64);
   }
 }

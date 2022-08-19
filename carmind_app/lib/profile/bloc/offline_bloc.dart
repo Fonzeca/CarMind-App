@@ -24,7 +24,7 @@ part 'offline_state.dart';
 class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
   late ApiClient api;
 
-  OfflineBloc() : super(OfflineState(newLogsEvaluaciones: [], newLogsUso: [], logEvaluaciones: [], flag: false)) {
+  OfflineBloc() : super(const OfflineState(newLogsEvaluaciones: [], newLogsUso: [], logEvaluaciones: [], flag: false)) {
     api = ApiClient(staticDio!);
 
     on<GetOfflineData>((event, emit) async {
@@ -69,9 +69,10 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
       var dateForm = DateFormat(dateTimeFormat, 'es_AR');
       String todayDate = dateForm.format(DateTime.now());
       LogUso newLogUso = LogUso(usuarioId: state.loggedUser!.id, vehiculoId: state.vehiculos![vehicleToUseIndex].id, fechaInicio: todayDate);
-      state.newLogsUso.add(newLogUso);
+      List<LogUso> tempNewLogUsoList = List.from(state.newLogsUso);
+      tempNewLogUsoList.add(newLogUso);
 
-      emit(state.copyWith(newLogsUso: state.newLogsUso, vehiculos: state.vehiculos!, idVehiculoActual: state.vehiculos![vehicleToUseIndex].id));
+      emit(state.copyWith(newLogsUso: tempNewLogUsoList, vehiculos: state.vehiculos!, idVehiculoActual: state.vehiculos![vehicleToUseIndex].id));
       BlocProvider.of<VehiculoBloc>(event.context).add(GetCurrent(event.context));
     });
 
@@ -129,8 +130,10 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
               usuario_id: state.loggedUser!.id,
               respuestas: event.evaluacionTerminada.respuestas);
 
-          state.newLogsEvaluaciones.add(logEvaluacion);
-          state.logEvaluaciones.add(logEvaluacion);
+          List<LogEvaluacion> tempNewLogsEvaluacionesList = List.from(state.newLogsEvaluaciones);
+          tempNewLogsEvaluacionesList.add(logEvaluacion);
+          List<LogEvaluacion> tempLogsEvaluacionesList = List.from(state.logEvaluaciones);
+          tempLogsEvaluacionesList.add(logEvaluacion);
 
           int vehiculoIndex = state.vehiculos!.indexWhere((vehiculo) => vehiculo.id == state.idVehiculoActual);
           int pendienteIndex = state.vehiculos![vehiculoIndex].pendientes!.indexWhere((pendiente) => pendiente.id == event.evaluacionId);
@@ -139,7 +142,8 @@ class OfflineBloc extends HydratedBloc<OfflineEvent, OfflineState> {
                 state.vehiculos![vehiculoIndex].pendientes![pendienteIndex].copyWith(pendiente: false);
           }
 
-          emit(state.copyWith(newLogsEvaluaciones: state.newLogsEvaluaciones, logEvaluaciones: state.logEvaluaciones, vehiculos: state.vehiculos));
+          emit(state.copyWith(
+              newLogsEvaluaciones: tempNewLogsEvaluacionesList, logEvaluaciones: tempLogsEvaluacionesList, vehiculos: state.vehiculos));
         } else {
           EasyLoading.showError(answersNotMatching, duration: const Duration(seconds: 3));
         }

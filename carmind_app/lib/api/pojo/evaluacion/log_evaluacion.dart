@@ -1,8 +1,9 @@
 import 'package:carmind_app/api/api.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class LogEvaluacion {
+class LogEvaluacion extends Equatable {
   final int? evaluacion_id;
 
   final String? nombre_evaluacion;
@@ -15,7 +16,7 @@ class LogEvaluacion {
 
   final List<RespuestaPojo>? respuestas;
 
-  LogEvaluacion({this.evaluacion_id, this.nombre_evaluacion, this.fecha, this.vehiculo_id, this.usuario_id, this.respuestas});
+  const LogEvaluacion({this.evaluacion_id, this.nombre_evaluacion, this.fecha, this.vehiculo_id, this.usuario_id, this.respuestas});
 
   factory LogEvaluacion.fromJson(Map<String, dynamic> json) => LogEvaluacion(
       evaluacion_id: json['evaluacionId'],
@@ -23,7 +24,7 @@ class LogEvaluacion {
       fecha: json['fecha'],
       vehiculo_id: json['vehiculoId'],
       usuario_id: json['usuarioId'],
-      respuestas: json['respuestas']);
+      respuestas: (json["respuestas"] != null) ? List<RespuestaPojo>.from(json["respuestas"]?.map((x) => RespuestaPojo.fromJson(x))) : null);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'evaluacionId': evaluacion_id,
@@ -33,4 +34,7 @@ class LogEvaluacion {
         'usuarioId': usuario_id,
         'respuestas': respuestas,
       };
+
+  @override
+  List<Object?> get props => [evaluacion_id, nombre_evaluacion, fecha, vehiculo_id, usuario_id, respuestas];
 }

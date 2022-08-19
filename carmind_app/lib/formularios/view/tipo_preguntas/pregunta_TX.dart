@@ -1,10 +1,8 @@
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PreguntaTX extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
@@ -107,13 +105,11 @@ class PreguntaTX extends StatelessWidget with PreguntaInterface {
 
   @override
   RespuestaPojo setearRespuesta() {
-    RespuestaPojo res = RespuestaPojo();
-    res.pregunta_id = pregunta.id;
-    res.texto = controller.text;
-    return res;
+    return RespuestaPojo(pregunta_id: pregunta.id, texto: controller.text);
   }
 }
 
 String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
-  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
+  if (evaluacion != null && evaluacion.respuestas != null)
+    return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
 }

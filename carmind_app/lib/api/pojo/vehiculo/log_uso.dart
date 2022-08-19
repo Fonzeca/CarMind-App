@@ -11,7 +11,7 @@ class LogUso extends Equatable {
 
   final String? fechaFin;
 
-  LogUso({this.vehiculoId, this.fechaFin, this.fechaInicio, this.usuarioId});
+  const LogUso({this.vehiculoId, this.fechaFin, this.fechaInicio, this.usuarioId});
 
   factory LogUso.fromJson(Map<String, dynamic> json) =>
       LogUso(vehiculoId: json['vehiculoId'], fechaInicio: json['fechaInicio'], fechaFin: json['fechaFin'], usuarioId: json['usuarioId']);

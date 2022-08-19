@@ -123,11 +123,9 @@ class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, Reali
       evaluacion = event.evaluacion;
       evaluacionTerminada = state.evaluacion;
       respondidas = state.evaluacion!.respuestas!.map((respuesta) => respuesta.pregunta_id!).toList();
-      RespuestaPojo respuesta = RespuestaPojo();
       var imageBytes = await event.restoredData.readAsBytes();
-      respuesta.pregunta_id = obtenerPreguntaNoRespondida();
-      respuesta.base64_image = base64Encode(imageBytes);
-      respuesta.texto = event.restoredData.name;
+      RespuestaPojo respuesta =
+          RespuestaPojo(pregunta_id: obtenerPreguntaNoRespondida(), base64_image: base64Encode(imageBytes), texto: event.restoredData.name);
       add(FinalizarPreguntaEvent(respuesta.pregunta_id!, respuesta, isRestoredData: true));
     });
 

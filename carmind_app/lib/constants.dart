@@ -20,7 +20,6 @@ const subtitleStyle = TextStyle(fontSize: 15, fontWeight: FontWeight.w400);
 
 const expiredSessionError = "La sesión expiró";
 const noInternet = "No hay conexión a internet";
-const changeMode = "Cambiando al modo offline";
 const noMemoryError = "Tu dispositivo se quedó sin memoria y cerró CarMind";
 const noFMTokenError = "No se pudo obtener el token de Firebase Messaging";
 

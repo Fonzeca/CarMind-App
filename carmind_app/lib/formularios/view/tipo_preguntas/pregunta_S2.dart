@@ -1,13 +1,10 @@
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../constants.dart';
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/formularios/formularios.dart';
-
-
 
 class PreguntaS2 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
@@ -134,22 +131,17 @@ class PreguntaS2 extends StatelessWidget with PreguntaInterface {
 
   @override
   RespuestaPojo setearRespuesta() {
-    RespuestaPojo res = RespuestaPojo();
-    res.pregunta_id = pregunta.id;
-
     List<RespuestaOpcionPojo> list = [];
     for (var opcion in pregunta.opciones!) {
-      RespuestaOpcionPojo resOpcion = RespuestaOpcionPojo();
-      resOpcion.opcion_id = opcion.id;
-      resOpcion.tick_correcto = listIds.contains(opcion.id!);
+      RespuestaOpcionPojo resOpcion = RespuestaOpcionPojo(opcion_id: opcion.id, tick_correcto: listIds.contains(opcion.id!));
       list.add(resOpcion);
     }
-
-    res.opciones = list;
-    return res;
+    return RespuestaPojo(pregunta_id: pregunta.id, opciones: list);
+    ;
   }
 }
 
 bool? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
-  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
+  if (evaluacion != null && evaluacion.respuestas != null)
+    return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
 }

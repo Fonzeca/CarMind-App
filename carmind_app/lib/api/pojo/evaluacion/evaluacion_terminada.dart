@@ -24,24 +24,24 @@ class EvaluacionTerminadaPojo extends Equatable {
 
 @JsonSerializable()
 class RespuestaPojo extends Equatable {
-  int? pregunta_id;
+  final int? pregunta_id;
 
-  bool? tick_correcto;
+  final bool? tick_correcto;
 
-  String? base64_image;
+  final String? base64_image;
 
-  String? texto;
+  final String? texto;
 
-  List<RespuestaOpcionPojo>? opciones;
+  final List<RespuestaOpcionPojo>? opciones;
 
-  RespuestaPojo({this.pregunta_id, this.tick_correcto, this.base64_image, this.texto, this.opciones});
+  const RespuestaPojo({this.pregunta_id, this.tick_correcto, this.base64_image, this.texto, this.opciones});
 
   factory RespuestaPojo.fromJson(Map<String, dynamic> json) => RespuestaPojo(
       pregunta_id: json['pregunta_id'],
       tick_correcto: json['tick_correcto'],
       base64_image: json['base64_image'],
       texto: json['texto'],
-      opciones: List<RespuestaOpcionPojo>.from(json["opciones"].map((x) => RespuestaOpcionPojo.fromJson(x))));
+      opciones: (json["opciones"] != null) ? List<RespuestaOpcionPojo>.from(json["opciones"].map((x) => RespuestaOpcionPojo.fromJson(x))) : null);
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'pregunta_id': pregunta_id,
@@ -58,11 +58,11 @@ class RespuestaPojo extends Equatable {
 
 @JsonSerializable()
 class RespuestaOpcionPojo extends Equatable {
-  int? opcion_id;
+  final int? opcion_id;
 
-  bool? tick_correcto;
+  final bool? tick_correcto;
 
-  RespuestaOpcionPojo({this.opcion_id, this.tick_correcto});
+  const RespuestaOpcionPojo({this.opcion_id, this.tick_correcto});
 
   factory RespuestaOpcionPojo.fromJson(Map<String, dynamic> json) =>
       RespuestaOpcionPojo(opcion_id: json['opcion_id'], tick_correcto: json['tick_correcto']);

@@ -10,7 +10,7 @@ class OfflineState extends Equatable {
   final List<LogEvaluacion> newLogsEvaluaciones;
   final bool flag;
 
-  OfflineState(
+  const OfflineState(
       {this.loggedUser,
       this.idVehiculoActual,
       this.vehiculos,
