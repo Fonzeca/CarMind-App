@@ -9,6 +9,7 @@ import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/map/map.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/services/services.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
@@ -32,6 +33,8 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    await PushNotificationsService.initializeApp();
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
