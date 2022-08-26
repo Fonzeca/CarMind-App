@@ -69,6 +69,6 @@ abstract class ApiClient {
   Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
 
   //----------------------------MapRoutes--------------------------
-  @POST("/getRouteByImei")
+  @POST("/trackin/getRouteByImei")
   Future<List<RouteInfo>> getRoute(@Body() RoutePojo pojo);
 }
