@@ -6,6 +6,7 @@ import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
+import 'package:carmind_app/map/map.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
@@ -89,7 +90,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(body: Builder(builder: (_) {
           configDio(_materialAppKey.currentContext!);
-          return LoginScreen();
+          return MapView();
         })),
         builder: EasyLoading.init(),
       ),
@@ -103,6 +104,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
         BlocProvider(create: (context) => OfflineBloc()),
+        BlocProvider(create: (context) => MapBloc()),
       ],
     );
   }

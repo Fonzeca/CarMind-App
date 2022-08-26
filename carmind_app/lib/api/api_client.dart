@@ -1,4 +1,5 @@
 import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/api/pojo/map/route_info.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
@@ -66,4 +67,8 @@ abstract class ApiClient {
   //----------------------------VERSION----------------------------
   @GET("/public/lastVersion_new?platform={platform}")
   Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
+
+  //----------------------------MapRoutes--------------------------
+  @POST("/getRouteByImei")
+  Future<List<RouteInfo>> getRoute(@Body() RoutePojo pojo);
 }
