@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(body: Builder(builder: (_) {
           configDio(_materialAppKey.currentContext!);
-          return MapView();
+          return LoginScreen();
         })),
         builder: EasyLoading.init(),
       ),
