@@ -5,22 +5,29 @@ import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/lifecycle_manager.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/map/map.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/services/services.dart';
+import 'package:carmind_app/util/background_service.dart';
+import 'package:carmind_app/util/custom_dio/client_adapter.dart';
+import 'package:carmind_app/util/custom_dio/mock_db.dart';
+import 'package:carmind_app/util/custom_dio/offline_interceptor.dart';
+import 'package:carmind_app/util/custom_dio/offline_manager.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
-import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,8 +45,16 @@ void main() async {
     FirebaseAnalytics analytics = FirebaseAnalytics.instance;
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-    await Hive.initFlutter();
+    final dir = await getApplicationSupportDirectory();
 
+    // Open Isar in the UI isolate
+    final isar = await Isar.open(
+      name: 'isar-carmind',
+      schemas: [VehiculoSchema],
+      directory: dir.path,
+    );
+
+    await Hive.initFlutter();
     Hive.registerAdapter(VehiculoAdapter());
     Hive.registerAdapter(EvaluacionesPendientesAdapter());
     Hive.registerAdapter(EvaluacionAdapter());
@@ -69,8 +84,10 @@ void main() async {
     final storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory(),
     );
+    var service = FlutterBackgroundService();
+
     HydratedBlocOverrides.runZoned(
-      () => runApp(MyApp()),
+      () => runApp(MyApp(sh, service)),
       storage: storage,
     );
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true));
@@ -78,42 +95,58 @@ void main() async {
 
 Dio? staticDio;
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget with WidgetsBindingObserver {
+  final SharedPreferences sharedPreferences;
+  final FlutterBackgroundService service;
+  MyApp(this.sharedPreferences, this.service, {Key? key}) : super(key: key);
 
   final GlobalKey _materialAppKey = GlobalKey();
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      child: MaterialApp(
-        key: _materialAppKey,
-        title: 'CarMind',
-        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
-        home: Scaffold(body: Builder(builder: (_) {
-          configDio(_materialAppKey.currentContext!);
-          return LoginScreen();
-        })),
-        builder: EasyLoading.init(),
+    return LifeCycleManager(
+      child: MultiBlocProvider(
+        child: MaterialApp(
+          key: _materialAppKey,
+          title: 'CarMind',
+          theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
+          home: Scaffold(body: Builder(builder: (_) {
+            configDio(_materialAppKey.currentContext!, sharedPreferences, service);
+            return LoginScreen();
+          })),
+          builder: EasyLoading.init(),
+        ),
+        providers: [
+          BlocProvider(create: (context) => HomeBloc()),
+          BlocProvider(create: (context) => LoginBloc()),
+          BlocProvider(create: (context) => NuevaConstrasenaBloc()),
+          BlocProvider(create: (context) => FormularioBloc()),
+          BlocProvider(create: (context) => RealizarEvaluacionBloc()),
+          BlocProvider(create: (context) => QrScannerBloc()),
+          BlocProvider(create: (context) => VehiculoBloc()),
+          BlocProvider(create: (context) => ProfileBloc()),
+          BlocProvider(create: (context) => OfflineBloc()),
+          BlocProvider(create: (context) => MapBloc()),
+        ],
       ),
-      providers: [
-        BlocProvider(create: (context) => HomeBloc()),
-        BlocProvider(create: (context) => LoginBloc()),
-        BlocProvider(create: (context) => NuevaConstrasenaBloc()),
-        BlocProvider(create: (context) => FormularioBloc()),
-        BlocProvider(create: (context) => RealizarEvaluacionBloc()),
-        BlocProvider(create: (context) => QrScannerBloc()),
-        BlocProvider(create: (context) => VehiculoBloc()),
-        BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(create: (context) => OfflineBloc()),
-        BlocProvider(create: (context) => MapBloc()),
-      ],
+      service: service,
     );
   }
 
-  configDio(BuildContext context) {
+  configDio(BuildContext context, SharedPreferences sharedPreferences, FlutterBackgroundService service) async {
     staticDio = Dio();
+
+    var offlineManager = OfflineManager(sharedPreferences);
+    var mockDb = MockDb(sharedPreferences);
+    var offlineHttpClientAdapter = OfflineHttpClientAdapter(getter: offlineManager, mock: mockDb);
+    var httpInterceptor = OfflineInterceptor(dio: staticDio!, offlineManager: offlineManager);
+    staticDio?.httpClientAdapter = offlineHttpClientAdapter;
+    staticDio?.interceptors.add(httpInterceptor);
+
+    var offlineBackgroundService = OfflineBackgroundService(mock: mockDb, service: service);
+    await offlineBackgroundService.initializeService();
+
     staticDio?.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
       if (!options.uri.path.contains("login") && !options.uri.path.contains("public")) {
         var prefs = await SharedPreferences.getInstance();
@@ -151,11 +184,5 @@ class MyApp extends StatelessWidget {
         handler.next(e);
       }
     }));
-
-    //TODO: Agujero en la seguridad.
-    (staticDio?.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
-      client.badCertificateCallback = (cert, host, port) => true;
-      return client;
-    };
   }
 }
