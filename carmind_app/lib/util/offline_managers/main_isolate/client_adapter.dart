@@ -12,6 +12,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
   final OfflineManager offlineManager;
   final MockDb mock;
+  late ApiClient api;
 
   final Map<String, List<String>> jsonHeader = const {
     Headers.contentTypeHeader: [Headers.jsonContentType]
@@ -31,16 +32,27 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
   var getCurrentRegex = RegExp(r'^\/vehiculo\/current$');
 
   OfflineHttpClientAdapter({required this.offlineManager, required this.mock}) {
+    var dio = Dio();
+
     //Agujero en la seguridad.
     onHttpClientCreate = (client) {
       client.badCertificateCallback = (cert, host, port) => true;
       return client;
     };
+
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+      client.badCertificateCallback = (cert, host, port) => true;
+      return client;
+    };
+
+    api = ApiClient(dio);
   }
 
   @override
   Future<ResponseBody> fetch(RequestOptions options, Stream<Uint8List>? requestStream, Future? cancelFuture) async {
     if (await offlineManager.isOffline()) {
+      validateInternet();
+
       if (getEvaluacionByIdRegex.hasMatch(options.path)) {
         return await getEvaluacionById(options);
       } else if (loggedUserRegex.hasMatch(options.path)) {
@@ -74,6 +86,14 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
     var err = OfflineResponseError(requestOptions: options, errorText: errorText, statusCode: statusCode);
     FirebaseCrashlytics.instance.recordError(err, err.stackTrace);
     return err;
+  }
+
+  Future<void> validateInternet() async {
+    api.valdiateToken().then((value) {
+      if (value.response.statusCode != 500) {
+        offlineManager.desactivateOffline();
+      }
+    }).onError((error, stackTrace) {});
   }
 
   Future<ResponseBody> getEvaluacionById(RequestOptions options) async {
