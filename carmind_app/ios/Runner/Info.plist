@@ -37,7 +37,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Permiso para usar la cámara para escanear códigos QR</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Permiso para la biblioteca necesario para completar formualarios.</string>
+	<string>Permiso para la biblioteca necesario para completar formualrios.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

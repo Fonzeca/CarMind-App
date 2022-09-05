@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
@@ -202,18 +204,22 @@ class FormularioPreguntas extends StatelessWidget {
 
   Future<void> _checkIfImagePickerCrashed(BuildContext context) async {
     final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
-    final ImagePicker picker = ImagePicker();
-    final LostDataResponse response = await picker.retrieveLostData();
-    if (response.isEmpty) {
-      realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));
-      return;
-    }
-    if (response.files != null) {
-      realizarEvaluacionBloc.add(RestoreDataEvent(evaluacion, vehiculo, response.files![0]));
+    if (Platform.isAndroid) {
+      final ImagePicker picker = ImagePicker();
+      final LostDataResponse response = await picker.retrieveLostData();
+      if (response.isEmpty) {
+        realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));
+        return;
+      }
+      if (response.files != null) {
+        realizarEvaluacionBloc.add(RestoreDataEvent(evaluacion, vehiculo, response.files![0]));
+      } else {
+        EasyLoading.showError(noMemoryError);
+        FirebaseCrashlytics.instance
+            .recordError('Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}', StackTrace.current, reason: noMemoryError);
+      }
     } else {
-      EasyLoading.showError(noMemoryError);
-      FirebaseCrashlytics.instance
-          .recordError('Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}', StackTrace.current, reason: noMemoryError);
+      realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));
     }
   }
 }
