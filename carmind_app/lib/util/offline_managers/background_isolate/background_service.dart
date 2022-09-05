@@ -43,9 +43,29 @@ class OfflineBackgroundService {
 
 // to ensure this is executed
 // run app from xcode, then from xcode menu, select Simulate Background Fetch
-bool onIosBackground(ServiceInstance service) {
+Future<bool> onIosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
-  print('FLUTTER BACKGROUND FETCH');
+  DartPluginRegistrant.ensureInitialized();
+  log('FLUTTER BACKGROUND FETCH');
+  log('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
+
+  var sharedPreferences = await SharedPreferences.getInstance();
+  final dir = await getApplicationSupportDirectory();
+
+  var mock = MockDb(sharedPreferences);
+
+  var offlineManager = OfflineManager(sharedPreferences, service);
+  var syncManager = SyncManager(
+    offlineManager: offlineManager,
+    sharedPreferences: sharedPreferences,
+    service: service,
+    directoryIsar: dir.path,
+    mockDb: mock,
+  );
+
+  await syncManager.doSync();
+
+  log('FLUTTER BACKGROUND SERVICE END: ${DateTime.now()}');
 
   return true;
 }
