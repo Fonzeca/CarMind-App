@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:carmind_app/util/custom_dio/offline_manager.dart';
+import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:dio/dio.dart';
 
 /// Clase que se dedica solamente a interceptar errores en [onError]
@@ -13,10 +13,10 @@ class OfflineInterceptor extends Interceptor {
   OfflineInterceptor({required this.dio, required this.offlineManager});
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) async{
-    if (_shouldChangeModeOffline(err)){
+  void onError(DioError err, ErrorInterceptorHandler handler) async {
+    if (_shouldChangeModeOffline(err)) {
       await offlineManager.activateOffline();
-      
+
       //Intentamos otra vez pero con el offline puesto.
       var response = await dio.request(
         err.requestOptions.path,
@@ -29,14 +29,11 @@ class OfflineInterceptor extends Interceptor {
       );
 
       return handler.resolve(response);
-
     }
     return handler.next(err);
   }
 }
 
 bool _shouldChangeModeOffline(DioError err) {
-  return err.type == DioErrorType.other &&
-      err.error != null &&
-      err.error is SocketException;
+  return err.type == DioErrorType.other && err.error != null && err.error is SocketException;
 }

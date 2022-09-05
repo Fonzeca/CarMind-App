@@ -2,32 +2,35 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/util/custom_dio/interfaces/offline_getter.dart';
-import 'package:carmind_app/util/custom_dio/mock_db.dart';
-import 'package:carmind_app/util/custom_dio/offline_response.dart';
+import 'package:carmind_app/util/offline_managers/main_isolate/offline_response.dart';
+import 'package:carmind_app/util/offline_managers/mock_db.dart';
+import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
-  final OfflineGetter getter;
+  final OfflineManager offlineManager;
   final MockDb mock;
 
   final Map<String, List<String>> jsonHeader = const {
     Headers.contentTypeHeader: [Headers.jsonContentType]
   };
 
+  var loginRegex = RegExp(r'^\/login');
+  var getLatestVersionRegex = RegExp(r'^/public/lastVersion_new');
+
   var getEvaluacionByIdRegex = RegExp(r'^\/evaluacion\/(\d+)$');
   var loggedUserRegex = RegExp(r'^\/loggedUser$');
   var realizarEvaluacionRegex = RegExp(r'^\/evaluacion\/(\d+)\/realizar$');
-  var getLogEvaluacionByLoggedUserRegex = RegExp(r'^\/evaluacion\/historial\/loggedUser$');
+  var getLogEvaluacionByLoggedUserRegex = RegExp(r'^\/evaluacion\/historial\/loggedUser\?limit=(\d+)$');
 
   var getVehiculoByIdRegex = RegExp(r'^\/vehiculo\/(\d+)$');
   var iniciarUsoRegex = RegExp(r'^\/vehiculo\/(\d+)\/iniciarUso$');
   var terminarUsoRegex = RegExp(r'^\/vehiculo\/(\d+)\/terminarUso$');
   var getCurrentRegex = RegExp(r'^\/vehiculo\/current$');
 
-  OfflineHttpClientAdapter({required this.getter, required this.mock}) {
+  OfflineHttpClientAdapter({required this.offlineManager, required this.mock}) {
     //Agujero en la seguridad.
     onHttpClientCreate = (client) {
       client.badCertificateCallback = (cert, host, port) => true;
@@ -37,7 +40,7 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
 
   @override
   Future<ResponseBody> fetch(RequestOptions options, Stream<Uint8List>? requestStream, Future? cancelFuture) async {
-    if (await getter.isOffline()) {
+    if (await offlineManager.isOffline()) {
       if (getEvaluacionByIdRegex.hasMatch(options.path)) {
         return await getEvaluacionById(options);
       } else if (loggedUserRegex.hasMatch(options.path)) {
@@ -54,18 +57,23 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
         return await terminarUso(options);
       } else if (getCurrentRegex.hasMatch(options.path)) {
         return await getCurrent(options);
+      } else if (loginRegex.hasMatch(options.path)) {
+        return super.fetch(options, requestStream, cancelFuture);
       }
+      // else if(getLatestVersionRegex.hasMatch(options.path)){
 
-      throw OfflineResponseError(requestOptions: options, errorText: "No esta disponible en offline mode", statusCode: 500);
+      // }
+
+      throw OfflineResponseError(requestOptions: options, errorText: "${options.path} no esta disponible en offline mode", statusCode: 500);
     } else {
       return super.fetch(options, requestStream, cancelFuture);
     }
   }
 
-  ResponseBody _createError(RequestOptions options, int statusCode, String errorText) {
+  OfflineResponseError _createError(RequestOptions options, int statusCode, String errorText) {
     var err = OfflineResponseError(requestOptions: options, errorText: errorText, statusCode: statusCode);
     FirebaseCrashlytics.instance.recordError(err, err.stackTrace);
-    return err as ResponseBody;
+    return err;
   }
 
   Future<ResponseBody> getEvaluacionById(RequestOptions options) async {
@@ -74,7 +82,7 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
 
     var evaluacion = await mock.getEvaluacionById(int.parse(id!));
     if (evaluacion == null) {
-      return _createError(options, 500, "No se encuentra la evaluacion");
+      throw _createError(options, 500, "No se encuentra la evaluacion");
     }
     return OfflineResponseBody.from(jsonEncode(evaluacion), 200, headers: jsonHeader, isRedirect: false);
   }
@@ -82,7 +90,7 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
   Future<ResponseBody> loggedUser(RequestOptions options) async {
     var loggedUser = await mock.getLoggedUser();
     if (loggedUser == null) {
-      return _createError(options, 500, "No se encuentra loggedUser");
+      throw _createError(options, 500, "No se encuentra loggedUser");
     }
     return OfflineResponseBody.from(jsonEncode(loggedUser), 200, headers: jsonHeader, isRedirect: false);
   }
@@ -95,13 +103,15 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
     try {
       await mock.realizarEvaluacion(int.parse(id!), evTerminada);
     } catch (e) {
-      return _createError(options, 500, "No se pudo completar la evaluacion");
+      throw _createError(options, 500, "No se pudo completar la evaluacion");
     }
     return OfflineResponseBody.from("", 200, headers: {}, isRedirect: false);
   }
 
   Future<ResponseBody> getLogEvaluacionByLoggedUser(RequestOptions options) async {
-    var logs = await mock.getLogEvaluacionesByLoggedUser("50");
+    var match = getLogEvaluacionByLoggedUserRegex.allMatches(options.path).elementAt(0);
+    var id = match.group(1);
+    var logs = await mock.getLogEvaluacionesByLoggedUser(id!);
     return OfflineResponseBody.from(jsonEncode(logs), 200, headers: jsonHeader, isRedirect: false);
   }
 
@@ -122,7 +132,7 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
   }
 
   Future<ResponseBody> terminarUso(RequestOptions options) async {
-    var match = iniciarUsoRegex.allMatches(options.path).elementAt(0);
+    var match = terminarUsoRegex.allMatches(options.path).elementAt(0);
     var id = match.group(1);
 
     await mock.terminarUso(int.parse(id!));

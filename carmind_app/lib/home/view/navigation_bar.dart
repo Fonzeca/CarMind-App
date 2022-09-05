@@ -1,13 +1,16 @@
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/home/view/offline_sign.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../constants.dart';
 import '../../services/version_service.dart';
@@ -88,12 +91,12 @@ class CarMindNavigationBar extends StatelessWidget {
                   onTap: (value) {
                     switch (value) {
                       case 0:
-                       formularioBloc.add(const FormularioBuscarDataEvent());
+                        formularioBloc.add(const FormularioBuscarDataEvent());
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));
                         break;
-                      }
+                    }
                     BlocProvider.of<HomeBloc>(context)
                       ..add(HomeNavigationEvent(value))
                       ..add(ShowFab());
@@ -101,28 +104,35 @@ class CarMindNavigationBar extends StatelessWidget {
                 );
               },
             ),
-            body: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) {
-                return current is! HomeLogoutState;
-              },
-              builder: (context, state) {
-                switch (state.selectedPageView) {
-                  case 0:
-                    return const FormularioContent();
-                  case 1:
-                    return VehiculoEspecifico();
-                  case 2:
-                    return ProfileContent();
-                  case 3:
-                    return Container();
-                  case 4:
-                    return FormularioPreguntas(
-                      evaluacion: state.evaluacion!,
-                      vehiculo: state.vehiculo!,
-                    );
-                }
-                return Container();
-              },
+            body: OfflineSign(
+              service: GetIt.I.get<FlutterBackgroundService>(),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                buildWhen: (previous, current) {
+                  return (current is! HomeLogoutState) &&
+                      (previous.selectedNavButton != current.selectedNavButton ||
+                          previous.selectedPageView != current.selectedPageView ||
+                          previous.evaluacion != current.evaluacion ||
+                          previous.vehiculo != current.vehiculo);
+                },
+                builder: (context, state) {
+                  switch (state.selectedPageView) {
+                    case 0:
+                      return const FormularioContent();
+                    case 1:
+                      return VehiculoEspecifico();
+                    case 2:
+                      return ProfileContent();
+                    case 3:
+                      return Container();
+                    case 4:
+                      return FormularioPreguntas(
+                        evaluacion: state.evaluacion!,
+                        vehiculo: state.vehiculo!,
+                      );
+                  }
+                  return Container();
+                },
+              ),
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
               buildWhen: (previous, current) =>

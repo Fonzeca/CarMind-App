@@ -13,13 +13,12 @@ import '../../widgets/widgets.dart';
 import '../login.dart';
 
 class LoginScreen extends StatelessWidget {
-  bool? offline = false;
-  LoginScreen({Key? key, this.offline}) : super(key: key);
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     configEasyLoading();
-    BlocProvider.of<LoginBloc>(context).add(ValidateSavedToken(offline ?? false));
+    BlocProvider.of<LoginBloc>(context).add(const ValidateSavedToken());
     FormService formServiceEmail = FormService();
     FormService formServicePass = FormService();
     final emailCon = TextEditingController();
@@ -33,20 +32,14 @@ class LoginScreen extends StatelessWidget {
           //Si esta ok, hacemos get del loggeduser
           BlocProvider.of<ProfileBloc>(context).add(GetLoggedEvent());
 
-          //Si se uso para actualizar el token o para iniciar sesion
-          if (offline != null && offline!) {
-            //Seteamos online en true, sincronizando los datos
-            BlocProvider.of<OfflineBloc>(context).add(SetOnline());
-            Navigator.pop(context);
+          //Le damos para adelante a la app
+          final prefs = await SharedPreferences.getInstance();
+          if (prefs.getBool("on_boarding_finish") ?? false) {
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
           } else {
-            //Le damos para adelante a la app
-            final prefs = await SharedPreferences.getInstance();
-            if (prefs.getBool("on_boarding_finish") ?? false) {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => CarMindNavigationBar()), (obj) => false);
-            } else {
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
-            }
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => OnBoardingContent()), (obj) => false);
           }
+
           BlocProvider.of<LoginBloc>(context).add(ResetScreen());
           emailCon.clear();
           passwordCon.clear();

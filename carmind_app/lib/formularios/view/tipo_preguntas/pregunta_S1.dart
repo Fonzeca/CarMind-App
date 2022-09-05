@@ -7,7 +7,6 @@ import '../../../constants.dart';
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 
-
 class PreguntaS1 extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
   final int? respuesta;
@@ -181,5 +180,6 @@ class PreguntaS1 extends StatelessWidget with PreguntaInterface {
 }
 
 bool? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
-  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
+  if (evaluacion != null && evaluacion.respuestas != null)
+    return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).tick_correcto;
 }

@@ -3,126 +3,19 @@
 part of 'vehiculo.dart';
 
 // **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
-
-class VehiculoAdapter extends TypeAdapter<Vehiculo> {
-  @override
-  final int typeId = 1;
-
-  @override
-  Vehiculo read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Vehiculo()
-      ..id = fields[0] as int?
-      ..nombre = fields[1] as String?
-      ..en_uso = fields[2] as bool?
-      ..imei = fields[3] as String?
-      ..marca = fields[4] as String?
-      ..modelo = fields[5] as String?
-      ..linea = fields[6] as String?
-      ..patente = fields[7] as String?
-      ..pendientes = (fields[8] as List?)?.cast<EvaluacionesPendientes>();
-  }
-
-  @override
-  void write(BinaryWriter writer, Vehiculo obj) {
-    writer
-      ..writeByte(9)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.nombre)
-      ..writeByte(2)
-      ..write(obj.en_uso)
-      ..writeByte(3)
-      ..write(obj.imei)
-      ..writeByte(4)
-      ..write(obj.marca)
-      ..writeByte(5)
-      ..write(obj.modelo)
-      ..writeByte(6)
-      ..write(obj.linea)
-      ..writeByte(7)
-      ..write(obj.patente)
-      ..writeByte(8)
-      ..write(obj.pendientes);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VehiculoAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class EvaluacionesPendientesAdapter
-    extends TypeAdapter<EvaluacionesPendientes> {
-  @override
-  final int typeId = 2;
-
-  @override
-  EvaluacionesPendientes read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return EvaluacionesPendientes()
-      ..id = fields[0] as int?
-      ..titulo = fields[1] as String?
-      ..pendiente = fields[2] as bool?
-      ..vencimiento = fields[3] as int?
-      ..intervaloDias = fields[4] as int?;
-  }
-
-  @override
-  void write(BinaryWriter writer, EvaluacionesPendientes obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.titulo)
-      ..writeByte(2)
-      ..write(obj.pendiente)
-      ..writeByte(3)
-      ..write(obj.vencimiento)
-      ..writeByte(4)
-      ..write(obj.intervaloDias);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EvaluacionesPendientesAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-// **************************************************************************
 // IsarCollectionGenerator
 // **************************************************************************
 
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
-extension GetVehiculoCollection on Isar {
-  IsarCollection<Vehiculo> get vehiculos => getCollection();
+extension GetVehiculoDbCollection on Isar {
+  IsarCollection<VehiculoDb> get vehiculoDbs => getCollection();
 }
 
-const VehiculoSchema = CollectionSchema(
-  name: 'Vehiculo',
+const VehiculoDbSchema = CollectionSchema(
+  name: 'VehiculoDb',
   schema:
-      '{"name":"Vehiculo","idName":"id","properties":[{"name":"en_uso","type":"Bool"},{"name":"hashCode","type":"Long"},{"name":"imei","type":"String"},{"name":"linea","type":"String"},{"name":"marca","type":"String"},{"name":"modelo","type":"String"},{"name":"nombre","type":"String"},{"name":"patente","type":"String"},{"name":"stringify","type":"Bool"}],"indexes":[],"links":[]}',
+      '{"name":"VehiculoDb","idName":"id","properties":[{"name":"en_uso","type":"Bool"},{"name":"hashCode","type":"Long"},{"name":"imei","type":"String"},{"name":"linea","type":"String"},{"name":"marca","type":"String"},{"name":"modelo","type":"String"},{"name":"nombre","type":"String"},{"name":"patente","type":"String"},{"name":"stringify","type":"Bool"}],"indexes":[],"links":[{"name":"pendientesDb","target":"EvaluacionesPendientes"}]}',
   idName: 'id',
   propertyIds: {
     'en_uso': 0,
@@ -138,22 +31,22 @@ const VehiculoSchema = CollectionSchema(
   listProperties: {},
   indexIds: {},
   indexValueTypes: {},
-  linkIds: {},
+  linkIds: {'pendientesDb': 0},
   backlinkLinkNames: {},
-  getId: _vehiculoGetId,
-  setId: _vehiculoSetId,
-  getLinks: _vehiculoGetLinks,
-  attachLinks: _vehiculoAttachLinks,
-  serializeNative: _vehiculoSerializeNative,
-  deserializeNative: _vehiculoDeserializeNative,
-  deserializePropNative: _vehiculoDeserializePropNative,
-  serializeWeb: _vehiculoSerializeWeb,
-  deserializeWeb: _vehiculoDeserializeWeb,
-  deserializePropWeb: _vehiculoDeserializePropWeb,
+  getId: _vehiculoDbGetId,
+  setId: _vehiculoDbSetId,
+  getLinks: _vehiculoDbGetLinks,
+  attachLinks: _vehiculoDbAttachLinks,
+  serializeNative: _vehiculoDbSerializeNative,
+  deserializeNative: _vehiculoDbDeserializeNative,
+  deserializePropNative: _vehiculoDbDeserializePropNative,
+  serializeWeb: _vehiculoDbSerializeWeb,
+  deserializeWeb: _vehiculoDbDeserializeWeb,
+  deserializePropWeb: _vehiculoDbDeserializePropWeb,
   version: 3,
 );
 
-int? _vehiculoGetId(Vehiculo object) {
+int? _vehiculoDbGetId(VehiculoDb object) {
   if (object.id == Isar.autoIncrement) {
     return null;
   } else {
@@ -161,18 +54,18 @@ int? _vehiculoGetId(Vehiculo object) {
   }
 }
 
-void _vehiculoSetId(Vehiculo object, int id) {
+void _vehiculoDbSetId(VehiculoDb object, int id) {
   object.id = id;
 }
 
-List<IsarLinkBase> _vehiculoGetLinks(Vehiculo object) {
-  return [];
+List<IsarLinkBase> _vehiculoDbGetLinks(VehiculoDb object) {
+  return [object.pendientesDb];
 }
 
-void _vehiculoSerializeNative(
-    IsarCollection<Vehiculo> collection,
+void _vehiculoDbSerializeNative(
+    IsarCollection<VehiculoDb> collection,
     IsarRawObject rawObj,
-    Vehiculo object,
+    VehiculoDb object,
     int staticSize,
     List<int> offsets,
     AdapterAlloc alloc) {
@@ -236,9 +129,9 @@ void _vehiculoSerializeNative(
   writer.writeBool(offsets[8], _stringify);
 }
 
-Vehiculo _vehiculoDeserializeNative(IsarCollection<Vehiculo> collection, int id,
-    IsarBinaryReader reader, List<int> offsets) {
-  final object = Vehiculo();
+VehiculoDb _vehiculoDbDeserializeNative(IsarCollection<VehiculoDb> collection,
+    int id, IsarBinaryReader reader, List<int> offsets) {
+  final object = VehiculoDb();
   object.en_uso = reader.readBoolOrNull(offsets[0]);
   object.id = id;
   object.imei = reader.readStringOrNull(offsets[2]);
@@ -247,10 +140,11 @@ Vehiculo _vehiculoDeserializeNative(IsarCollection<Vehiculo> collection, int id,
   object.modelo = reader.readStringOrNull(offsets[5]);
   object.nombre = reader.readStringOrNull(offsets[6]);
   object.patente = reader.readStringOrNull(offsets[7]);
+  _vehiculoDbAttachLinks(collection, id, object);
   return object;
 }
 
-P _vehiculoDeserializePropNative<P>(
+P _vehiculoDbDeserializePropNative<P>(
     int id, IsarBinaryReader reader, int propertyIndex, int offset) {
   switch (propertyIndex) {
     case -1:
@@ -278,8 +172,8 @@ P _vehiculoDeserializePropNative<P>(
   }
 }
 
-dynamic _vehiculoSerializeWeb(
-    IsarCollection<Vehiculo> collection, Vehiculo object) {
+dynamic _vehiculoDbSerializeWeb(
+    IsarCollection<VehiculoDb> collection, VehiculoDb object) {
   final jsObj = IsarNative.newJsObject();
   IsarNative.jsObjectSet(jsObj, 'en_uso', object.en_uso);
   IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
@@ -294,9 +188,9 @@ dynamic _vehiculoSerializeWeb(
   return jsObj;
 }
 
-Vehiculo _vehiculoDeserializeWeb(
-    IsarCollection<Vehiculo> collection, dynamic jsObj) {
-  final object = Vehiculo();
+VehiculoDb _vehiculoDbDeserializeWeb(
+    IsarCollection<VehiculoDb> collection, dynamic jsObj) {
+  final object = VehiculoDb();
   object.en_uso = IsarNative.jsObjectGet(jsObj, 'en_uso');
   object.id = IsarNative.jsObjectGet(jsObj, 'id');
   object.imei = IsarNative.jsObjectGet(jsObj, 'imei');
@@ -305,10 +199,12 @@ Vehiculo _vehiculoDeserializeWeb(
   object.modelo = IsarNative.jsObjectGet(jsObj, 'modelo');
   object.nombre = IsarNative.jsObjectGet(jsObj, 'nombre');
   object.patente = IsarNative.jsObjectGet(jsObj, 'patente');
+  _vehiculoDbAttachLinks(
+      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
   return object;
 }
 
-P _vehiculoDeserializePropWeb<P>(Object jsObj, String propertyName) {
+P _vehiculoDbDeserializePropWeb<P>(Object jsObj, String propertyName) {
   switch (propertyName) {
     case 'en_uso':
       return (IsarNative.jsObjectGet(jsObj, 'en_uso')) as P;
@@ -336,16 +232,21 @@ P _vehiculoDeserializePropWeb<P>(Object jsObj, String propertyName) {
   }
 }
 
-void _vehiculoAttachLinks(IsarCollection col, int id, Vehiculo object) {}
+void _vehiculoDbAttachLinks(IsarCollection col, int id, VehiculoDb object) {
+  object.pendientesDb
+      .attach(col, col.isar.evaluacionesPendientess, 'pendientesDb', id);
+}
 
-extension VehiculoQueryWhereSort on QueryBuilder<Vehiculo, Vehiculo, QWhere> {
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhere> anyId() {
+extension VehiculoDbQueryWhereSort
+    on QueryBuilder<VehiculoDb, VehiculoDb, QWhere> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhere> anyId() {
     return addWhereClauseInternal(const IdWhereClause.any());
   }
 }
 
-extension VehiculoQueryWhere on QueryBuilder<Vehiculo, Vehiculo, QWhereClause> {
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhereClause> idEqualTo(int id) {
+extension VehiculoDbQueryWhere
+    on QueryBuilder<VehiculoDb, VehiculoDb, QWhereClause> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idEqualTo(int id) {
     return addWhereClauseInternal(IdWhereClause.between(
       lower: id,
       includeLower: true,
@@ -354,7 +255,7 @@ extension VehiculoQueryWhere on QueryBuilder<Vehiculo, Vehiculo, QWhereClause> {
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhereClause> idNotEqualTo(int id) {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idNotEqualTo(int id) {
     if (whereSortInternal == Sort.asc) {
       return addWhereClauseInternal(
         IdWhereClause.lessThan(upper: id, includeUpper: false),
@@ -370,21 +271,21 @@ extension VehiculoQueryWhere on QueryBuilder<Vehiculo, Vehiculo, QWhereClause> {
     }
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idGreaterThan(int id,
       {bool include = false}) {
     return addWhereClauseInternal(
       IdWhereClause.greaterThan(lower: id, includeLower: include),
     );
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idLessThan(int id,
       {bool include = false}) {
     return addWhereClauseInternal(
       IdWhereClause.lessThan(upper: id, includeUpper: include),
     );
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterWhereClause> idBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idBetween(
     int lowerId,
     int upperId, {
     bool includeLower = true,
@@ -399,9 +300,9 @@ extension VehiculoQueryWhere on QueryBuilder<Vehiculo, Vehiculo, QWhereClause> {
   }
 }
 
-extension VehiculoQueryFilter
-    on QueryBuilder<Vehiculo, Vehiculo, QFilterCondition> {
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> en_usoIsNull() {
+extension VehiculoDbQueryFilter
+    on QueryBuilder<VehiculoDb, VehiculoDb, QFilterCondition> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> en_usoIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'en_uso',
@@ -409,7 +310,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> en_usoEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> en_usoEqualTo(
       bool? value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -418,7 +319,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> hashCodeEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeEqualTo(
       int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -427,7 +328,8 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> hashCodeGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      hashCodeGreaterThan(
     int value, {
     bool include = false,
   }) {
@@ -439,7 +341,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> hashCodeLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeLessThan(
     int value, {
     bool include = false,
   }) {
@@ -451,7 +353,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> hashCodeBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -466,7 +368,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> idIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'id',
@@ -474,7 +376,8 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> idEqualTo(int value) {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idEqualTo(
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'id',
@@ -482,7 +385,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idGreaterThan(
     int value, {
     bool include = false,
   }) {
@@ -494,7 +397,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> idLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idLessThan(
     int value, {
     bool include = false,
   }) {
@@ -506,7 +409,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> idBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -521,7 +424,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'imei',
@@ -529,7 +432,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -541,7 +444,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -555,7 +458,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -569,7 +472,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -586,7 +489,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -598,7 +501,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -610,7 +513,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -621,7 +524,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> imeiMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -632,7 +535,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'linea',
@@ -640,7 +543,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -652,7 +555,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -666,7 +569,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -680,7 +583,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -697,7 +600,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -709,7 +612,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -721,7 +624,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -732,7 +635,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> lineaMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -743,7 +646,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'marca',
@@ -751,7 +654,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -763,7 +666,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -777,7 +680,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -791,7 +694,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -808,7 +711,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -820,7 +723,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -832,7 +735,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -843,7 +746,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> marcaMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -854,7 +757,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'modelo',
@@ -862,7 +765,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -874,7 +777,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -888,7 +791,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -902,7 +805,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -919,7 +822,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -931,7 +834,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -943,7 +846,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -954,7 +857,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> modeloMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -965,7 +868,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'nombre',
@@ -973,7 +876,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -985,7 +888,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -999,7 +902,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -1013,7 +916,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -1030,7 +933,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1042,7 +945,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1054,7 +957,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -1065,7 +968,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> nombreMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -1076,7 +979,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'patente',
@@ -1084,7 +987,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
@@ -1096,7 +999,8 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteGreaterThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      patenteGreaterThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -1110,7 +1014,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteLessThan(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteLessThan(
     String? value, {
     bool caseSensitive = true,
     bool include = false,
@@ -1124,7 +1028,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteBetween(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteBetween(
     String? lower,
     String? upper, {
     bool caseSensitive = true,
@@ -1141,7 +1045,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteStartsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1153,7 +1057,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteEndsWith(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1165,7 +1069,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteContains(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteContains(
       String value,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -1176,7 +1080,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> patenteMatches(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return addFilterConditionInternal(FilterCondition(
@@ -1187,7 +1091,8 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> stringifyIsNull() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      stringifyIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
       property: 'stringify',
@@ -1195,7 +1100,7 @@ extension VehiculoQueryFilter
     ));
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterFilterCondition> stringifyEqualTo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> stringifyEqualTo(
       bool? value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
@@ -1205,264 +1110,1235 @@ extension VehiculoQueryFilter
   }
 }
 
-extension VehiculoQueryLinks
-    on QueryBuilder<Vehiculo, Vehiculo, QFilterCondition> {}
+extension VehiculoDbQueryLinks
+    on QueryBuilder<VehiculoDb, VehiculoDb, QFilterCondition> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> pendientesDb(
+      FilterQuery<EvaluacionesPendientes> q) {
+    return linkInternal(
+      isar.evaluacionesPendientess,
+      q,
+      'pendientesDb',
+    );
+  }
+}
 
-extension VehiculoQueryWhereSortBy
-    on QueryBuilder<Vehiculo, Vehiculo, QSortBy> {
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByEn_uso() {
+extension VehiculoDbQueryWhereSortBy
+    on QueryBuilder<VehiculoDb, VehiculoDb, QSortBy> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByEn_uso() {
     return addSortByInternal('en_uso', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByEn_usoDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByEn_usoDesc() {
     return addSortByInternal('en_uso', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByHashCode() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByHashCode() {
     return addSortByInternal('hashCode', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByHashCodeDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByHashCodeDesc() {
     return addSortByInternal('hashCode', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortById() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortById() {
     return addSortByInternal('id', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByIdDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByIdDesc() {
     return addSortByInternal('id', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByImei() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByImei() {
     return addSortByInternal('imei', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByImeiDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByImeiDesc() {
     return addSortByInternal('imei', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByLinea() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByLinea() {
     return addSortByInternal('linea', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByLineaDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByLineaDesc() {
     return addSortByInternal('linea', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByMarca() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByMarca() {
     return addSortByInternal('marca', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByMarcaDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByMarcaDesc() {
     return addSortByInternal('marca', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByModelo() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByModelo() {
     return addSortByInternal('modelo', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByModeloDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByModeloDesc() {
     return addSortByInternal('modelo', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByNombre() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByNombre() {
     return addSortByInternal('nombre', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByNombreDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByNombreDesc() {
     return addSortByInternal('nombre', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByPatente() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByPatente() {
     return addSortByInternal('patente', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByPatenteDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByPatenteDesc() {
     return addSortByInternal('patente', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByStringify() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByStringify() {
     return addSortByInternal('stringify', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> sortByStringifyDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByStringifyDesc() {
     return addSortByInternal('stringify', Sort.desc);
   }
 }
 
-extension VehiculoQueryWhereSortThenBy
-    on QueryBuilder<Vehiculo, Vehiculo, QSortThenBy> {
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByEn_uso() {
+extension VehiculoDbQueryWhereSortThenBy
+    on QueryBuilder<VehiculoDb, VehiculoDb, QSortThenBy> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByEn_uso() {
     return addSortByInternal('en_uso', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByEn_usoDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByEn_usoDesc() {
     return addSortByInternal('en_uso', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByHashCode() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByHashCode() {
     return addSortByInternal('hashCode', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByHashCodeDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByHashCodeDesc() {
     return addSortByInternal('hashCode', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenById() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenById() {
     return addSortByInternal('id', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByIdDesc() {
     return addSortByInternal('id', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByImei() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByImei() {
     return addSortByInternal('imei', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByImeiDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByImeiDesc() {
     return addSortByInternal('imei', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByLinea() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByLinea() {
     return addSortByInternal('linea', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByLineaDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByLineaDesc() {
     return addSortByInternal('linea', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByMarca() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByMarca() {
     return addSortByInternal('marca', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByMarcaDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByMarcaDesc() {
     return addSortByInternal('marca', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByModelo() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByModelo() {
     return addSortByInternal('modelo', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByModeloDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByModeloDesc() {
     return addSortByInternal('modelo', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByNombre() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByNombre() {
     return addSortByInternal('nombre', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByNombreDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByNombreDesc() {
     return addSortByInternal('nombre', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByPatente() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByPatente() {
     return addSortByInternal('patente', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByPatenteDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByPatenteDesc() {
     return addSortByInternal('patente', Sort.desc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByStringify() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByStringify() {
     return addSortByInternal('stringify', Sort.asc);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QAfterSortBy> thenByStringifyDesc() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByStringifyDesc() {
     return addSortByInternal('stringify', Sort.desc);
   }
 }
 
-extension VehiculoQueryWhereDistinct
-    on QueryBuilder<Vehiculo, Vehiculo, QDistinct> {
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByEn_uso() {
+extension VehiculoDbQueryWhereDistinct
+    on QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> {
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByEn_uso() {
     return addDistinctByInternal('en_uso');
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByHashCode() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByHashCode() {
     return addDistinctByInternal('hashCode');
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctById() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctById() {
     return addDistinctByInternal('id');
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByImei(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByImei(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('imei', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByLinea(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByLinea(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('linea', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByMarca(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByMarca(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('marca', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByModelo(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByModelo(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('modelo', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByNombre(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByNombre(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('nombre', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByPatente(
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByPatente(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('patente', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Vehiculo, Vehiculo, QDistinct> distinctByStringify() {
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByStringify() {
     return addDistinctByInternal('stringify');
   }
 }
 
-extension VehiculoQueryProperty
-    on QueryBuilder<Vehiculo, Vehiculo, QQueryProperty> {
-  QueryBuilder<Vehiculo, bool?, QQueryOperations> en_usoProperty() {
+extension VehiculoDbQueryProperty
+    on QueryBuilder<VehiculoDb, VehiculoDb, QQueryProperty> {
+  QueryBuilder<VehiculoDb, bool?, QQueryOperations> en_usoProperty() {
     return addPropertyNameInternal('en_uso');
   }
 
-  QueryBuilder<Vehiculo, int, QQueryOperations> hashCodeProperty() {
+  QueryBuilder<VehiculoDb, int, QQueryOperations> hashCodeProperty() {
     return addPropertyNameInternal('hashCode');
   }
 
-  QueryBuilder<Vehiculo, int?, QQueryOperations> idProperty() {
+  QueryBuilder<VehiculoDb, int?, QQueryOperations> idProperty() {
     return addPropertyNameInternal('id');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> imeiProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> imeiProperty() {
     return addPropertyNameInternal('imei');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> lineaProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> lineaProperty() {
     return addPropertyNameInternal('linea');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> marcaProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> marcaProperty() {
     return addPropertyNameInternal('marca');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> modeloProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> modeloProperty() {
     return addPropertyNameInternal('modelo');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> nombreProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> nombreProperty() {
     return addPropertyNameInternal('nombre');
   }
 
-  QueryBuilder<Vehiculo, String?, QQueryOperations> patenteProperty() {
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> patenteProperty() {
     return addPropertyNameInternal('patente');
   }
 
-  QueryBuilder<Vehiculo, bool?, QQueryOperations> stringifyProperty() {
+  QueryBuilder<VehiculoDb, bool?, QQueryOperations> stringifyProperty() {
     return addPropertyNameInternal('stringify');
+  }
+}
+
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+
+extension GetEvaluacionesPendientesCollection on Isar {
+  IsarCollection<EvaluacionesPendientes> get evaluacionesPendientess =>
+      getCollection();
+}
+
+const EvaluacionesPendientesSchema = CollectionSchema(
+  name: 'EvaluacionesPendientes',
+  schema:
+      '{"name":"EvaluacionesPendientes","idName":"privateId","properties":[{"name":"hashCode","type":"Long"},{"name":"id","type":"Long"},{"name":"intervaloDias","type":"Long"},{"name":"pendiente","type":"Bool"},{"name":"stringify","type":"Bool"},{"name":"titulo","type":"String"},{"name":"vencimiento","type":"Long"}],"indexes":[],"links":[]}',
+  idName: 'privateId',
+  propertyIds: {
+    'hashCode': 0,
+    'id': 1,
+    'intervaloDias': 2,
+    'pendiente': 3,
+    'stringify': 4,
+    'titulo': 5,
+    'vencimiento': 6
+  },
+  listProperties: {},
+  indexIds: {},
+  indexValueTypes: {},
+  linkIds: {},
+  backlinkLinkNames: {},
+  getId: _evaluacionesPendientesGetId,
+  setId: _evaluacionesPendientesSetId,
+  getLinks: _evaluacionesPendientesGetLinks,
+  attachLinks: _evaluacionesPendientesAttachLinks,
+  serializeNative: _evaluacionesPendientesSerializeNative,
+  deserializeNative: _evaluacionesPendientesDeserializeNative,
+  deserializePropNative: _evaluacionesPendientesDeserializePropNative,
+  serializeWeb: _evaluacionesPendientesSerializeWeb,
+  deserializeWeb: _evaluacionesPendientesDeserializeWeb,
+  deserializePropWeb: _evaluacionesPendientesDeserializePropWeb,
+  version: 3,
+);
+
+int? _evaluacionesPendientesGetId(EvaluacionesPendientes object) {
+  if (object.privateId == Isar.autoIncrement) {
+    return null;
+  } else {
+    return object.privateId;
+  }
+}
+
+void _evaluacionesPendientesSetId(EvaluacionesPendientes object, int id) {
+  object.privateId = id;
+}
+
+List<IsarLinkBase> _evaluacionesPendientesGetLinks(
+    EvaluacionesPendientes object) {
+  return [];
+}
+
+void _evaluacionesPendientesSerializeNative(
+    IsarCollection<EvaluacionesPendientes> collection,
+    IsarRawObject rawObj,
+    EvaluacionesPendientes object,
+    int staticSize,
+    List<int> offsets,
+    AdapterAlloc alloc) {
+  var dynamicSize = 0;
+  final value0 = object.hashCode;
+  final _hashCode = value0;
+  final value1 = object.id;
+  final _id = value1;
+  final value2 = object.intervaloDias;
+  final _intervaloDias = value2;
+  final value3 = object.pendiente;
+  final _pendiente = value3;
+  final value4 = object.stringify;
+  final _stringify = value4;
+  final value5 = object.titulo;
+  IsarUint8List? _titulo;
+  if (value5 != null) {
+    _titulo = IsarBinaryWriter.utf8Encoder.convert(value5);
+  }
+  dynamicSize += (_titulo?.length ?? 0) as int;
+  final value6 = object.vencimiento;
+  final _vencimiento = value6;
+  final size = staticSize + dynamicSize;
+
+  rawObj.buffer = alloc(size);
+  rawObj.buffer_length = size;
+  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+  final writer = IsarBinaryWriter(buffer, staticSize);
+  writer.writeLong(offsets[0], _hashCode);
+  writer.writeLong(offsets[1], _id);
+  writer.writeLong(offsets[2], _intervaloDias);
+  writer.writeBool(offsets[3], _pendiente);
+  writer.writeBool(offsets[4], _stringify);
+  writer.writeBytes(offsets[5], _titulo);
+  writer.writeLong(offsets[6], _vencimiento);
+}
+
+EvaluacionesPendientes _evaluacionesPendientesDeserializeNative(
+    IsarCollection<EvaluacionesPendientes> collection,
+    int id,
+    IsarBinaryReader reader,
+    List<int> offsets) {
+  final object = EvaluacionesPendientes();
+  object.id = reader.readLongOrNull(offsets[1]);
+  object.intervaloDias = reader.readLongOrNull(offsets[2]);
+  object.pendiente = reader.readBoolOrNull(offsets[3]);
+  object.privateId = id;
+  object.titulo = reader.readStringOrNull(offsets[5]);
+  object.vencimiento = reader.readLongOrNull(offsets[6]);
+  return object;
+}
+
+P _evaluacionesPendientesDeserializePropNative<P>(
+    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
+  switch (propertyIndex) {
+    case -1:
+      return id as P;
+    case 0:
+      return (reader.readLong(offset)) as P;
+    case 1:
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readLongOrNull(offset)) as P;
+    default:
+      throw 'Illegal propertyIndex';
+  }
+}
+
+dynamic _evaluacionesPendientesSerializeWeb(
+    IsarCollection<EvaluacionesPendientes> collection,
+    EvaluacionesPendientes object) {
+  final jsObj = IsarNative.newJsObject();
+  IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
+  IsarNative.jsObjectSet(jsObj, 'id', object.id);
+  IsarNative.jsObjectSet(jsObj, 'intervaloDias', object.intervaloDias);
+  IsarNative.jsObjectSet(jsObj, 'pendiente', object.pendiente);
+  IsarNative.jsObjectSet(jsObj, 'privateId', object.privateId);
+  IsarNative.jsObjectSet(jsObj, 'stringify', object.stringify);
+  IsarNative.jsObjectSet(jsObj, 'titulo', object.titulo);
+  IsarNative.jsObjectSet(jsObj, 'vencimiento', object.vencimiento);
+  return jsObj;
+}
+
+EvaluacionesPendientes _evaluacionesPendientesDeserializeWeb(
+    IsarCollection<EvaluacionesPendientes> collection, dynamic jsObj) {
+  final object = EvaluacionesPendientes();
+  object.id = IsarNative.jsObjectGet(jsObj, 'id');
+  object.intervaloDias = IsarNative.jsObjectGet(jsObj, 'intervaloDias');
+  object.pendiente = IsarNative.jsObjectGet(jsObj, 'pendiente');
+  object.privateId = IsarNative.jsObjectGet(jsObj, 'privateId');
+  object.titulo = IsarNative.jsObjectGet(jsObj, 'titulo');
+  object.vencimiento = IsarNative.jsObjectGet(jsObj, 'vencimiento');
+  return object;
+}
+
+P _evaluacionesPendientesDeserializePropWeb<P>(
+    Object jsObj, String propertyName) {
+  switch (propertyName) {
+    case 'hashCode':
+      return (IsarNative.jsObjectGet(jsObj, 'hashCode') ??
+          double.negativeInfinity) as P;
+    case 'id':
+      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
+    case 'intervaloDias':
+      return (IsarNative.jsObjectGet(jsObj, 'intervaloDias')) as P;
+    case 'pendiente':
+      return (IsarNative.jsObjectGet(jsObj, 'pendiente')) as P;
+    case 'privateId':
+      return (IsarNative.jsObjectGet(jsObj, 'privateId')) as P;
+    case 'stringify':
+      return (IsarNative.jsObjectGet(jsObj, 'stringify')) as P;
+    case 'titulo':
+      return (IsarNative.jsObjectGet(jsObj, 'titulo')) as P;
+    case 'vencimiento':
+      return (IsarNative.jsObjectGet(jsObj, 'vencimiento')) as P;
+    default:
+      throw 'Illegal propertyName';
+  }
+}
+
+void _evaluacionesPendientesAttachLinks(
+    IsarCollection col, int id, EvaluacionesPendientes object) {}
+
+extension EvaluacionesPendientesQueryWhereSort
+    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QWhere> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterWhere>
+      anyPrivateId() {
+    return addWhereClauseInternal(const IdWhereClause.any());
+  }
+}
+
+extension EvaluacionesPendientesQueryWhere on QueryBuilder<
+    EvaluacionesPendientes, EvaluacionesPendientes, QWhereClause> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterWhereClause> privateIdEqualTo(int privateId) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: privateId,
+      includeLower: true,
+      upper: privateId,
+      includeUpper: true,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterWhereClause> privateIdNotEqualTo(int privateId) {
+    if (whereSortInternal == Sort.asc) {
+      return addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: privateId, includeUpper: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: privateId, includeLower: false),
+      );
+    } else {
+      return addWhereClauseInternal(
+        IdWhereClause.greaterThan(lower: privateId, includeLower: false),
+      ).addWhereClauseInternal(
+        IdWhereClause.lessThan(upper: privateId, includeUpper: false),
+      );
+    }
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+          QAfterWhereClause>
+      privateIdGreaterThan(int privateId, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.greaterThan(lower: privateId, includeLower: include),
+    );
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+          QAfterWhereClause>
+      privateIdLessThan(int privateId, {bool include = false}) {
+    return addWhereClauseInternal(
+      IdWhereClause.lessThan(upper: privateId, includeUpper: include),
+    );
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterWhereClause> privateIdBetween(
+    int lowerPrivateId,
+    int upperPrivateId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addWhereClauseInternal(IdWhereClause.between(
+      lower: lowerPrivateId,
+      includeLower: includeLower,
+      upper: upperPrivateId,
+      includeUpper: includeUpper,
+    ));
+  }
+}
+
+extension EvaluacionesPendientesQueryFilter on QueryBuilder<
+    EvaluacionesPendientes, EvaluacionesPendientes, QFilterCondition> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> hashCodeEqualTo(int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> hashCodeGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> hashCodeLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'hashCode',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> hashCodeBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'hashCode',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> idIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'id',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> idEqualTo(int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> idGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> idLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'id',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> idBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'id',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> intervaloDiasIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'intervaloDias',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> intervaloDiasEqualTo(int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'intervaloDias',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> intervaloDiasGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'intervaloDias',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> intervaloDiasLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'intervaloDias',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> intervaloDiasBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'intervaloDias',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> pendienteIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'pendiente',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> pendienteEqualTo(bool? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'pendiente',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> privateIdIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'privateId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> privateIdEqualTo(int value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'privateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> privateIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'privateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> privateIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'privateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> privateIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'privateId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> stringifyIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'stringify',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> stringifyEqualTo(bool? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'stringify',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'titulo',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'titulo',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> tituloEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+          QAfterFilterCondition>
+      tituloContains(String value, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'titulo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+          QAfterFilterCondition>
+      tituloMatches(String pattern, {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'titulo',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> vencimientoIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'vencimiento',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> vencimientoEqualTo(int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'vencimiento',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> vencimientoGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'vencimiento',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> vencimientoLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'vencimiento',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+      QAfterFilterCondition> vencimientoBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'vencimiento',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+}
+
+extension EvaluacionesPendientesQueryLinks on QueryBuilder<
+    EvaluacionesPendientes, EvaluacionesPendientes, QFilterCondition> {}
+
+extension EvaluacionesPendientesQueryWhereSortBy
+    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QSortBy> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByHashCode() {
+    return addSortByInternal('hashCode', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByHashCodeDesc() {
+    return addSortByInternal('hashCode', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByIntervaloDias() {
+    return addSortByInternal('intervaloDias', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByIntervaloDiasDesc() {
+    return addSortByInternal('intervaloDias', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByPendiente() {
+    return addSortByInternal('pendiente', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByPendienteDesc() {
+    return addSortByInternal('pendiente', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByPrivateId() {
+    return addSortByInternal('privateId', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByPrivateIdDesc() {
+    return addSortByInternal('privateId', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByStringify() {
+    return addSortByInternal('stringify', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByStringifyDesc() {
+    return addSortByInternal('stringify', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByTitulo() {
+    return addSortByInternal('titulo', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByTituloDesc() {
+    return addSortByInternal('titulo', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByVencimiento() {
+    return addSortByInternal('vencimiento', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      sortByVencimientoDesc() {
+    return addSortByInternal('vencimiento', Sort.desc);
+  }
+}
+
+extension EvaluacionesPendientesQueryWhereSortThenBy on QueryBuilder<
+    EvaluacionesPendientes, EvaluacionesPendientes, QSortThenBy> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByHashCode() {
+    return addSortByInternal('hashCode', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByHashCodeDesc() {
+    return addSortByInternal('hashCode', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenById() {
+    return addSortByInternal('id', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByIdDesc() {
+    return addSortByInternal('id', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByIntervaloDias() {
+    return addSortByInternal('intervaloDias', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByIntervaloDiasDesc() {
+    return addSortByInternal('intervaloDias', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByPendiente() {
+    return addSortByInternal('pendiente', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByPendienteDesc() {
+    return addSortByInternal('pendiente', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByPrivateId() {
+    return addSortByInternal('privateId', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByPrivateIdDesc() {
+    return addSortByInternal('privateId', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByStringify() {
+    return addSortByInternal('stringify', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByStringifyDesc() {
+    return addSortByInternal('stringify', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByTitulo() {
+    return addSortByInternal('titulo', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByTituloDesc() {
+    return addSortByInternal('titulo', Sort.desc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByVencimiento() {
+    return addSortByInternal('vencimiento', Sort.asc);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+      thenByVencimientoDesc() {
+    return addSortByInternal('vencimiento', Sort.desc);
+  }
+}
+
+extension EvaluacionesPendientesQueryWhereDistinct
+    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct> {
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByHashCode() {
+    return addDistinctByInternal('hashCode');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctById() {
+    return addDistinctByInternal('id');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByIntervaloDias() {
+    return addDistinctByInternal('intervaloDias');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByPendiente() {
+    return addDistinctByInternal('pendiente');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByPrivateId() {
+    return addDistinctByInternal('privateId');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByStringify() {
+    return addDistinctByInternal('stringify');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByTitulo({bool caseSensitive = true}) {
+    return addDistinctByInternal('titulo', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+      distinctByVencimiento() {
+    return addDistinctByInternal('vencimiento');
+  }
+}
+
+extension EvaluacionesPendientesQueryProperty on QueryBuilder<
+    EvaluacionesPendientes, EvaluacionesPendientes, QQueryProperty> {
+  QueryBuilder<EvaluacionesPendientes, int, QQueryOperations>
+      hashCodeProperty() {
+    return addPropertyNameInternal('hashCode');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations> idProperty() {
+    return addPropertyNameInternal('id');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
+      intervaloDiasProperty() {
+    return addPropertyNameInternal('intervaloDias');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, bool?, QQueryOperations>
+      pendienteProperty() {
+    return addPropertyNameInternal('pendiente');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
+      privateIdProperty() {
+    return addPropertyNameInternal('privateId');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, bool?, QQueryOperations>
+      stringifyProperty() {
+    return addPropertyNameInternal('stringify');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, String?, QQueryOperations>
+      tituloProperty() {
+    return addPropertyNameInternal('titulo');
+  }
+
+  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
+      vencimientoProperty() {
+    return addPropertyNameInternal('vencimiento');
   }
 }
 
