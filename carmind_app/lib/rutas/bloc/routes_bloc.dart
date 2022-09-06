@@ -64,7 +64,9 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<DrawRouteEvent>((event, emit) async {
       emit(state.copyWith(polylines: event.polylines, showPanelHeader: true));
-      add(MoveCameraToRouteEvent(mapController: event.mapController));
+      final double? firstMarkerLatitude = event.firstMarkerPosition != null ? event.firstMarkerPosition!.latitude : null;
+      final double? firstMarkerLongitude = event.firstMarkerPosition != null ? event.firstMarkerPosition!.longitude : null;
+      add(MoveCameraToRouteEvent(mapController: event.mapController, latitude: firstMarkerLatitude, longitude: firstMarkerLongitude));
     });
 
     on<SelectVehicleEvent>((event, emit) async {
@@ -93,7 +95,19 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       List<LatLng> points = event.points ?? [];
       if (points.isEmpty) state.polylines.forEach((_, polyline) => points.addAll(polyline.points));
 
-      controller.animateCamera(CameraUpdate.newLatLngBounds(boundsFromLatLngList(points), 90));
+      //Si no se encuentran resultados en la búsqueda de la ruta, entonces dejamos el panel donde está y NO movemos la cámara
+      if ((event.latitude == null || event.longitude == null) && points.isEmpty) {
+        emit(state.copyWith(showPanelHeader: false));
+        return;
+      }
+
+      if (points.isEmpty) {
+        final CameraPosition originPosition = CameraPosition(target: LatLng(event.latitude!, event.longitude!), zoom: 25);
+        controller.animateCamera(CameraUpdate.newCameraPosition(originPosition));
+      } else {
+        controller.animateCamera(CameraUpdate.newLatLngBounds(boundsFromLatLngList(points), 90));
+      }
+
       emit(state.copyWith(showPanelHeader: true));
     });
   }
@@ -117,21 +131,37 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     final Map<MarkerId, Marker> markers = {};
     final Map<PolylineId, Polyline> polylines = {};
 
-    int id = 0;
-
-    for (RouteInfo routeInfo in routesInfo) {
+    for (int i = 0; i < routesInfo.length; i++) {
       bool isRouteTravel = false;
 
       final RouteDraw routeDraw = RouteDraw();
 
-      if (routeInfo is RouteStop) {
-        final RouteStop route = routeInfo;
+      if (routesInfo[i] is RouteStop) {
+        final RouteStop route = routesInfo[i] as RouteStop;
         routeDraw
           ..originLatitude = route.latitud!
           ..originLongitude = route.longitud!;
+
+        List<LatLng> polyLinePoints = [];
+
+        if (i - 1 >= 0) {
+          final previousRoute = routesInfo[i - 1] as RouteTravel;
+          polyLinePoints.add(LatLng(previousRoute.data!.last.latitud!, previousRoute.data!.last.longitud!));
+        }
+
+        polyLinePoints.add(LatLng(route.latitud!, route.longitud!));
+
+        if (i + 1 < routesInfo.length) {
+          final nextRoute = routesInfo[i + 1] as RouteTravel;
+          polyLinePoints.add(LatLng(nextRoute.data!.first.latitud!, nextRoute.data!.first.longitud!));
+        }
+
+        PolylineId polyId = PolylineId('${i}StopUnionTravel');
+        polylines[polyId] =
+            Polyline(polylineId: polyId, points: polyLinePoints, jointType: JointType.round, endCap: Cap.roundCap, startCap: Cap.roundCap);
       } else {
         isRouteTravel = true;
-        final RouteTravel route = routeInfo as RouteTravel;
+        final RouteTravel route = routesInfo[i] as RouteTravel;
         routeDraw
           ..originLatitude = route.data!.first.latitud!
           ..originLongitude = route.data!.first.longitud!
@@ -140,15 +170,15 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
           ..points = route.data!;
       }
 
-      _drawRouteMarkers(routeDraw, markers, id);
+      _drawRouteMarkers(routeDraw, markers, i);
 
-      if (isRouteTravel) _drawRoutePolylines(polylines, routeDraw.points!);
-
-      id++;
+      if (isRouteTravel) _drawRoutePolylines(polylines, routeDraw.points!, i);
     }
 
     add(DrawMarkersEvent(routeMarkers: markers));
-    add(DrawRouteEvent(polylines: polylines, mapController: mapController));
+
+    final LatLng? firstMarkerPosition = markers.containsKey(MarkerId('0')) ? markers[MarkerId('0')]!.position : null;
+    add(DrawRouteEvent(polylines: polylines, mapController: mapController, firstMarkerPosition: firstMarkerPosition));
   }
 
   void _drawRouteMarkers(RouteDraw routeDraw, Map<MarkerId, Marker> markers, int id) {
@@ -159,7 +189,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         position: LatLng(routeDraw.originLatitude!, routeDraw.originLongitude!));
   }
 
-  void _drawRoutePolylines(Map<PolylineId, Polyline> polylines, List<Point> points) {
+  void _drawRoutePolylines(Map<PolylineId, Polyline> polylines, List<Point> points, int id) {
     if (points.isNotEmpty) {
       List<LatLng> polyLinePoints = [];
       double speed = 0;
@@ -172,17 +202,17 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         polyLinePoints.add(LatLng(points[i].latitud!, points[i].longitud!));
 
         if (i > 0 && (color != previousColor || i + 1 >= points.length)) {
-          PolylineId id = PolylineId(i.toString());
-          polylines[id] = Polyline(polylineId: id, points: polyLinePoints, jointType: JointType.round, endCap: Cap.roundCap, startCap: Cap.roundCap);
+          PolylineId polyId = PolylineId('$id');
+          polylines[polyId] =
+              Polyline(polylineId: polyId, points: polyLinePoints, jointType: JointType.round, endCap: Cap.roundCap, startCap: Cap.roundCap);
 
           if (i + 1 >= points.length) {
-            polylines[id] = polylines[id]!.copyWith(colorParam: color);
+            polylines[polyId] = polylines[polyId]!.copyWith(colorParam: color);
           } else {
-            polylines[id] = polylines[id]!.copyWith(colorParam: previousColor);
+            polylines[polyId] = polylines[polyId]!.copyWith(colorParam: previousColor);
           }
 
           polyLinePoints = [];
-          polyLinePoints.add(LatLng(points[i].latitud!, points[i].longitud!));
         }
         previousColor = color;
       }

@@ -190,7 +190,7 @@ class _Body extends StatelessWidget {
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Text((dateFrom == null && dateTo == null)
                         ? buscarEntreFechas
-                        : "${DateFormat('yyyy-MM-dd hh:mm').format(DateFormat('yyyy-MM-dd hh:mm:ss').parse(dateFrom!))} - ${DateFormat('yyyy-MM-dd hh:mm').format(DateFormat('yyyy-MM-dd hh:mm:ss').parse(dateTo!))}"),
+                        : "${DateFormat('yyyy-MM-dd HH:mm').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateFrom!))} - ${DateFormat('yyyy-MM-dd HH:mm').format(DateFormat('yyyy-MM-dd HH:mm:ss').parse(dateTo!))}"),
                     const Icon(Icons.search_rounded)
                   ])),
               const SizedBox(height: 10),
@@ -273,7 +273,7 @@ class _RoutesList extends StatelessWidget {
         itemBuilder: ((context, index) {
           Widget leading;
           final RouteDraw routeDraw = RouteDraw();
-          DateFormat inputFormat = DateFormat('hh:mm');
+          DateFormat inputFormat = DateFormat('HH:mm');
           final String fromattedHourfrom = _formatHour(inputFormat, routes[index].fromHour!);
           final String fromattedHourTo = _formatHour(inputFormat, routes[index].toHour!);
           DateTime inputDateA = inputFormat.parse(routes[index].fromHour!);
@@ -321,10 +321,7 @@ class _RoutesList extends StatelessWidget {
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               leading,
               const SizedBox(width: 8),
-              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text(' ${routes[index].fromDate!}', style: const TextStyle(fontSize: 15)),
-                //Text(' ${routes[index].toDate!}', style: const TextStyle(fontSize: 15))
-              ]),
+              Text(' ${routes[index].fromDate!}', style: const TextStyle(fontSize: 15)),
               Expanded(
                   child: Text(
                 '$fromattedHourfrom - $fromattedHourTo $timeDifference',
