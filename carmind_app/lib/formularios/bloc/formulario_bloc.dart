@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/main.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
-import 'package:carmind_app/main.dart';
-import 'package:carmind_app/api/api.dart';
 
 part 'formulario_event.dart';
 part 'formulario_state.dart';
@@ -39,11 +39,9 @@ class FormularioBloc extends Bloc<FormularioEvent, FormularioState> {
           log.vehiculo_id = e.respuesta?.vehiculo_id;
           return log;
         }));
-
       } else {
-
         lastTimeFetched ??= DateTime.now();
-        if(logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)){
+        if (logs == null || (DateTime.now().difference(lastTimeFetched!).inMinutes > 2 || event.forceWaiting)) {
           //Si no esta offline, le preguntamos al server
           logs = await api.getLogEvaluacionesByLoggedUser('50');
           lastTimeFetched = DateTime.now();

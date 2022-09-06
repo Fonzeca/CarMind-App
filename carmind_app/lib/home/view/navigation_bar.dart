@@ -2,6 +2,7 @@ import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/rutas/rutas.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -30,10 +31,12 @@ class CarMindNavigationBar extends StatelessWidget {
 
     final VehiculoBloc vehiculoBloc = BlocProvider.of<VehiculoBloc>(context);
     final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
+    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
+    final ProfileBloc profileBloc = BlocProvider.of<ProfileBloc>(context);
 
     formularioBloc.add(const FormularioBuscarDataEvent());
-
     vehiculoBloc.add(GetCurrent(context));
+    routesBloc.add(GetVehiclesPositions(context));
 
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
@@ -77,8 +80,17 @@ class CarMindNavigationBar extends StatelessWidget {
                         icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
                         activeIcon: Padding(
                             padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
-                        label: "Perfil")
+                        label: "Perfil"),
+                    if (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!)
+                      BottomNavigationBarItem(
+                          icon: Padding(
+                              padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/routes_nav_icon.svg", color: Colors.white)),
+                          activeIcon: Padding(
+                              padding: const EdgeInsets.only(bottom: 3),
+                              child: SvgPicture.asset("assets/routes_nav_icon.svg", color: carMindAccentColor)),
+                          label: "Rutas"),
                   ],
+                  type: BottomNavigationBarType.fixed,
                   currentIndex: state.selectedNavButton,
                   selectedItemColor: carMindAccentColor,
                   unselectedItemColor: Colors.white,
@@ -88,12 +100,15 @@ class CarMindNavigationBar extends StatelessWidget {
                   onTap: (value) {
                     switch (value) {
                       case 0:
-                       formularioBloc.add(const FormularioBuscarDataEvent());
+                        formularioBloc.add(const FormularioBuscarDataEvent());
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));
                         break;
-                      }
+                      case 3:
+                        routesBloc.add(GetVehiclesPositions(context));
+                        break;
+                    }
                     BlocProvider.of<HomeBloc>(context)
                       ..add(HomeNavigationEvent(value))
                       ..add(ShowFab());
@@ -103,7 +118,11 @@ class CarMindNavigationBar extends StatelessWidget {
             ),
             body: BlocBuilder<HomeBloc, HomeState>(
               buildWhen: (previous, current) {
-                return current is! HomeLogoutState;
+                return (current is! HomeLogoutState) &&
+                    (previous.selectedNavButton != current.selectedNavButton ||
+                        previous.selectedPageView != current.selectedPageView ||
+                        previous.evaluacion != current.evaluacion ||
+                        previous.vehiculo != current.vehiculo);
               },
               builder: (context, state) {
                 switch (state.selectedPageView) {
@@ -114,12 +133,14 @@ class CarMindNavigationBar extends StatelessWidget {
                   case 2:
                     return ProfileContent();
                   case 3:
-                    return Container();
+                    return MapView();
                   case 4:
                     return FormularioPreguntas(
                       evaluacion: state.evaluacion!,
                       vehiculo: state.vehiculo!,
                     );
+                  //case 5:
+                  //  return MapView(routeDraw: state.routeDraw);
                 }
                 return Container();
               },

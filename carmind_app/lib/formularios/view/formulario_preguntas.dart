@@ -1,27 +1,23 @@
+import 'package:carmind_app/api/api.dart';
+import 'package:carmind_app/formularios/formularios.dart';
+import 'package:carmind_app/home/home.dart';
+import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scroll_to_id/scroll_to_id.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../constants.dart';
 import '../../widgets/widgets.dart';
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/formularios/formularios.dart';
-import 'package:carmind_app/vehiculo/vehiculo.dart';
-import 'package:carmind_app/home/home.dart';
-
-
-
 
 class FormularioPreguntas extends StatelessWidget {
   final Evaluacion evaluacion;
   final Vehiculo vehiculo;
 
-  FormularioPreguntas({Key? key, required  this.evaluacion, required this.vehiculo}): super(key: key);
+  FormularioPreguntas({Key? key, required this.evaluacion, required this.vehiculo}) : super(key: key);
 
   static ScrollController? controller;
   static ScrollToId? scrollToId;
@@ -40,11 +36,12 @@ class FormularioPreguntas extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        onPressed: () {
-           BlocProvider.of<RealizarEvaluacionBloc>(context).add(AbortRestoreDataEvent());
-          BlocProvider.of<HomeBloc>(context).add(const PopEvent());
-        },
-      title:  evaluacion.titulo!),
+          onPressed: () {
+            BlocProvider.of<RealizarEvaluacionBloc>(context).add(AbortRestoreDataEvent());
+            BlocProvider.of<HomeBloc>(context).add(ShowFab());
+            BlocProvider.of<HomeBloc>(context).add(const PopEvent());
+          },
+          title: evaluacion.titulo!),
       body: BlocListener<RealizarEvaluacionBloc, RealizarEvaluacionState>(
         listener: (context, state) {
           if (state.preguntasRespondidas.length == evaluacion.preguntas!.length) {
@@ -207,8 +204,7 @@ class FormularioPreguntas extends StatelessWidget {
   Future<void> _checkIfImagePickerCrashed(BuildContext context) async {
     final RealizarEvaluacionBloc realizarEvaluacionBloc = BlocProvider.of<RealizarEvaluacionBloc>(context);
     final ImagePicker picker = ImagePicker();
-    final LostDataResponse response =
-        await picker.retrieveLostData();
+    final LostDataResponse response = await picker.retrieveLostData();
     if (response.isEmpty) {
       realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));
       return;
@@ -217,14 +213,8 @@ class FormularioPreguntas extends StatelessWidget {
       realizarEvaluacionBloc.add(RestoreDataEvent(evaluacion, vehiculo, response.files![0]));
     } else {
       EasyLoading.showError(noMemoryError);
-      FirebaseCrashlytics.instance.recordError(
-          'Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}',
-          StackTrace.current,
-          reason: noMemoryError
-        );
+      FirebaseCrashlytics.instance
+          .recordError('Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}', StackTrace.current, reason: noMemoryError);
     }
   }
-
-
 }
-

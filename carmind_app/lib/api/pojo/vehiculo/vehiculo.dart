@@ -17,7 +17,7 @@ class Vehiculo extends Equatable {
   bool? en_uso;
 
   @HiveField(3)
-  String? color;
+  int? kilometraje;
 
   @HiveField(4)
   String? marca;
@@ -31,6 +31,10 @@ class Vehiculo extends Equatable {
   @HiveField(7)
   String? patente;
 
+  String? imei;
+
+  String? tipo;
+
   @HiveField(8)
   List<EvaluacionesPendientes>? pendientes;
 
@@ -40,7 +44,7 @@ class Vehiculo extends Equatable {
   Map<String, dynamic> toJson() => _$VehiculoToJson(this);
 
   @override
-  List<Object?> get props => [id, nombre, en_uso, color, marca, modelo, linea, patente, pendientes];
+  List<Object?> get props => [id, nombre, en_uso, kilometraje, marca, modelo, linea, patente, imei, pendientes];
 }
 
 @JsonSerializable()

@@ -52,7 +52,7 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
         }
       } else {
         lastTimeFetched ??= DateTime.now();
-        if ((vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)) {
+        if ((vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 2 || event.forceWaiting)) {
           //Si no esta offline, le preguntamos al server
           vehiculo = await api.getCurrent().catchError((err) {
             switch (err.runtimeType) {

@@ -8,17 +8,19 @@ part of 'route_stop.dart';
 
 RouteStop _$RouteStopFromJson(Map<String, dynamic> json) => RouteStop()
   ..type = json['type'] as String?
-  ..date = json['date'] as String?
-  ..from = json['from'] as String?
-  ..to = json['to'] as String?
+  ..fromDate = json['fromDate'] as String?
+  ..toDate = json['toDate'] as String?
+  ..fromHour = json['fromHour'] as String?
+  ..toHour = json['toHour'] as String?
   ..latitud = (json['latitud'] as num?)?.toDouble()
   ..longitud = (json['longitud'] as num?)?.toDouble();
 
 Map<String, dynamic> _$RouteStopToJson(RouteStop instance) => <String, dynamic>{
       'type': instance.type,
-      'date': instance.date,
-      'from': instance.from,
-      'to': instance.to,
+      'fromDate': instance.fromDate,
+      'toDate': instance.toDate,
+      'fromHour': instance.fromHour,
+      'toHour': instance.toHour,
       'latitud': instance.latitud,
       'longitud': instance.longitud,
     };

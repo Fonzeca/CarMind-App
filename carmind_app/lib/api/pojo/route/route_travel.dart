@@ -1,4 +1,4 @@
-import 'package:carmind_app/api/pojo/map/route_info.dart';
+import 'package:carmind_app/api/api.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'route_travel.g.dart';

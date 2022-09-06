@@ -6,9 +6,9 @@ import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
-import 'package:carmind_app/map/map.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/rutas/rutas.dart';
 import 'package:carmind_app/services/services.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:dio/adapter.dart';
@@ -87,16 +87,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      child: MaterialApp(
-        key: _materialAppKey,
-        title: 'CarMind',
-        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
-        home: Scaffold(body: Builder(builder: (_) {
-          configDio(_materialAppKey.currentContext!);
-          return LoginScreen();
-        })),
-        builder: EasyLoading.init(),
-      ),
       providers: [
         BlocProvider(create: (context) => HomeBloc()),
         BlocProvider(create: (context) => LoginBloc()),
@@ -107,8 +97,18 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
         BlocProvider(create: (context) => OfflineBloc()),
-        BlocProvider(create: (context) => MapBloc()),
+        BlocProvider(create: (context) => RoutesBloc())
       ],
+      child: MaterialApp(
+        key: _materialAppKey,
+        title: 'CarMind',
+        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
+        home: Scaffold(body: Builder(builder: (_) {
+          configDio(_materialAppKey.currentContext!);
+          return LoginScreen();
+        })),
+        builder: EasyLoading.init(),
+      ),
     );
   }
 

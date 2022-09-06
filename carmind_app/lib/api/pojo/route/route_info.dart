@@ -1,11 +1,11 @@
-import 'package:carmind_app/api/pojo/map/route_stop.dart';
-import 'package:carmind_app/api/pojo/map/route_travel.dart';
+import 'package:carmind_app/api/api.dart';
 
 abstract class RouteInfo {
   String? type;
-  String? date;
-  String? from;
-  String? to;
+  String? fromDate;
+  String? toDate;
+  String? fromHour;
+  String? toHour;
 
   RouteInfo();
 

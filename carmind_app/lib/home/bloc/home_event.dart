@@ -11,14 +11,15 @@ class HomeNavigationEvent extends HomeEvent {
   final int buttonId;
   final Vehiculo? vehiculo;
   final Evaluacion? evaluacion;
-  const HomeNavigationEvent(this.buttonId,{this.vehiculo, this.evaluacion});
+  final List<RouteDraw>? routeDraw;
+  const HomeNavigationEvent(this.buttonId, {this.vehiculo, this.evaluacion, this.routeDraw});
 }
 
 class HideFab extends HomeEvent {}
 
 class ShowFab extends HomeEvent {}
 
-class ShowDejarDeUsarVehiculoEvent extends HomeEvent{
+class ShowDejarDeUsarVehiculoEvent extends HomeEvent {
   final bool showDejarDeUsarVehiculo;
 
   const ShowDejarDeUsarVehiculoEvent(this.showDejarDeUsarVehiculo);

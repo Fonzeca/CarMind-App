@@ -20,7 +20,7 @@ class VehiculoAdapter extends TypeAdapter<Vehiculo> {
       ..id = fields[0] as int?
       ..nombre = fields[1] as String?
       ..en_uso = fields[2] as bool?
-      ..color = fields[3] as String?
+      ..kilometraje = fields[3] as int?
       ..marca = fields[4] as String?
       ..modelo = fields[5] as String?
       ..linea = fields[6] as String?
@@ -39,7 +39,7 @@ class VehiculoAdapter extends TypeAdapter<Vehiculo> {
       ..writeByte(2)
       ..write(obj.en_uso)
       ..writeByte(3)
-      ..write(obj.color)
+      ..write(obj.kilometraje)
       ..writeByte(4)
       ..write(obj.marca)
       ..writeByte(5)
@@ -117,11 +117,13 @@ Vehiculo _$VehiculoFromJson(Map<String, dynamic> json) => Vehiculo()
   ..id = json['id'] as int?
   ..nombre = json['nombre'] as String?
   ..en_uso = json['en_uso'] as bool?
-  ..color = json['color'] as String?
+  ..kilometraje = json['kilometraje'] as int?
   ..marca = json['marca'] as String?
   ..modelo = json['modelo'] as String?
   ..linea = json['linea'] as String?
   ..patente = json['patente'] as String?
+  ..imei = json['imei'] as String?
+  ..tipo = json['tipo'] as String?
   ..pendientes = (json['pendientes'] as List<dynamic>?)
       ?.map((e) => EvaluacionesPendientes.fromJson(e as Map<String, dynamic>))
       .toList();
@@ -130,11 +132,13 @@ Map<String, dynamic> _$VehiculoToJson(Vehiculo instance) => <String, dynamic>{
       'id': instance.id,
       'nombre': instance.nombre,
       'en_uso': instance.en_uso,
-      'color': instance.color,
+      'kilometraje': instance.kilometraje,
       'marca': instance.marca,
       'modelo': instance.modelo,
       'linea': instance.linea,
       'patente': instance.patente,
+      'imei': instance.imei,
+      'tipo': instance.tipo,
       'pendientes': instance.pendientes,
     };
 
