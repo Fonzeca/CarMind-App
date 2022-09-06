@@ -5,7 +5,6 @@ import 'package:carmind_app/firebase_options.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
-import 'package:carmind_app/map/map.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/services/push_notifications_service.dart';
@@ -109,8 +108,18 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         BlocProvider(create: (context) => QrScannerBloc()),
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(create: (context) => MapBloc()),
+        BlocProvider(create: (context) => RoutesBloc())
       ],
+      child: MaterialApp(
+        key: _materialAppKey,
+        title: 'CarMind',
+        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
+        home: Scaffold(body: Builder(builder: (_) {
+          configDio(_materialAppKey.currentContext!);
+          return LoginScreen();
+        })),
+        builder: EasyLoading.init(),
+      ),
     );
   }
 

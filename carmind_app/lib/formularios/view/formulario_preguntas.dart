@@ -40,6 +40,7 @@ class FormularioPreguntas extends StatelessWidget {
       appBar: CustomAppBar(
           onPressed: () {
             BlocProvider.of<RealizarEvaluacionBloc>(context).add(AbortRestoreDataEvent());
+            BlocProvider.of<HomeBloc>(context).add(ShowFab());
             BlocProvider.of<HomeBloc>(context).add(const PopEvent());
           },
           title: evaluacion.titulo!),

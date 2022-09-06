@@ -43,7 +43,7 @@ class VersionService {
       currentPlatform = iosPlatform;
     }
     VersionView lastVersion = await api.getLastVersionByPlatform(currentPlatform!);
-    _lastVersion = Version.parse(lastVersion.storeVersion);
+    _lastVersion = Version.parse(lastVersion.storeVersion!);
   }
 
   static Future<void> showVersionAvailableAlert(BuildContext context) async {

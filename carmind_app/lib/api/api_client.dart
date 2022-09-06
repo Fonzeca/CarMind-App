@@ -1,5 +1,4 @@
 import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/api/pojo/map/route_info.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
@@ -51,7 +50,6 @@ abstract class ApiClient {
   Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser(@Path("limit") String limit);
 
   //----------------------------VEHICULO----------------------------
-
   @GET("/vehiculo/{id}")
   Future<Vehiculo> getVehiculoById(@Path("id") int idVehiculo);
 
@@ -69,6 +67,12 @@ abstract class ApiClient {
   Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
 
   //----------------------------MapRoutes--------------------------
+  @GET("/vehiculo")
+  Future<List<VehicleInfoMap>> getAllVehiculos();
+
+  @POST("/trackin/getVehiclesStateByImeis")
+  Future<List<VehicleInfoMap>> getVehiclesTrackinInfo(@Body() Map<String, dynamic> imeis);
+
   @POST("/trackin/getRouteByImei")
   Future<List<RouteInfo>> getRoute(@Body() RoutePojo pojo);
 }

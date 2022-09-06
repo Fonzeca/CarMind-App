@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:carmind_app/api/api.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -10,7 +11,7 @@ part 'home_state.dart';
 class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
   List<int> pageHistorial = [0];
 
-  HomeBloc() : super(const HomeInitial()) {
+  HomeBloc() : super(HomeInitial()) {
     on<HomeNavigationEvent>((event, emit) {
       int indexPageView = event.buttonId;
       int indexNavButton = resolveNavButton(event.buttonId);
@@ -19,7 +20,12 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
         pageHistorial.add(indexPageView);
       }
 
-      emit(state.copyWith(selectedPageView: pageHistorial.last, selectedNavButton: indexNavButton, vehiculo: event.vehiculo, evaluacion: event.evaluacion));
+      emit(state.copyWith(
+          selectedPageView: pageHistorial.last,
+          selectedNavButton: indexNavButton,
+          vehiculo: event.vehiculo,
+          evaluacion: event.evaluacion,
+          routeInfoToDraw: event.routeDraw));
     });
 
     on<PopEvent>((event, emit) {
@@ -50,7 +56,7 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
       var shr = await SharedPreferences.getInstance();
       shr.remove("token");
       shr.remove("on_boarding_finish");
-      emit(const HomeLogoutState());
+      emit(HomeLogoutState());
     });
   }
 
@@ -67,18 +73,21 @@ class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
         indexNavButton = 2;
         break;
       case 3:
-        indexNavButton = 1;
+        indexNavButton = 3;
         break;
       case 4:
-        indexNavButton = 0;
+        indexNavButton = 1;
+        break;
+      case 5:
+        indexNavButton = 3;
         break;
     }
     return indexNavButton;
   }
-  
+
   @override
   HomeState? fromJson(Map<String, dynamic> json) => HomeState.fromMap(json);
-  
+
   @override
   Map<String, dynamic>? toJson(HomeState state) => state.toMap();
 }

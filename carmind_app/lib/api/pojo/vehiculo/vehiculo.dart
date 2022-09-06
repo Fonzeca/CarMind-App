@@ -13,7 +13,7 @@ class Vehiculo extends Equatable {
 
   bool? en_uso;
 
-  String? imei;
+  int? kilometraje;
 
   String? marca;
 
@@ -23,6 +23,8 @@ class Vehiculo extends Equatable {
 
   String? patente;
 
+  String? imei;
+  String? tipo;
   List<EvaluacionesPendientes>? pendientes;
 
   Vehiculo();
@@ -43,7 +45,7 @@ class Vehiculo extends Equatable {
   Map<String, dynamic> toJson() => _$VehiculoToJson(this);
 
   @override
-  List<Object?> get props => [id, nombre, en_uso, marca, modelo, linea, patente, pendientes];
+  List<Object?> get props => [id, nombre, en_uso, kilometraje, marca, modelo, linea, patente, imei, pendientes];
 }
 
 @Collection()
