@@ -41,6 +41,7 @@ class CustomInterceptor implements InterceptorsWrapper {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     if (!options.uri.path.contains("login") && !options.uri.path.contains("public")) {
       var prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
       String? token = prefs.getString("token");
       options.headers.addAll({'Authorization': "Bearer $token"});
     }

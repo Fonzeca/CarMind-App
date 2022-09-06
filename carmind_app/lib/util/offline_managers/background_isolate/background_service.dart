@@ -88,8 +88,9 @@ void onStart(ServiceInstance service) async {
     mockDb: mock,
   );
 
+  await syncManager.doSync();
   //El loop del daemon
-  Timer.periodic(const Duration(seconds: 5), (timer) async {
+  Timer.periodic(const Duration(minutes: 5), (timer) async {
     log('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
 
     await syncManager.doSync();
