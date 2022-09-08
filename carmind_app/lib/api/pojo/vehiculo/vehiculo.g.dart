@@ -8,7 +8,6 @@ part of 'vehiculo.dart';
 
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
 
-<<<<<<< HEAD
 extension GetVehiculoDbCollection on Isar {
   IsarCollection<VehiculoDb> get vehiculoDbs => getCollection();
 }
@@ -16,18 +15,20 @@ extension GetVehiculoDbCollection on Isar {
 const VehiculoDbSchema = CollectionSchema(
   name: 'VehiculoDb',
   schema:
-      '{"name":"VehiculoDb","idName":"id","properties":[{"name":"en_uso","type":"Bool"},{"name":"hashCode","type":"Long"},{"name":"imei","type":"String"},{"name":"linea","type":"String"},{"name":"marca","type":"String"},{"name":"modelo","type":"String"},{"name":"nombre","type":"String"},{"name":"patente","type":"String"},{"name":"stringify","type":"Bool"}],"indexes":[],"links":[{"name":"pendientesDb","target":"EvaluacionesPendientes"}]}',
+      '{"name":"VehiculoDb","idName":"id","properties":[{"name":"en_uso","type":"Bool"},{"name":"hashCode","type":"Long"},{"name":"imei","type":"String"},{"name":"kilometraje","type":"Long"},{"name":"linea","type":"String"},{"name":"marca","type":"String"},{"name":"modelo","type":"String"},{"name":"nombre","type":"String"},{"name":"patente","type":"String"},{"name":"stringify","type":"Bool"},{"name":"tipo","type":"String"}],"indexes":[],"links":[{"name":"pendientesDb","target":"EvaluacionesPendientes"}]}',
   idName: 'id',
   propertyIds: {
     'en_uso': 0,
     'hashCode': 1,
     'imei': 2,
-    'linea': 3,
-    'marca': 4,
-    'modelo': 5,
-    'nombre': 6,
-    'patente': 7,
-    'stringify': 8
+    'kilometraje': 3,
+    'linea': 4,
+    'marca': 5,
+    'modelo': 6,
+    'nombre': 7,
+    'patente': 8,
+    'stringify': 9,
+    'tipo': 10
   },
   listProperties: {},
   indexIds: {},
@@ -81,38 +82,46 @@ void _vehiculoDbSerializeNative(
     _imei = IsarBinaryWriter.utf8Encoder.convert(value2);
   }
   dynamicSize += (_imei?.length ?? 0) as int;
-  final value3 = object.linea;
+  final value3 = object.kilometraje;
+  final _kilometraje = value3;
+  final value4 = object.linea;
   IsarUint8List? _linea;
-  if (value3 != null) {
-    _linea = IsarBinaryWriter.utf8Encoder.convert(value3);
+  if (value4 != null) {
+    _linea = IsarBinaryWriter.utf8Encoder.convert(value4);
   }
   dynamicSize += (_linea?.length ?? 0) as int;
-  final value4 = object.marca;
+  final value5 = object.marca;
   IsarUint8List? _marca;
-  if (value4 != null) {
-    _marca = IsarBinaryWriter.utf8Encoder.convert(value4);
+  if (value5 != null) {
+    _marca = IsarBinaryWriter.utf8Encoder.convert(value5);
   }
   dynamicSize += (_marca?.length ?? 0) as int;
-  final value5 = object.modelo;
+  final value6 = object.modelo;
   IsarUint8List? _modelo;
-  if (value5 != null) {
-    _modelo = IsarBinaryWriter.utf8Encoder.convert(value5);
+  if (value6 != null) {
+    _modelo = IsarBinaryWriter.utf8Encoder.convert(value6);
   }
   dynamicSize += (_modelo?.length ?? 0) as int;
-  final value6 = object.nombre;
+  final value7 = object.nombre;
   IsarUint8List? _nombre;
-  if (value6 != null) {
-    _nombre = IsarBinaryWriter.utf8Encoder.convert(value6);
+  if (value7 != null) {
+    _nombre = IsarBinaryWriter.utf8Encoder.convert(value7);
   }
   dynamicSize += (_nombre?.length ?? 0) as int;
-  final value7 = object.patente;
+  final value8 = object.patente;
   IsarUint8List? _patente;
-  if (value7 != null) {
-    _patente = IsarBinaryWriter.utf8Encoder.convert(value7);
+  if (value8 != null) {
+    _patente = IsarBinaryWriter.utf8Encoder.convert(value8);
   }
   dynamicSize += (_patente?.length ?? 0) as int;
-  final value8 = object.stringify;
-  final _stringify = value8;
+  final value9 = object.stringify;
+  final _stringify = value9;
+  final value10 = object.tipo;
+  IsarUint8List? _tipo;
+  if (value10 != null) {
+    _tipo = IsarBinaryWriter.utf8Encoder.convert(value10);
+  }
+  dynamicSize += (_tipo?.length ?? 0) as int;
   final size = staticSize + dynamicSize;
 
   rawObj.buffer = alloc(size);
@@ -122,12 +131,14 @@ void _vehiculoDbSerializeNative(
   writer.writeBool(offsets[0], _en_uso);
   writer.writeLong(offsets[1], _hashCode);
   writer.writeBytes(offsets[2], _imei);
-  writer.writeBytes(offsets[3], _linea);
-  writer.writeBytes(offsets[4], _marca);
-  writer.writeBytes(offsets[5], _modelo);
-  writer.writeBytes(offsets[6], _nombre);
-  writer.writeBytes(offsets[7], _patente);
-  writer.writeBool(offsets[8], _stringify);
+  writer.writeLong(offsets[3], _kilometraje);
+  writer.writeBytes(offsets[4], _linea);
+  writer.writeBytes(offsets[5], _marca);
+  writer.writeBytes(offsets[6], _modelo);
+  writer.writeBytes(offsets[7], _nombre);
+  writer.writeBytes(offsets[8], _patente);
+  writer.writeBool(offsets[9], _stringify);
+  writer.writeBytes(offsets[10], _tipo);
 }
 
 VehiculoDb _vehiculoDbDeserializeNative(IsarCollection<VehiculoDb> collection,
@@ -136,11 +147,13 @@ VehiculoDb _vehiculoDbDeserializeNative(IsarCollection<VehiculoDb> collection,
   object.en_uso = reader.readBoolOrNull(offsets[0]);
   object.id = id;
   object.imei = reader.readStringOrNull(offsets[2]);
-  object.linea = reader.readStringOrNull(offsets[3]);
-  object.marca = reader.readStringOrNull(offsets[4]);
-  object.modelo = reader.readStringOrNull(offsets[5]);
-  object.nombre = reader.readStringOrNull(offsets[6]);
-  object.patente = reader.readStringOrNull(offsets[7]);
+  object.kilometraje = reader.readLongOrNull(offsets[3]);
+  object.linea = reader.readStringOrNull(offsets[4]);
+  object.marca = reader.readStringOrNull(offsets[5]);
+  object.modelo = reader.readStringOrNull(offsets[6]);
+  object.nombre = reader.readStringOrNull(offsets[7]);
+  object.patente = reader.readStringOrNull(offsets[8]);
+  object.tipo = reader.readStringOrNull(offsets[10]);
   _vehiculoDbAttachLinks(collection, id, object);
   return object;
 }
@@ -157,7 +170,7 @@ P _vehiculoDbDeserializePropNative<P>(
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -167,7 +180,11 @@ P _vehiculoDbDeserializePropNative<P>(
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (reader.readBoolOrNull(offset)) as P;
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw 'Illegal propertyIndex';
   }
@@ -180,12 +197,14 @@ dynamic _vehiculoDbSerializeWeb(
   IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
   IsarNative.jsObjectSet(jsObj, 'id', object.id);
   IsarNative.jsObjectSet(jsObj, 'imei', object.imei);
+  IsarNative.jsObjectSet(jsObj, 'kilometraje', object.kilometraje);
   IsarNative.jsObjectSet(jsObj, 'linea', object.linea);
   IsarNative.jsObjectSet(jsObj, 'marca', object.marca);
   IsarNative.jsObjectSet(jsObj, 'modelo', object.modelo);
   IsarNative.jsObjectSet(jsObj, 'nombre', object.nombre);
   IsarNative.jsObjectSet(jsObj, 'patente', object.patente);
   IsarNative.jsObjectSet(jsObj, 'stringify', object.stringify);
+  IsarNative.jsObjectSet(jsObj, 'tipo', object.tipo);
   return jsObj;
 }
 
@@ -195,11 +214,13 @@ VehiculoDb _vehiculoDbDeserializeWeb(
   object.en_uso = IsarNative.jsObjectGet(jsObj, 'en_uso');
   object.id = IsarNative.jsObjectGet(jsObj, 'id');
   object.imei = IsarNative.jsObjectGet(jsObj, 'imei');
+  object.kilometraje = IsarNative.jsObjectGet(jsObj, 'kilometraje');
   object.linea = IsarNative.jsObjectGet(jsObj, 'linea');
   object.marca = IsarNative.jsObjectGet(jsObj, 'marca');
   object.modelo = IsarNative.jsObjectGet(jsObj, 'modelo');
   object.nombre = IsarNative.jsObjectGet(jsObj, 'nombre');
   object.patente = IsarNative.jsObjectGet(jsObj, 'patente');
+  object.tipo = IsarNative.jsObjectGet(jsObj, 'tipo');
   _vehiculoDbAttachLinks(
       collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
   return object;
@@ -216,6 +237,8 @@ P _vehiculoDbDeserializePropWeb<P>(Object jsObj, String propertyName) {
       return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
     case 'imei':
       return (IsarNative.jsObjectGet(jsObj, 'imei')) as P;
+    case 'kilometraje':
+      return (IsarNative.jsObjectGet(jsObj, 'kilometraje')) as P;
     case 'linea':
       return (IsarNative.jsObjectGet(jsObj, 'linea')) as P;
     case 'marca':
@@ -228,6 +251,8 @@ P _vehiculoDbDeserializePropWeb<P>(Object jsObj, String propertyName) {
       return (IsarNative.jsObjectGet(jsObj, 'patente')) as P;
     case 'stringify':
       return (IsarNative.jsObjectGet(jsObj, 'stringify')) as P;
+    case 'tipo':
+      return (IsarNative.jsObjectGet(jsObj, 'tipo')) as P;
     default:
       throw 'Illegal propertyName';
   }
@@ -533,6 +558,66 @@ extension VehiculoDbQueryFilter
       property: 'imei',
       value: pattern,
       caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'kilometraje',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeEqualTo(int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'kilometraje',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'kilometraje',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'kilometraje',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'kilometraje',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -1109,6 +1194,117 @@ extension VehiculoDbQueryFilter
       value: value,
     ));
   }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'tipo',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'tipo',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'tipo',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'tipo',
+      value: pattern,
+      caseSensitive: caseSensitive,
+    ));
+  }
 }
 
 extension VehiculoDbQueryLinks
@@ -1155,6 +1351,14 @@ extension VehiculoDbQueryWhereSortBy
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByImeiDesc() {
     return addSortByInternal('imei', Sort.desc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByKilometraje() {
+    return addSortByInternal('kilometraje', Sort.asc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByKilometrajeDesc() {
+    return addSortByInternal('kilometraje', Sort.desc);
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByLinea() {
@@ -1204,6 +1408,14 @@ extension VehiculoDbQueryWhereSortBy
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByStringifyDesc() {
     return addSortByInternal('stringify', Sort.desc);
   }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByTipo() {
+    return addSortByInternal('tipo', Sort.asc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByTipoDesc() {
+    return addSortByInternal('tipo', Sort.desc);
+  }
 }
 
 extension VehiculoDbQueryWhereSortThenBy
@@ -1238,6 +1450,14 @@ extension VehiculoDbQueryWhereSortThenBy
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByImeiDesc() {
     return addSortByInternal('imei', Sort.desc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByKilometraje() {
+    return addSortByInternal('kilometraje', Sort.asc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByKilometrajeDesc() {
+    return addSortByInternal('kilometraje', Sort.desc);
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByLinea() {
@@ -1287,6 +1507,14 @@ extension VehiculoDbQueryWhereSortThenBy
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByStringifyDesc() {
     return addSortByInternal('stringify', Sort.desc);
   }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByTipo() {
+    return addSortByInternal('tipo', Sort.asc);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByTipoDesc() {
+    return addSortByInternal('tipo', Sort.desc);
+  }
 }
 
 extension VehiculoDbQueryWhereDistinct
@@ -1306,6 +1534,10 @@ extension VehiculoDbQueryWhereDistinct
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByImei(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('imei', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByKilometraje() {
+    return addDistinctByInternal('kilometraje');
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByLinea(
@@ -1336,6 +1568,11 @@ extension VehiculoDbQueryWhereDistinct
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByStringify() {
     return addDistinctByInternal('stringify');
   }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByTipo(
+      {bool caseSensitive = true}) {
+    return addDistinctByInternal('tipo', caseSensitive: caseSensitive);
+  }
 }
 
 extension VehiculoDbQueryProperty
@@ -1354,6 +1591,10 @@ extension VehiculoDbQueryProperty
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> imeiProperty() {
     return addPropertyNameInternal('imei');
+  }
+
+  QueryBuilder<VehiculoDb, int?, QQueryOperations> kilometrajeProperty() {
+    return addPropertyNameInternal('kilometraje');
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> lineaProperty() {
@@ -1378,6 +1619,10 @@ extension VehiculoDbQueryProperty
 
   QueryBuilder<VehiculoDb, bool?, QQueryOperations> stringifyProperty() {
     return addPropertyNameInternal('stringify');
+  }
+
+  QueryBuilder<VehiculoDb, String?, QQueryOperations> tipoProperty() {
+    return addPropertyNameInternal('tipo');
   }
 }
 
@@ -2341,105 +2586,6 @@ extension EvaluacionesPendientesQueryProperty on QueryBuilder<
       vencimientoProperty() {
     return addPropertyNameInternal('vencimiento');
   }
-=======
-  @override
-  Vehiculo read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return Vehiculo()
-      ..id = fields[0] as int?
-      ..nombre = fields[1] as String?
-      ..en_uso = fields[2] as bool?
-      ..kilometraje = fields[3] as int?
-      ..marca = fields[4] as String?
-      ..modelo = fields[5] as String?
-      ..linea = fields[6] as String?
-      ..patente = fields[7] as String?
-      ..pendientes = (fields[8] as List?)?.cast<EvaluacionesPendientes>();
-  }
-
-  @override
-  void write(BinaryWriter writer, Vehiculo obj) {
-    writer
-      ..writeByte(9)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.nombre)
-      ..writeByte(2)
-      ..write(obj.en_uso)
-      ..writeByte(3)
-      ..write(obj.kilometraje)
-      ..writeByte(4)
-      ..write(obj.marca)
-      ..writeByte(5)
-      ..write(obj.modelo)
-      ..writeByte(6)
-      ..write(obj.linea)
-      ..writeByte(7)
-      ..write(obj.patente)
-      ..writeByte(8)
-      ..write(obj.pendientes);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VehiculoAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class EvaluacionesPendientesAdapter
-    extends TypeAdapter<EvaluacionesPendientes> {
-  @override
-  final int typeId = 2;
-
-  @override
-  EvaluacionesPendientes read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
-    return EvaluacionesPendientes()
-      ..id = fields[0] as int?
-      ..titulo = fields[1] as String?
-      ..pendiente = fields[2] as bool?
-      ..vencimiento = fields[3] as int?
-      ..intervaloDias = fields[4] as int?;
-  }
-
-  @override
-  void write(BinaryWriter writer, EvaluacionesPendientes obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.titulo)
-      ..writeByte(2)
-      ..write(obj.pendiente)
-      ..writeByte(3)
-      ..write(obj.vencimiento)
-      ..writeByte(4)
-      ..write(obj.intervaloDias);
-  }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is EvaluacionesPendientesAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
->>>>>>> GPS
 }
 
 // **************************************************************************
@@ -2450,11 +2596,7 @@ Vehiculo _$VehiculoFromJson(Map<String, dynamic> json) => Vehiculo()
   ..id = json['id'] as int?
   ..nombre = json['nombre'] as String?
   ..en_uso = json['en_uso'] as bool?
-<<<<<<< HEAD
-  ..imei = json['imei'] as String?
-=======
   ..kilometraje = json['kilometraje'] as int?
->>>>>>> GPS
   ..marca = json['marca'] as String?
   ..modelo = json['modelo'] as String?
   ..linea = json['linea'] as String?
@@ -2469,11 +2611,7 @@ Map<String, dynamic> _$VehiculoToJson(Vehiculo instance) => <String, dynamic>{
       'id': instance.id,
       'nombre': instance.nombre,
       'en_uso': instance.en_uso,
-<<<<<<< HEAD
-      'imei': instance.imei,
-=======
       'kilometraje': instance.kilometraje,
->>>>>>> GPS
       'marca': instance.marca,
       'modelo': instance.modelo,
       'linea': instance.linea,

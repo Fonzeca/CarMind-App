@@ -119,34 +119,37 @@ class CarMindNavigationBar extends StatelessWidget {
                 );
               },
             ),
-            body: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) {
-                return (current is! HomeLogoutState) &&
-                    (previous.selectedNavButton != current.selectedNavButton ||
-                        previous.selectedPageView != current.selectedPageView ||
-                        previous.evaluacion != current.evaluacion ||
-                        previous.vehiculo != current.vehiculo);
-              },
-              builder: (context, state) {
-                switch (state.selectedPageView) {
-                  case 0:
-                    return const FormularioContent();
-                  case 1:
-                    return VehiculoEspecifico();
-                  case 2:
-                    return ProfileContent();
-                  case 3:
-                    return MapView();
-                  case 4:
-                    return FormularioPreguntas(
-                      evaluacion: state.evaluacion!,
-                      vehiculo: state.vehiculo!,
-                    );
-                  //case 5:
-                  //  return MapView(routeDraw: state.routeDraw);
-                }
-                return Container();
-              },
+            body: OfflineSign(
+              service: GetIt.I.get<FlutterBackgroundService>(),
+              child: BlocBuilder<HomeBloc, HomeState>(
+                buildWhen: (previous, current) {
+                  return (current is! HomeLogoutState) &&
+                      (previous.selectedNavButton != current.selectedNavButton ||
+                          previous.selectedPageView != current.selectedPageView ||
+                          previous.evaluacion != current.evaluacion ||
+                          previous.vehiculo != current.vehiculo);
+                },
+                builder: (context, state) {
+                  switch (state.selectedPageView) {
+                    case 0:
+                      return const FormularioContent();
+                    case 1:
+                      return VehiculoEspecifico();
+                    case 2:
+                      return ProfileContent();
+                    case 3:
+                      return MapView();
+                    case 4:
+                      return FormularioPreguntas(
+                        evaluacion: state.evaluacion!,
+                        vehiculo: state.vehiculo!,
+                      );
+                    //case 5:
+                    //  return MapView(routeDraw: state.routeDraw);
+                  }
+                  return Container();
+                },
+              ),
             ),
             floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
               buildWhen: (previous, current) =>

@@ -7,6 +7,7 @@ import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/nueva_contrasena/nueva_contrasena.dart';
 import 'package:carmind_app/profile/profile.dart';
+import 'package:carmind_app/rutas/bloc/routes_bloc.dart';
 import 'package:carmind_app/services/push_notifications_service.dart';
 import 'package:carmind_app/util/custom_interceptor.dart';
 import 'package:carmind_app/util/offline_managers/offline_module.dart';
@@ -90,15 +91,6 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
     GetIt.I.registerSingleton<HomeBloc>(HomeBloc());
     configDio(sharedPreferences);
     return MultiBlocProvider(
-      child: MaterialApp(
-        key: _materialAppKey,
-        title: 'CarMind',
-        theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
-        home: Scaffold(body: Builder(builder: (_) {
-          return const LoginScreen();
-        })),
-        builder: EasyLoading.init(),
-      ),
       providers: [
         BlocProvider(create: (context) => GetIt.I.get<HomeBloc>()),
         BlocProvider(create: (context) => LoginBloc()),
@@ -115,8 +107,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         title: 'CarMind',
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Roboto"),
         home: Scaffold(body: Builder(builder: (_) {
-          configDio(_materialAppKey.currentContext!);
-          return LoginScreen();
+          return const LoginScreen();
         })),
         builder: EasyLoading.init(),
       ),
