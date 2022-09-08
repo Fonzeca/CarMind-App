@@ -34,8 +34,9 @@ class DrawMarkersEvent extends RoutesEvent {
 class DrawRouteEvent extends RoutesEvent {
   final Completer<GoogleMapController> mapController;
   final Map<PolylineId, Polyline> polylines;
+  final LatLng? firstMarkerPosition;
 
-  const DrawRouteEvent({required this.polylines, required this.mapController});
+  const DrawRouteEvent({required this.polylines, required this.mapController, required this.firstMarkerPosition});
 }
 
 class SelectVehicleEvent extends RoutesEvent {
@@ -69,6 +70,8 @@ class MoveCameraToPointEvent extends RoutesEvent {
 class MoveCameraToRouteEvent extends RoutesEvent {
   final Completer<GoogleMapController> mapController;
   final List<LatLng>? points;
+  final double? latitude;
+  final double? longitude;
 
-  const MoveCameraToRouteEvent({required this.mapController, this.points});
+  const MoveCameraToRouteEvent({required this.mapController, this.points, this.latitude, this.longitude});
 }
