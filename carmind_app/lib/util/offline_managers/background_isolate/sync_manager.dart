@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:carmind_app/api/api.dart';
@@ -17,7 +16,6 @@ class SyncManager {
   final SharedPreferences sharedPreferences;
   final MockDb mockDb;
   final ServiceInstance service;
-  late Isar database;
   late ApiClient api;
 
   AppLifecycleState appState = AppLifecycleState.resumed;
@@ -44,7 +42,8 @@ class SyncManager {
 
     api = ApiClient(myDio);
 
-    // Open Isar in the UI isolate
+    print(directoryIsar);
+
     final isar = Isar.openSync(
         name: 'isar-carmind',
         schemas: [
@@ -72,7 +71,7 @@ class SyncManager {
   Future<void> doSync() async {
     await printServiceNotification("");
 
-    log("DoSync");
+    print("DoSync");
     if (await offlineManager.isOffline()) {
       // if (Math.Random().nextInt(100) > 80) {
       //   sharedPreferences.reload();
@@ -81,10 +80,11 @@ class SyncManager {
       // }
 
       await printServiceNotification("Tratando de conectar...");
-      log("Is offline");
+      print("Is offline");
       try {
         //Intentamos conectar al serivodr
         var response = await api.valdiateToken();
+
         if (response.response.statusCode == 200) {
           await printServiceNotification("Sincronizando datos...");
           //Si devuelve ok
@@ -102,7 +102,7 @@ class SyncManager {
         }
       }
     } else if (await isLogged()) {
-      log("Is online and logged");
+      print("Is online and logged");
       try {
         //Obtenemos los ultimos datos de la nube
         OfflineData data = await api.obtenerDatosOffline();
@@ -110,7 +110,7 @@ class SyncManager {
         //Mandamos el mensaje al thread del Mock
         mockDb.saveData(data);
 
-        log("Message to save data sended to main isolate");
+        print("Data saved");
       } catch (e) {
         //Si da error al obtener datos Offline, lo pasamos al modo offline
         if (e is DioError && e.error is SocketException) {
@@ -118,6 +118,8 @@ class SyncManager {
           offlineManager.activateOffline();
         }
       }
+    } else {
+      print("Online and not logged");
     }
     await printServiceNotification("");
   }

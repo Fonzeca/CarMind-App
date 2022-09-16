@@ -2,6 +2,7 @@ import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:get_it/get_it.dart';
 
 class OfflineSign extends StatefulWidget {
   final Widget child;
@@ -19,6 +20,12 @@ class _OfflineSignState extends State<OfflineSign> {
 
   @override
   void initState() {
+    var manager = GetIt.I.get<OfflineManager>();
+    if (manager.isOfflineSync()) {
+      _height = 25;
+      _backgroundColor = Colors.orange;
+    }
+
     widget.service.on(OfflineManager.offlineOnMessage).listen((event) {
       setState(() {
         _height = 25;

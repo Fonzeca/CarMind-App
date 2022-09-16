@@ -32,4 +32,8 @@ class OfflineManager {
     await sharedPreferences.reload();
     return sharedPreferences.getBool(_keyStorage) ?? false;
   }
+
+  bool isOfflineSync() {
+    return sharedPreferences.getBool(_keyStorage) ?? false;
+  }
 }

@@ -10,6 +10,7 @@ import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/rutas/bloc/routes_bloc.dart';
 import 'package:carmind_app/services/push_notifications_service.dart';
 import 'package:carmind_app/util/custom_interceptor.dart';
+import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:carmind_app/util/offline_managers/offline_module.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:dio/dio.dart';
@@ -68,7 +69,9 @@ void main() async {
     final storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory(),
     );
-    GetIt.I.registerSingleton<FlutterBackgroundService>(FlutterBackgroundService());
+    var backgroundService = FlutterBackgroundService();
+    GetIt.I.registerSingleton<FlutterBackgroundService>(backgroundService);
+    GetIt.I.registerSingleton<OfflineManager>(OfflineManager(sh, backgroundService));
 
     HydratedBlocOverrides.runZoned(
       () => runApp(MyApp(sh)),

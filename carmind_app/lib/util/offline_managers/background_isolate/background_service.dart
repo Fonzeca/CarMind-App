@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:carmind_app/util/offline_managers/background_isolate/sync_manager.dart';
@@ -46,8 +45,8 @@ class OfflineBackgroundService {
 Future<bool> onIosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-  log('FLUTTER BACKGROUND FETCH');
-  log('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
+  print('FLUTTER BACKGROUND FETCH');
+  print('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
 
   var sharedPreferences = await SharedPreferences.getInstance();
   final dir = await getApplicationSupportDirectory();
@@ -65,11 +64,12 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 
   await syncManager.doSync();
 
-  log('FLUTTER BACKGROUND SERVICE END: ${DateTime.now()}');
+  print('FLUTTER BACKGROUND SERVICE END: ${DateTime.now()}');
 
   return true;
 }
 
+@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
@@ -90,11 +90,11 @@ void onStart(ServiceInstance service) async {
 
   await syncManager.doSync();
   //El loop del daemon
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
-    log('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
+  Timer.periodic(const Duration(seconds: 5), (timer) async {
+    print('FLUTTER BACKGROUND SERVICE START: ${DateTime.now()}');
 
     await syncManager.doSync();
 
-    log('FLUTTER BACKGROUND SERVICE END: ${DateTime.now()}');
+    print('FLUTTER BACKGROUND SERVICE END: ${DateTime.now()}');
   });
 }

@@ -14,6 +14,7 @@ class OfflineModule {
   late MockDb _mock;
   late OfflineHttpClientAdapter _httpClientAdapter;
   late OfflineInterceptor _offlineInterceptor;
+  late OfflineBackgroundService _offlineSerive;
 
   get httpClientAdapter => _httpClientAdapter;
   get offlineInterceptor => _offlineInterceptor;
@@ -21,14 +22,12 @@ class OfflineModule {
   OfflineModule({required SharedPreferences sharedPreferences, required Dio dio}) {
     _service = GetIt.I.get<FlutterBackgroundService>();
 
-    _offlineManager = OfflineManager(sharedPreferences, _service);
+    _offlineManager = GetIt.I.get<OfflineManager>();
     _mock = MockDb(sharedPreferences);
     _httpClientAdapter = OfflineHttpClientAdapter(offlineManager: _offlineManager, mock: _mock);
     _offlineInterceptor = OfflineInterceptor(dio: dio, offlineManager: _offlineManager);
-    // staticDio?.httpClientAdapter = offlineHttpClientAdapter;
-    // staticDio?.interceptors.add(httpInterceptor);
 
-    var offlineBackgroundService = OfflineBackgroundService(service: _service);
-    offlineBackgroundService.initializeService();
+    _offlineSerive = OfflineBackgroundService(service: _service);
+    _offlineSerive.initializeService();
   }
 }
