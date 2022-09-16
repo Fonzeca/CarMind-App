@@ -15,6 +15,13 @@ class GetVehiclesPositions extends RoutesEvent {
   const GetVehiclesPositions(this.context);
 }
 
+class UpdateVehiclesPositions extends RoutesEvent {
+  final BuildContext context;
+  final TickerProvider ticker;
+
+  const UpdateVehiclesPositions(this.context, this.ticker);
+}
+
 class GetVehicleRoutes extends RoutesEvent {
   final String imei;
   final String from;

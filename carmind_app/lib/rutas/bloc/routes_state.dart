@@ -1,7 +1,6 @@
 part of 'routes_bloc.dart';
 
 class RoutesState extends Equatable {
-  final Map<MarkerId, Marker> vehicleMarkers;
   final Map<MarkerId, Marker> routeMarkers;
   final Map<PolylineId, Polyline> polylines;
   final VehicleInfoMap vehicle;
@@ -11,7 +10,6 @@ class RoutesState extends Equatable {
   final bool areRoutesLoading;
 
   const RoutesState({
-    required this.vehicleMarkers,
     required this.routeMarkers,
     required this.polylines,
     required this.vehicle,
@@ -33,7 +31,6 @@ class RoutesState extends Equatable {
     bool? areRoutesLoading,
   }) {
     return RoutesState(
-        vehicleMarkers: vehicleMarkers ?? this.vehicleMarkers,
         routeMarkers: routeMarkers ?? this.routeMarkers,
         polylines: polylines ?? this.polylines,
         vehicle: vehicle ?? this.vehicle,
@@ -44,13 +41,12 @@ class RoutesState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [vehicleMarkers, routeMarkers, polylines, vehicle, dateFrom, dateTo, showPanelHeader, areRoutesLoading];
+  List<Object?> get props => [routeMarkers, polylines, vehicle, dateFrom, dateTo, showPanelHeader, areRoutesLoading];
 }
 
 class MapStateInitial extends RoutesState {
   MapStateInitial()
       : super(
-            vehicleMarkers: {},
             routeMarkers: {},
             polylines: {},
             vehicle: VehicleInfoMap(),
