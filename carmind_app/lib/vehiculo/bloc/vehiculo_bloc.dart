@@ -23,18 +23,14 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
     on<GetCurrent>((event, emit) async {
       emit(state.copyWith(loading: true, vehiculo: null));
 
-      lastTimeFetched ??= DateTime.now();
-      if ((vehiculo == null) || (DateTime.now().difference(lastTimeFetched!).inMinutes > 5 || event.forceWaiting)) {
-        vehiculo = await api.getCurrent().catchError((err) {
-          switch (err.runtimeType) {
-            case DioError:
-              final res = (err as DioError).response;
-              break;
-            default:
-          }
-        });
-        lastTimeFetched = DateTime.now();
-      }
+      vehiculo = await api.getCurrent().catchError((err) {
+        switch (err.runtimeType) {
+          case DioError:
+            final res = (err as DioError).response;
+            break;
+          default:
+        }
+      });
       final bool showDejarDeUsarVehiculo = vehiculo != null;
       BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
       emit(state.copyWith(vehiculo: vehiculo, loading: false));

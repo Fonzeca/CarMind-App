@@ -42,8 +42,6 @@ class SyncManager {
 
     api = ApiClient(myDio);
 
-    print(directoryIsar);
-
     final isar = Isar.openSync(
         name: 'isar-carmind',
         schemas: [

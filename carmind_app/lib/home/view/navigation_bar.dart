@@ -1,3 +1,4 @@
+import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/home/view/offline_sign.dart';
@@ -141,8 +142,8 @@ class CarMindNavigationBar extends StatelessWidget {
                       return MapView();
                     case 4:
                       return FormularioPreguntas(
-                        evaluacion: state.evaluacion!,
-                        vehiculo: state.vehiculo!,
+                        evaluacion: state.evaluacion ?? Evaluacion(),
+                        vehiculo: state.vehiculo ?? Vehiculo(),
                       );
                     //case 5:
                     //  return MapView(routeDraw: state.routeDraw);

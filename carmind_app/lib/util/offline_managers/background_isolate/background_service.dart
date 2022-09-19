@@ -42,6 +42,7 @@ class OfflineBackgroundService {
 
 // to ensure this is executed
 // run app from xcode, then from xcode menu, select Simulate Background Fetch
+@pragma('vm:entry-point')
 Future<bool> onIosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
