@@ -9,15 +9,21 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends StatefulWidget {
   MapView({Key? key}) : super(key: key);
 
+  @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> with TickerProviderStateMixin {
   final CameraPosition initialPos = const CameraPosition(
     target: LatLng(-49.09720312121282, -70.03227476582823),
     zoom: 6.5,
   );
 
   final Completer<GoogleMapController> mapController = Completer();
+
   final PanelController panelController = PanelController();
 
   @override
@@ -25,17 +31,32 @@ class MapView extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
+    routesBloc.add(UpdateVehiclesPositions(context, this));
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
     return BlocBuilder<RoutesBloc, RoutesState>(builder: (context, state) {
       _movePanel(state.vehicle, state.showPanelHeader);
 
+      final googleMap = StreamBuilder<List<Marker>>(
+          stream: routesBloc.mapMarkerStream,
+          builder: (context, snapshot) {
+            return GoogleMap(
+              zoomControlsEnabled: false,
+              polylines: Set<Polyline>.of(state.polylines.values),
+              markers: Set<Marker>.of(snapshot.data ?? [])..addAll(state.routeMarkers.values),
+              initialCameraPosition: initialPos,
+              onMapCreated: (GoogleMapController mapController) {
+                this.mapController.complete(mapController);
+                EasyLoading.dismiss();
+                routesBloc.isMapNotLoaded = false;
+              },
+            );
+          });
+
       return SlidingUpPanel(
         controller: panelController,
         onPanelOpened: () => routesBloc.add(OpenPanelEvent()),
-        onPanelClosed: () {
-          routesBloc.add(UnSelectVehicle(context));
-        },
+        onPanelClosed: () => routesBloc.add(UnSelectVehicle(context)),
         maxHeight: 550,
         minHeight: 0,
         color: Colors.transparent,
@@ -50,17 +71,7 @@ class MapView extends StatelessWidget {
             : Container(),
         body: Stack(
           children: [
-            GoogleMap(
-              zoomControlsEnabled: false,
-              polylines: Set<Polyline>.of(state.polylines.values),
-              markers: Set<Marker>.of(List.from(state.vehicleMarkers.values)..addAll(state.routeMarkers.values)),
-              initialCameraPosition: initialPos,
-              onMapCreated: (GoogleMapController mapController) {
-                this.mapController.complete(mapController);
-                EasyLoading.dismiss();
-                routesBloc.isMapNotLoaded = false;
-              },
-            ),
+            googleMap,
             Positioned(
               top: 30,
               left: 25,

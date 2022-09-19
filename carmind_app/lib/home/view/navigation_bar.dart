@@ -102,15 +102,13 @@ class CarMindNavigationBar extends StatelessWidget {
                   selectedFontSize: 14,
                   unselectedFontSize: 14,
                   onTap: (value) {
+                    if (routesBloc.timer != null) routesBloc.timer!.cancel();
                     switch (value) {
                       case 0:
                         formularioBloc.add(const FormularioBuscarDataEvent());
                         break;
                       case 1:
                         vehiculoBloc.add(GetCurrent(context));
-                        break;
-                      case 3:
-                        routesBloc.add(GetVehiclesPositions(context));
                         break;
                     }
                     BlocProvider.of<HomeBloc>(context)

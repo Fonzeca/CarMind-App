@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/home/home.dart';
@@ -7,6 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:math' as math;
 
 part 'routes_event.dart';
 part 'routes_state.dart';
@@ -17,6 +19,13 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   List<VehicleInfoMap> vehicles = [];
   List<RouteInfo> routesInfo = [];
   bool isMapNotLoaded = true;
+  Map<String, dynamic> imeis = {};
+  Timer? timer;
+  final _mapMarkerSC = StreamController<List<Marker>>();
+  StreamSink<List<Marker>> get mapMarkerSink => _mapMarkerSC.sink;
+  Stream<List<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
+  final List<Marker> _markers = <Marker>[];
+  Animation<double>? _animation;
 
   RoutesBloc() : super(MapStateInitial()) {
     api = ApiClient(staticDio!);
@@ -31,17 +40,17 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
       vehicleNames = vehicles.map((v) => v.nombre).toList();
 
-      Map<String, dynamic> imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
-      List<VehicleInfoMap> vehiclesTrackinInfo = await api.getVehiclesTrackinInfo(imeis);
+      imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
 
-      vehicles.forEach(((vehicle) {
-        VehicleInfoMap vehicleTrackinInfo = vehiclesTrackinInfo.firstWhere((v) => v.imei == vehicle.imei);
-        vehicle.latitud = vehicleTrackinInfo.latitud;
-        vehicle.longitud = vehicleTrackinInfo.longitud;
-        vehicle.engine_status = vehicleTrackinInfo.engine_status;
-      }));
+      await _getVehiclePosition(event.context);
+      _drawVehicleMarkers(event.context, null);
+    });
 
-      _drawVehicleMarkers(event.context);
+    on<UpdateVehiclesPositions>((event, emit) async {
+      timer = Timer.periodic(const Duration(seconds: 5), (_) async {
+        await _getVehiclePosition(event.context);
+        _drawVehicleMarkers(event.context, event.ticker);
+      });
     });
 
     on<GetVehicleRoutes>((event, emit) async {
@@ -112,19 +121,70 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     });
   }
 
-  void _drawVehicleMarkers(BuildContext context) {
-    final Map<MarkerId, Marker> markers = {};
+  Future<void> _getVehiclePosition(BuildContext context) async {
+    List<VehicleInfoMap> vehiclesTrackinInfo = await api.getVehiclesTrackinInfo(imeis);
+    vehicles.forEach(((vehicle) {
+      VehicleInfoMap vehicleTrackinInfo = vehiclesTrackinInfo.firstWhere((v) => v.imei == vehicle.imei);
+      vehicle.latitud = vehicleTrackinInfo.latitud;
+      vehicle.longitud = vehicleTrackinInfo.longitud;
+      vehicle.engine_status = vehicleTrackinInfo.engine_status;
+    }));
+  }
+
+  void _drawVehicleMarkers(BuildContext context, TickerProvider? provider) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
-      markers[markerId] = Marker(
-          markerId: markerId,
-          icon: BitmapDescriptor.defaultMarker,
-          position: LatLng(vehicle.latitud!, vehicle.longitud!),
-          onTap: () {
-            add(SelectVehicleEvent(vehicle, context));
+      int markerIndex = _markers.indexWhere((marker) => marker.markerId == markerId);
+      if (markerIndex != -1) {
+        final double bearing = getBearing(
+            LatLng(_markers[markerIndex].position.latitude, _markers[markerIndex].position.longitude), LatLng(vehicle.latitud!, vehicle.longitud!));
+
+        if (bearing.isNaN) continue;
+
+        final animationController = AnimationController(duration: const Duration(seconds: 2), vsync: provider!);
+
+        Tween<double> tween = Tween(begin: 0, end: 1);
+
+        _animation = tween.animate(animationController)
+          ..addListener(() async {
+            final v = _animation!.value;
+
+            double lat = v * vehicle.latitud! + (1 - v) * _markers[markerIndex].position.latitude;
+            double lng = v * vehicle.longitud! + (1 - v) * _markers[markerIndex].position.longitude;
+
+            LatLng newPos = LatLng(lat, lng);
+            _markers[markerIndex] = _markers[markerIndex].copyWith(positionParam: newPos, rotationParam: bearing);
+            mapMarkerSink.add(_markers);
           });
+
+        animationController.forward();
+      } else {
+        Marker newVehicleMarker = Marker(
+            markerId: markerId,
+            icon: BitmapDescriptor.defaultMarker,
+            position: LatLng(vehicle.latitud!, vehicle.longitud!),
+            onTap: () => add(SelectVehicleEvent(vehicle, context)));
+        _markers.add(newVehicleMarker);
+        mapMarkerSink.add(_markers);
+      }
     }
-    add(DrawMarkersEvent(vehicleMarkers: markers));
+  }
+
+  double getBearing(LatLng begin, LatLng end) {
+    double lat = (begin.latitude - end.latitude).abs();
+    double lng = (begin.longitude - end.longitude).abs();
+
+    if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+      return (atan(lng / lat)) * (180 / math.pi);
+    } else if (begin.latitude >= end.latitude && begin.longitude < end.longitude) {
+      return (90 - (atan(lng / lat))) * (180 / math.pi) + 90;
+    } else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude) {
+      return (atan(lng / lat)) * (180 / math.pi) + 180;
+    } else if (begin.latitude < end.latitude && begin.longitude >= end.longitude) {
+      return (90 - (atan(lng / lat))) * (180 / math.pi) + 270;
+    }
+
+    return -1;
   }
 
   void _drawRoute(List<RouteInfo> routesInfo, Completer<GoogleMapController> mapController) {
