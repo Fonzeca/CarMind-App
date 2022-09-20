@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 part 'realizar_evaluacion_event.dart';
 part 'realizar_evaluacion_state.dart';
 
-class RealizarEvaluacionBloc extends HydratedBloc<RealizarEvaluacionEvent, RealizarEvaluacionState> {
+class RealizarEvaluacionBloc extends Bloc<RealizarEvaluacionEvent, RealizarEvaluacionState> {
   Evaluacion? evaluacion;
 
   EvaluacionTerminadaPojo? evaluacionTerminada;

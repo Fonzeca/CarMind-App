@@ -26,8 +26,8 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
-  runZonedGuarded<Future<void>>(() async {
+Future<void> main() async {
+  await runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     await Firebase.initializeApp(
@@ -66,13 +66,13 @@ void main() async {
       sh.setBool("offline", false);
     }
 
-    final storage = await HydratedStorage.build(
-      storageDirectory: await getTemporaryDirectory(),
-    );
     var backgroundService = FlutterBackgroundService();
     GetIt.I.registerSingleton<FlutterBackgroundService>(backgroundService);
     GetIt.I.registerSingleton<OfflineManager>(OfflineManager(sh, backgroundService));
 
+    final storage = await HydratedStorage.build(
+      storageDirectory: await getTemporaryDirectory(),
+    );
     HydratedBlocOverrides.runZoned(
       () => runApp(MyApp(sh)),
       storage: storage,

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
-class HomeBloc extends HydratedBloc<HomeEvent, HomeState> {
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
   List<int> pageHistorial = [0];
 
   HomeBloc() : super(HomeInitial()) {
