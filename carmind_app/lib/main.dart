@@ -88,7 +88,6 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
 
   final GlobalKey _materialAppKey = GlobalKey();
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     GetIt.I.registerSingleton<HomeBloc>(HomeBloc());
