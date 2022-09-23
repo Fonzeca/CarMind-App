@@ -150,55 +150,60 @@ class CarMindNavigationBar extends StatelessWidget {
                 },
               ),
             ),
-            floatingActionButton: BlocBuilder<HomeBloc, HomeState>(
-              buildWhen: (previous, current) =>
-                  (previous.showFab != current.showFab) || (previous.showDejarDeUsarVehiculo != current.showDejarDeUsarVehiculo),
-              builder: (context, state) {
-                return SpeedDial(
-                  openCloseDial: isDialOpen,
-                  icon: Icons.qr_code_2,
-                  activeIcon: Icons.close,
-                  direction: SpeedDialDirection.up,
-                  onPress: () {
-                    isDialOpen.value = true;
-                  },
-                  visible: state.showFab,
-                  overlayColor: const Color(0xA6292929),
-                  backgroundColor: carMindPrimaryButton,
-                  foregroundColor: carMindGrey,
-                  iconTheme: const IconThemeData(size: 32),
-                  childMargin: const EdgeInsets.all(29),
-                  childPadding: const EdgeInsets.all(0),
-                  buttonSize: const Size(49, 49),
-                  childrenButtonSize: const Size(49, 49),
-                  spaceBetweenChildren: 19,
-                  children: [
-                    SpeedDialChild(
-                      child: const Icon(
-                        Icons.qr_code_2,
-                        size: 24,
-                      ),
-                      backgroundColor: carMindGrey,
-                      foregroundColor: carMindPrimaryButton,
-                      labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
-                      onTap: () => onTapDialChild(0),
-                    ),
-                    if (state.showDejarDeUsarVehiculo)
-                      SpeedDialChild(
-                        child: SvgPicture.asset(
-                          "assets/logout_vehicle.svg",
-                          width: 18,
-                          height: 18,
-                        ),
-                        backgroundColor: carMindGrey,
-                        foregroundColor: carMindPrimaryButton,
-                        labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
-                        onTap: () => onTapDialChild(1),
-                      )
-                  ],
-                );
-              },
-            )),
+            floatingActionButton: BlocBuilder<VehiculoBloc, VehiculoState>(
+                buildWhen: (previous, current) => (previous.vehiculo != current.vehiculo),
+                builder: (_, vehicleState) {
+                  return BlocBuilder<HomeBloc, HomeState>(
+                      buildWhen: (previous, current) => (previous.showFab != current.showFab) || (vehicleState.vehiculo != vehicleState.vehiculo),
+                      builder: (context, state) {
+                        return SpeedDial(
+                          key: const Key("QRButton"),
+                          openCloseDial: isDialOpen,
+                          icon: Icons.qr_code_2,
+                          activeIcon: Icons.close,
+                          direction: SpeedDialDirection.up,
+                          onPress: () {
+                            isDialOpen.value = true;
+                          },
+                          visible: state.showFab,
+                          overlayColor: const Color(0xA6292929),
+                          backgroundColor: carMindPrimaryButton,
+                          foregroundColor: carMindGrey,
+                          iconTheme: const IconThemeData(size: 32),
+                          childMargin: const EdgeInsets.all(29),
+                          childPadding: const EdgeInsets.all(0),
+                          buttonSize: const Size(49, 49),
+                          childrenButtonSize: const Size(49, 49),
+                          spaceBetweenChildren: 19,
+                          children: [
+                            SpeedDialChild(
+                              key: const Key("ScanVehicleButton"),
+                              child: const Icon(
+                                Icons.qr_code_2,
+                                size: 24,
+                              ),
+                              backgroundColor: carMindGrey,
+                              foregroundColor: carMindPrimaryButton,
+                              labelWidget: speedDialChild_labelwidget("Escanear código QR", 0),
+                              onTap: () => onTapDialChild(0),
+                            ),
+                            if (vehicleState.vehiculo != null)
+                              SpeedDialChild(
+                                key: const Key("UnUseVehicleButton"),
+                                child: SvgPicture.asset(
+                                  "assets/logout_vehicle.svg",
+                                  width: 18,
+                                  height: 18,
+                                ),
+                                backgroundColor: carMindGrey,
+                                foregroundColor: carMindPrimaryButton,
+                                labelWidget: speedDialChild_labelwidget("Dejar de usar vehículo", 1),
+                                onTap: () => onTapDialChild(1),
+                              )
+                          ],
+                        );
+                      });
+                })),
       ),
     );
   }

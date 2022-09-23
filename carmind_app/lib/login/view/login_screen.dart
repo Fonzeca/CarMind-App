@@ -104,14 +104,15 @@ class _LoginView extends StatelessWidget {
               Form(
                   key: formServiceEmail.keyForm,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: CustomInput(controller: emailCon, label: 'E-mail')),
+                  child: CustomInput(textFormFieldKey: const Key("EmailTextFormField"), controller: emailCon, label: 'E-mail')),
               const SizedBox(
                 height: 16,
               ),
               Form(
                   key: formServicePass.keyForm,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  child: CustomInput(controller: passwordCon, label: 'Contraseña', isPassword: true)),
+                  child:
+                      CustomInput(textFormFieldKey: const Key("PassTextFormField"), controller: passwordCon, label: 'Contraseña', isPassword: true)),
               const SizedBox(height: 52 - 18),
               CustomElevatedButton(
                   text: 'Iniciar sesión',

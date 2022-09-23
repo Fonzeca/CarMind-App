@@ -7,7 +7,6 @@ import 'package:overlay_tooltip/overlay_tooltip.dart';
 import '../../constants.dart';
 import 'package:carmind_app/on_boarding/on_boarding.dart';
 
-
 class MTooltip extends StatelessWidget {
   final TooltipController controller;
   final String title;
@@ -37,6 +36,7 @@ class MTooltip extends StatelessWidget {
             width: double.infinity,
             alignment: Alignment.centerRight,
             child: InkWell(
+              key: Key("closeTutorialButton"),
               onTap: () {
                 controller.dismiss();
                 BlocProvider.of<OnBoardingBloc>(context).add(OnBoardingCancel());

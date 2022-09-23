@@ -31,8 +31,6 @@ class VehiculoBloc extends Bloc<VehiculoEvent, VehiculoState> {
           default:
         }
       });
-      final bool showDejarDeUsarVehiculo = vehiculo != null;
-      BlocProvider.of<HomeBloc>(event.context).add(ShowDejarDeUsarVehiculoEvent(showDejarDeUsarVehiculo));
       emit(state.copyWith(vehiculo: vehiculo, loading: false));
     });
 
