@@ -1,11 +1,9 @@
+import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/bloc/pregunta_KM_bloc.dart';
+import 'package:carmind_app/formularios/formularios.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:carmind_app/api/api.dart';
-import 'package:carmind_app/formularios/formularios.dart';
 
 class PreguntaKM extends StatelessWidget with PreguntaInterface {
   final PreguntaPojo pregunta;
@@ -50,38 +48,34 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
                     width: double.infinity,
                     height: 64,
                     child: StreamBuilder(
-                      stream: textBloc.textStream,
-                      builder: (ctxt, AsyncSnapshot<String> textStream){
-                        return TextField(
-                          minLines: null,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
-                          keyboardType: TextInputType.number,
-                          textAlignVertical: TextAlignVertical.top,
-                          controller: controller,
-                          enabled: preguntaEnabled!,
-                          onChanged: (value) {
-                            preguntaFinalizada = false;
-                            reconstruye.value = !reconstruye.value;
-                            textBloc.updateText(value);
-                          },
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-                          decoration:   InputDecoration(
-                            border:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                            focusedBorder:  const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
-                            contentPadding:  const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                            hintText: "Añadir kilometraje...",
-                            errorText: textStream.hasError ? textStream.error.toString() : null,
-                            errorStyle: TextStyle(color: textBloc.errorColor),
-                            errorBorder: _renderBorder(state),
-                            enabledBorder: _renderBorder(state),
-                            focusedErrorBorder: _renderBorder(state)
-                          ),
-                          
-                        );
-                      }
-                    ),
-                    
+                        stream: textBloc.textStream,
+                        builder: (ctxt, AsyncSnapshot<String> textStream) {
+                          return TextField(
+                            minLines: null,
+                            maxLines: 1,
+                            textAlign: TextAlign.start,
+                            keyboardType: TextInputType.number,
+                            textAlignVertical: TextAlignVertical.top,
+                            controller: controller,
+                            enabled: preguntaEnabled!,
+                            onChanged: (value) {
+                              preguntaFinalizada = false;
+                              reconstruye.value = !reconstruye.value;
+                              textBloc.updateText(value);
+                            },
+                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                            decoration: InputDecoration(
+                                border: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFBDAAFF))),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                hintText: "Añadir kilometraje...",
+                                errorText: textStream.hasError ? textStream.error.toString() : null,
+                                errorStyle: TextStyle(color: textBloc.errorColor),
+                                errorBorder: _renderBorder(state),
+                                enabledBorder: _renderBorder(state),
+                                focusedErrorBorder: _renderBorder(state)),
+                          );
+                        }),
                   ),
                   const SizedBox(height: 20 - 12),
                   ValueListenableBuilder(
@@ -128,16 +122,12 @@ class PreguntaKM extends StatelessWidget with PreguntaInterface {
     return res;
   }
 
-
-  UnderlineInputBorder _renderBorder(RealizarEvaluacionState state) =>
-      UnderlineInputBorder(
-        borderSide: BorderSide(
-            color: textBloc.errorColor,
-            width: 1),
+  UnderlineInputBorder _renderBorder(RealizarEvaluacionState state) => UnderlineInputBorder(
+        borderSide: BorderSide(color: textBloc.errorColor, width: 1),
       );
-
 }
 
 String? _getSavedResponse(EvaluacionTerminadaPojo? evaluacion, int? preguntaId) {
-  if(evaluacion != null && evaluacion.respuestas != null) return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
+  if (evaluacion != null && evaluacion.respuestas != null)
+    return evaluacion.respuestas!.firstWhere((respuesta) => respuesta.pregunta_id == preguntaId, orElse: () => RespuestaPojo()).texto;
 }

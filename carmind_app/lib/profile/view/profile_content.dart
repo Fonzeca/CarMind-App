@@ -1,11 +1,9 @@
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
-import 'package:carmind_app/login/login.dart';
 import 'package:carmind_app/profile/profile.dart';
 import 'package:carmind_app/vehiculo/bloc/vehiculo_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -18,28 +16,15 @@ class ProfileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<OfflineBloc>(context).add(SyncEvent());
     return Material(
-      child: BlocListener<OfflineBloc, OfflineState>(
-        listener: (context, state) {
-          if (state.failAuth) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(offline: true)));
-          }
-          if (state.loading) {
-            EasyLoading.show();
-          } else {
-            EasyLoading.dismiss();
-          }
-        },
-        child: _buildContent(),
-      ),
+      child: _buildContent(),
     );
   }
 
   BlocBuilder<ProfileBloc, ProfileState> _buildContent() {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        if (state.loading) return _buildLoading();
+        if (state.loading) return _buildLoading(context);
         return Stack(
           children: [
             Container(
@@ -140,36 +125,28 @@ class ProfileContent extends StatelessWidget {
                           ),
                           const SizedBox(height: 19),
                           const SizedBox(height: 19),
-                          BlocBuilder<OfflineBloc, OfflineState>(
-                            builder: (context, state) {
-                              return TextButton(
-                                onPressed: state.offline
-                                    ? null
-                                    : () {
-                                        BlocProvider.of<FormularioBloc>(context).logs = null;
-                                        BlocProvider.of<VehiculoBloc>(context).vehiculo = null;
-                                        BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
-                                      },
-                                style: state.offline
-                                    ? TextButton.styleFrom(backgroundColor: Colors.grey)
-                                    : TextButton.styleFrom(
-                                        backgroundColor: carMindTopBar,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                        elevation: 2,
-                                      ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 17),
-                                  child: Text(
-                                    'Cerrar sesion',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              );
+                          TextButton(
+                            onPressed: () {
+                              BlocProvider.of<FormularioBloc>(context).logs = null;
+                              BlocProvider.of<VehiculoBloc>(context).vehiculo = null;
+                              BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
                             },
+                            style: TextButton.styleFrom(
+                              backgroundColor: carMindTopBar,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                              elevation: 2,
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 17),
+                              child: Text(
+                                'Cerrar sesion',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -184,7 +161,7 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  Widget _buildLoading() {
+  Widget _buildLoading(BuildContext context) {
     return Stack(
       children: [
         Container(
@@ -233,7 +210,30 @@ class ProfileContent extends StatelessWidget {
                             minLength: 160,
                           ),
                         ),
-                      )
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          BlocProvider.of<FormularioBloc>(context).logs = null;
+                          BlocProvider.of<VehiculoBloc>(context).vehiculo = null;
+                          BlocProvider.of<HomeBloc>(context).add(LogOutEvent());
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: carMindTopBar,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          elevation: 2,
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 17),
+                          child: Text(
+                            'Cerrar sesion',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

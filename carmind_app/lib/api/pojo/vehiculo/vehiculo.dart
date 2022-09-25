@@ -1,64 +1,87 @@
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'vehiculo.g.dart';
 
 @JsonSerializable()
-@HiveType(typeId: 1)
 class Vehiculo extends Equatable {
-  @HiveField(0)
+  @Id()
   int? id;
 
-  @HiveField(1)
   String? nombre;
 
-  @HiveField(2)
   bool? en_uso;
 
-  @HiveField(3)
-  String? color;
+  int? kilometraje;
 
-  @HiveField(4)
   String? marca;
 
-  @HiveField(5)
   String? modelo;
 
-  @HiveField(6)
   String? linea;
 
-  @HiveField(7)
   String? patente;
 
-  @HiveField(8)
+  String? imei;
+  String? tipo;
   List<EvaluacionesPendientes>? pendientes;
 
   Vehiculo();
+
+  Vehiculo.fromVehiculo(Vehiculo v) {
+    id = v.id;
+    nombre = v.nombre;
+    en_uso = v.en_uso;
+    imei = v.imei;
+    marca = v.marca;
+    modelo = v.modelo;
+    linea = v.linea;
+    patente = v.patente;
+    pendientes = v.pendientes;
+  }
 
   factory Vehiculo.fromJson(Map<String, dynamic> json) => _$VehiculoFromJson(json);
   Map<String, dynamic> toJson() => _$VehiculoToJson(this);
 
   @override
-  List<Object?> get props => [id, nombre, en_uso, color, marca, modelo, linea, patente, pendientes];
+  List<Object?> get props => [id, nombre, en_uso, kilometraje, marca, modelo, linea, patente, imei, pendientes];
+}
+
+@Collection()
+class VehiculoDb extends Vehiculo {
+  VehiculoDb();
+
+  VehiculoDb.fromVehiculo(Vehiculo v) : super.fromVehiculo(v) {
+    pendientesDb.addAll(v.pendientes!);
+  }
+
+  @override
+  get pendientes {
+    return pendientesDb.toList()
+      ..sort(
+        (a, b) => a.id!.compareTo(b.id!),
+      );
+  }
+
+  final pendientesDb = IsarLinks<EvaluacionesPendientes>();
 }
 
 @JsonSerializable()
-@HiveType(typeId: 2)
+@Collection()
 class EvaluacionesPendientes extends Equatable {
-  @HiveField(0)
+  @Id()
+  @JsonKey(ignore: true)
+  int? privateId;
+
   int? id;
 
-  @HiveField(1)
   String? titulo;
 
-  @HiveField(2)
   bool? pendiente;
 
-  @HiveField(3)
   int? vencimiento;
 
-  @HiveField(4)
   int? intervaloDias;
 
   EvaluacionesPendientes();

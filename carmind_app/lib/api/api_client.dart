@@ -6,8 +6,8 @@ import 'package:retrofit/http.dart';
 part 'api_client.g.dart';
 
 //@RestApi(baseUrl: "http://localhost:8090/") // LOCAL
-// @RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
-@RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
+@RestApi(baseUrl: "http://66.97.44.3:2233/") // DEV
+// @RestApi(baseUrl: "https://66.97.43.111:2233/") //PRO
 abstract class ApiClient {
   factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
 
@@ -50,7 +50,6 @@ abstract class ApiClient {
   Future<List<LogEvaluacion>> getLogEvaluacionesByLoggedUser(@Path("limit") String limit);
 
   //----------------------------VEHICULO----------------------------
-
   @GET("/vehiculo/{id}")
   Future<Vehiculo> getVehiculoById(@Path("id") int idVehiculo);
 
@@ -66,4 +65,14 @@ abstract class ApiClient {
   //----------------------------VERSION----------------------------
   @GET("/public/lastVersion_new?platform={platform}")
   Future<VersionView> getLastVersionByPlatform(@Path("platform") String storeType);
+
+  //----------------------------MapRoutes--------------------------
+  @GET("/vehiculo")
+  Future<List<VehicleInfoMap>> getAllVehiculos();
+
+  @POST("/trackin/getVehiclesStateByImeis")
+  Future<List<VehicleInfoMap>> getVehiclesTrackinInfo(@Body() Map<String, dynamic> imeis);
+
+  @POST("/trackin/getRouteByImei")
+  Future<List<RouteInfo>> getRoute(@Body() RoutePojo pojo);
 }

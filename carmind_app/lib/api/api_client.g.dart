@@ -6,11 +6,11 @@ part of 'api_client.dart';
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
 class _ApiClient implements ApiClient {
   _ApiClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'https://66.97.43.111:2233/';
+    baseUrl ??= 'http://66.97.44.3:2233/';
   }
 
   final Dio _dio;
@@ -282,6 +282,62 @@ class _ApiClient implements ApiClient {
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = VersionView.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<List<VehicleInfoMap>> getAllVehiculos() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<VehicleInfoMap>>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/vehiculo',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => VehicleInfoMap.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
+  Future<List<VehicleInfoMap>> getVehiclesTrackinInfo(imeis) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(imeis);
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<VehicleInfoMap>>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/trackin/getVehiclesStateByImeis',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => VehicleInfoMap.fromJson(i as Map<String, dynamic>))
+        .toList();
+    return value;
+  }
+
+  @override
+  Future<List<RouteInfo>> getRoute(pojo) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(pojo.toJson());
+    final _result = await _dio.fetch<List<dynamic>>(
+        _setStreamType<List<RouteInfo>>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/trackin/getRouteByImei',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    var value = _result.data!
+        .map((dynamic i) => RouteInfo.fromJson(i as Map<String, dynamic>))
+        .toList();
     return value;
   }
 

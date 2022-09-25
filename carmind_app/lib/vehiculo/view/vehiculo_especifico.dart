@@ -4,10 +4,7 @@ import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletons/skeletons.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../constants.dart';
 
@@ -163,38 +160,6 @@ class VehiculoEspecifico extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  DateTime? verifyTick(String fechaVencimiento, int intervaloDias) {
-    if (fechaVencimiento.isNotEmpty) {
-      var date = DateFormat(dateFormat).parse(fechaVencimiento);
-      if (date.isAfter(DateTime.now())) {
-        if (date.difference(DateTime.now()).inDays > 0) {
-          return date;
-        }
-      }
-    }
-
-    var box = Hive.box<LogEvaluacionTerminadaPojo>("evaluacionesTerminadas");
-    try {
-      var logOk = box.values.firstWhere(
-        (element) {
-          var date = DateFormat(dateTimeFormat).parse(element.fecha!);
-          var dateSubstract = DateTime.now().subtract(Duration(days: intervaloDias));
-
-          return dateSubstract.isBefore(date);
-        },
-      );
-      return DateFormat(dateTimeFormatNoSeconds).parse(logOk.fecha!).add(Duration(days: intervaloDias));
-    } catch (e) {
-       FirebaseCrashlytics.instance.recordError(
-          'Detalles: ${e.toString()}',
-          StackTrace.current,
-          reason: 'Error al guardar la evaluacion localmente'
-        );
-    }
-
-    return null;
   }
 
   Widget cardCheckListLoading() {
