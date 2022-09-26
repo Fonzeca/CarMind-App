@@ -11,15 +11,17 @@ class OpenPanelEvent extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
   final BuildContext context;
+  final StreamSink<List<Marker>> mapMarkerSink;
 
-  const GetVehiclesPositions(this.context);
+  const GetVehiclesPositions({required this.context, required this.mapMarkerSink});
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
   final BuildContext context;
   final TickerProvider ticker;
+  final StreamSink<List<Marker>> mapMarkerSink;
 
-  const UpdateVehiclesPositions(this.context, this.ticker);
+  const UpdateVehiclesPositions({required this.context, required this.ticker, required this.mapMarkerSink});
 }
 
 class GetVehicleRoutes extends RoutesEvent {
@@ -48,9 +50,8 @@ class DrawRouteEvent extends RoutesEvent {
 
 class SelectVehicleEvent extends RoutesEvent {
   final VehicleInfoMap vehicle;
-  final BuildContext context;
 
-  const SelectVehicleEvent(this.vehicle, this.context);
+  const SelectVehicleEvent(this.vehicle);
 }
 
 class UnSelectVehicle extends RoutesEvent {

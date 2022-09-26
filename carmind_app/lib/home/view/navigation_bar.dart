@@ -40,7 +40,7 @@ class CarMindNavigationBar extends StatelessWidget {
 
     formularioBloc.add(const FormularioBuscarDataEvent());
     vehiculoBloc.add(GetCurrent(context));
-    routesBloc.add(GetVehiclesPositions(context));
+    //routesBloc.add(GetVehiclesPositions(context));
 
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(

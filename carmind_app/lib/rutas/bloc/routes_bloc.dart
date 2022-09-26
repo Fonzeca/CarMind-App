@@ -21,9 +21,6 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   bool isMapNotLoaded = true;
   Map<String, dynamic> imeis = {};
   Timer? timer;
-  final _mapMarkerSC = StreamController<List<Marker>>();
-  StreamSink<List<Marker>> get mapMarkerSink => _mapMarkerSC.sink;
-  Stream<List<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
   final List<Marker> _markers = <Marker>[];
   Animation<double>? _animation;
 
@@ -43,13 +40,13 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
 
       await _getVehiclePosition();
-      _drawVehicleMarkers(event.context, null);
+      _drawVehicleMarkers(null, event.mapMarkerSink);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 5), (_) async {
         await _getVehiclePosition();
-        _drawVehicleMarkers(event.context, event.ticker);
+        _drawVehicleMarkers(event.ticker, event.mapMarkerSink);
       });
     });
 
@@ -79,7 +76,6 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     });
 
     on<SelectVehicleEvent>((event, emit) async {
-      BlocProvider.of<HomeBloc>(event.context).add(HideFab());
       emit(state.copyWith(vehicle: event.vehicle, showPanelHeader: true));
     });
 
@@ -137,7 +133,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     this.vehicles = vehicles;
   }
 
-  void _drawVehicleMarkers(BuildContext context, TickerProvider? provider) {
+  void _drawVehicleMarkers(TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
       int markerIndex = _markers.indexWhere((marker) => marker.markerId == markerId);
@@ -169,7 +165,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             markerId: markerId,
             icon: BitmapDescriptor.defaultMarker,
             position: LatLng(vehicle.latitud!, vehicle.longitud!),
-            onTap: () => add(SelectVehicleEvent(vehicle, context)));
+            onTap: () => add(SelectVehicleEvent(vehicle)));
         _markers.add(newVehicleMarker);
         mapMarkerSink.add(_markers);
       }

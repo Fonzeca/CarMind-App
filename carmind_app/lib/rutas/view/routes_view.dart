@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/constants.dart';
+import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/rutas/rutas.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,19 +27,29 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   final PanelController panelController = PanelController();
 
+  final mapMarkerSC = StreamController<List<Marker>>();
+  StreamSink<List<Marker>> get mapMarkerSink => mapMarkerSC.sink;
+  Stream<List<Marker>> get mapMarkerStream => mapMarkerSC.stream;
+
+  @override
+  void dispose() {
+    mapMarkerSC.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
-    routesBloc.add(UpdateVehiclesPositions(context, this));
+    //routesBloc.add(UpdateVehiclesPositions(context, this));
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
     return BlocBuilder<RoutesBloc, RoutesState>(builder: (context, state) {
       _movePanel(state.vehicle, state.showPanelHeader);
 
       final googleMap = StreamBuilder<List<Marker>>(
-          stream: routesBloc.mapMarkerStream,
+          stream: mapMarkerStream,
           builder: (context, snapshot) {
             return GoogleMap(
               zoomControlsEnabled: false,
@@ -184,7 +195,8 @@ class CustomSearchDelegate extends SearchDelegate {
           onTap: () {
             close(context, null);
             final VehicleInfoMap vehicle = routesBloc.vehicles.firstWhere((v) => v.nombre == result);
-            routesBloc.add(SelectVehicleEvent(vehicle, context));
+            BlocProvider.of<HomeBloc>(context).add(HideFab());
+            routesBloc.add(SelectVehicleEvent(vehicle));
             routesBloc.add(MoveCameraToPointEvent(mapController: mapController, latitude: vehicle.latitud!, longitude: vehicle.longitud!));
           },
         );
@@ -211,7 +223,8 @@ class CustomSearchDelegate extends SearchDelegate {
           onTap: () {
             close(context, null);
             final VehicleInfoMap vehicle = routesBloc.vehicles.firstWhere((v) => v.nombre == result);
-            routesBloc.add(SelectVehicleEvent(vehicle, context));
+            BlocProvider.of<HomeBloc>(context).add(HideFab());
+            routesBloc.add(SelectVehicleEvent(vehicle));
             routesBloc.add(MoveCameraToPointEvent(mapController: mapController, latitude: vehicle.latitud!, longitude: vehicle.longitud!));
           },
         );
