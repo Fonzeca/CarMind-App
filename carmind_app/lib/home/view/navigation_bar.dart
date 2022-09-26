@@ -85,8 +85,7 @@ class CarMindNavigationBar extends StatelessWidget {
                         activeIcon: Padding(
                             padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
                         label: "Perfil"),
-                    // if (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!)
-                    if (false)
+                    if (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!)
                       BottomNavigationBarItem(
                           icon: Padding(
                               padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/routes_nav_icon.svg", color: Colors.white)),
