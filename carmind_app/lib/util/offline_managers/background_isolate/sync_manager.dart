@@ -22,6 +22,7 @@ class SyncManager {
 
   // ignore: non_constant_identifier_names
   static String SYNC_MEESSAGE_TOKEN_RENEWED = "login-to-sync";
+  static String MANUALLY_SYNC = "manually-sync";
 
   SyncManager(
       {required this.offlineManager, required this.sharedPreferences, required this.service, required this.mockDb, required String directoryIsar}) {
@@ -63,6 +64,10 @@ class SyncManager {
     service.on(SYNC_MEESSAGE_TOKEN_RENEWED).listen((event) {
       syncDataToCloud();
     });
+
+    service.on(MANUALLY_SYNC).listen((event) {
+      doSync();
+    });
   }
 
   //Metodo llamado por el background service
@@ -83,13 +88,16 @@ class SyncManager {
         //Intentamos conectar al serivodr
         var response = await api.valdiateToken();
 
+        print("Responde el servidor");
         if (response.response.statusCode == 200) {
+          print("Sincronizando datos...");
           await printServiceNotification("Sincronizando datos...");
           //Si devuelve ok
           //tratar de sincronizar
           await syncDataToCloud();
         }
       } catch (e) {
+        print("Dio error");
         //Si da error, hay que ver si es por token vencido o por falta de internet
         if (e is DioError) {
           if (e.error is SocketException) {
@@ -104,12 +112,13 @@ class SyncManager {
       try {
         //Obtenemos los ultimos datos de la nube
         OfflineData data = await api.obtenerDatosOffline();
-
+        print("Datos obtenidos");
         //Mandamos el mensaje al thread del Mock
         mockDb.saveData(data);
 
         print("Data saved");
       } catch (e) {
+        print("Dio error");
         //Si da error al obtener datos Offline, lo pasamos al modo offline
         if (e is DioError && e.error is SocketException) {
           await printServiceNotification("MODO OFFLINE ACTIVADO");
