@@ -13,7 +13,7 @@
             "name": "carmind_app Celular cable",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug",
+            "flutterMode": "release",
             "deviceId": "sm"
         },
         {

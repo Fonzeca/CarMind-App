@@ -26,6 +26,27 @@ class _OfflineSignState extends State<OfflineSign> {
       _backgroundColor = Colors.orange;
     }
 
+    manager.controller.stream.listen((event) {
+      if (event == OfflineManager.offlineOnMessage) {
+        setState(() {
+          _height = 25;
+          _backgroundColor = Colors.orange;
+        });
+      } else {
+        setState(() {
+          _backgroundColor = Colors.green;
+        });
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () {
+            setState(() {
+              _height = 0;
+            });
+          },
+        );
+      }
+    });
+
     widget.service.on(OfflineManager.offlineOnMessage).listen((event) {
       setState(() {
         _height = 25;

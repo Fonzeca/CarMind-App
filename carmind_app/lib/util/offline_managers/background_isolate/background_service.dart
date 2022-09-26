@@ -37,6 +37,10 @@ class OfflineBackgroundService {
     );
 
     service.startService();
+    Timer.periodic(const Duration(minutes: 5), (timer) async {
+      print("Tratando de iniciar denuevo...");
+      service.startService();
+    });
   }
 }
 
