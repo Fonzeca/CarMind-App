@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:carmind_app/api/api.dart';
@@ -90,10 +91,16 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
 
   Future<void> validateInternet() async {
     api.valdiateToken().then((value) {
-      if (value.response.statusCode != 500) {
+      offlineManager.desactivateOffline();
+    }).onError((error, stackTrace) {
+      if (error is DioError) {
+        if (error.error == null || error.error is! SocketException) {
+          offlineManager.desactivateOffline();
+        }
+      } else {
         offlineManager.desactivateOffline();
       }
-    }).onError((error, stackTrace) {});
+    });
   }
 
   Future<ResponseBody> getEvaluacionById(RequestOptions options) async {

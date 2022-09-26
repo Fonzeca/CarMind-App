@@ -41,10 +41,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         var service = GetIt.I.get<FlutterBackgroundService>();
 
-        if (await OfflineManager(sh, service).isOffline()) {
-          //Llamo al syncManager para sincronizar
-          service.invoke(SyncManager.SYNC_MEESSAGE_TOKEN_RENEWED);
+        service.invoke(SyncManager.MANUALLY_SYNC);
 
+        if (await OfflineManager(sh, service).isOffline()) {
           await OfflineManager(sh, service).desactivateOffline();
         }
 
