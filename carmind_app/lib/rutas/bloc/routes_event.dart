@@ -9,19 +9,21 @@ abstract class RoutesEvent extends Equatable {
 
 class OpenPanelEvent extends RoutesEvent {}
 
-class GetVehiclesPositions extends RoutesEvent {
-  final BuildContext context;
-  final StreamSink<List<Marker>> mapMarkerSink;
+class GetAllVehicles extends RoutesEvent {}
 
-  const GetVehiclesPositions({required this.context, required this.mapMarkerSink});
+class GetVehiclesPositions extends RoutesEvent {
+  final StreamSink<List<Marker>> mapMarkerSink;
+  final List<Marker> markers;
+
+  const GetVehiclesPositions({required this.markers, required this.mapMarkerSink});
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
-  final BuildContext context;
+  final List<Marker> markers;
   final TickerProvider ticker;
   final StreamSink<List<Marker>> mapMarkerSink;
 
-  const UpdateVehiclesPositions({required this.context, required this.ticker, required this.mapMarkerSink});
+  const UpdateVehiclesPositions({required this.markers, required this.ticker, required this.mapMarkerSink});
 }
 
 class GetVehicleRoutes extends RoutesEvent {

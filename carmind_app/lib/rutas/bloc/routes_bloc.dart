@@ -15,13 +15,14 @@ part 'routes_state.dart';
 
 class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   late ApiClient api;
-  List<dynamic> vehicleNames = [];
+
   List<VehicleInfoMap> vehicles = [];
+  List<dynamic> vehicleNames = [];
+  Map<String, dynamic> _imeis = {};
+
   List<RouteInfo> routesInfo = [];
   bool isMapNotLoaded = true;
-  Map<String, dynamic> imeis = {};
   Timer? timer;
-  final List<Marker> _markers = <Marker>[];
   Animation<double>? _animation;
 
   RoutesBloc() : super(MapStateInitial()) {
@@ -31,22 +32,24 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       emit(state.copyWith(showPanelHeader: false));
     });
 
-    on<GetVehiclesPositions>((event, emit) async {
+    on<GetAllVehicles>((event, emit) async {
       vehicles = await api.getAllVehiculos();
       vehicles.removeWhere((v) => v.imei == null);
 
       vehicleNames = vehicles.map((v) => v.nombre).toList();
 
-      imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
+      _imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
+    });
 
+    on<GetVehiclesPositions>((event, emit) async {
       await _getVehiclePosition();
-      _drawVehicleMarkers(null, event.mapMarkerSink);
+      _drawVehicleMarkers(event.markers, null, event.mapMarkerSink);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
-      timer = Timer.periodic(const Duration(seconds: 5), (_) async {
+      timer = Timer.periodic(const Duration(seconds: 3), (_) async {
         await _getVehiclePosition();
-        _drawVehicleMarkers(event.ticker, event.mapMarkerSink);
+        _drawVehicleMarkers(event.markers, event.ticker, event.mapMarkerSink);
       });
     });
 
@@ -115,10 +118,12 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
       emit(state.copyWith(showPanelHeader: true));
     });
+
+    add(GetAllVehicles());
   }
 
   Future<void> _getVehiclePosition() async {
-    List<VehicleInfoMap> vehiclesTrackinInfo = await api.getVehiclesTrackinInfo(imeis);
+    List<VehicleInfoMap> vehiclesTrackinInfo = await api.getVehiclesTrackinInfo(_imeis);
     List<VehicleInfoMap> vehicles = [];
     for (var vehicle in this.vehicles) {
       final int vehicleIndex = vehiclesTrackinInfo.indexWhere((v) => v.imei == vehicle.imei);
@@ -130,16 +135,17 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         vehicles.add(vehicle);
       }
     }
+    vehicleNames = vehicles.map((v) => v.nombre).toList();
     this.vehicles = vehicles;
   }
 
-  void _drawVehicleMarkers(TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
+  void _drawVehicleMarkers(List<Marker> markers, TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
-      int markerIndex = _markers.indexWhere((marker) => marker.markerId == markerId);
+      int markerIndex = markers.indexWhere((marker) => marker.markerId == markerId);
       if (markerIndex != -1) {
         final double bearing = getBearing(
-            LatLng(_markers[markerIndex].position.latitude, _markers[markerIndex].position.longitude), LatLng(vehicle.latitud!, vehicle.longitud!));
+            LatLng(markers[markerIndex].position.latitude, markers[markerIndex].position.longitude), LatLng(vehicle.latitud!, vehicle.longitud!));
 
         if (bearing.isNaN) continue;
 
@@ -151,12 +157,12 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
           ..addListener(() async {
             final v = _animation!.value;
 
-            double lat = v * vehicle.latitud! + (1 - v) * _markers[markerIndex].position.latitude;
-            double lng = v * vehicle.longitud! + (1 - v) * _markers[markerIndex].position.longitude;
+            double lat = v * vehicle.latitud! + (1 - v) * markers[markerIndex].position.latitude;
+            double lng = v * vehicle.longitud! + (1 - v) * markers[markerIndex].position.longitude;
 
             LatLng newPos = LatLng(lat, lng);
-            _markers[markerIndex] = _markers[markerIndex].copyWith(positionParam: newPos, rotationParam: bearing);
-            mapMarkerSink.add(_markers);
+            markers[markerIndex] = markers[markerIndex].copyWith(positionParam: newPos, rotationParam: bearing);
+            mapMarkerSink.add(markers);
           });
 
         animationController.forward();
@@ -166,8 +172,8 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             icon: BitmapDescriptor.defaultMarker,
             position: LatLng(vehicle.latitud!, vehicle.longitud!),
             onTap: () => add(SelectVehicleEvent(vehicle)));
-        _markers.add(newVehicleMarker);
-        mapMarkerSink.add(_markers);
+        markers.add(newVehicleMarker);
+        mapMarkerSink.add(markers);
       }
     }
   }

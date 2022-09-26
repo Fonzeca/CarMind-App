@@ -27,13 +27,14 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   final PanelController panelController = PanelController();
 
-  final mapMarkerSC = StreamController<List<Marker>>();
-  StreamSink<List<Marker>> get mapMarkerSink => mapMarkerSC.sink;
-  Stream<List<Marker>> get mapMarkerStream => mapMarkerSC.stream;
+  final StreamController<List<Marker>> _mapMarkerSC = StreamController<List<Marker>>();
+  StreamSink<List<Marker>> get mapMarkerSink => _mapMarkerSC.sink;
+  Stream<List<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
+  final List<Marker> _markers = <Marker>[];
 
   @override
   void dispose() {
-    mapMarkerSC.close();
+    _mapMarkerSC.close();
     super.dispose();
   }
 
@@ -42,7 +43,9 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
-    //routesBloc.add(UpdateVehiclesPositions(context, this));
+    routesBloc.add(GetVehiclesPositions(markers: _markers, mapMarkerSink: mapMarkerSink));
+    routesBloc.add(UpdateVehiclesPositions(markers: _markers, mapMarkerSink: mapMarkerSink, ticker: this));
+
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
     return BlocBuilder<RoutesBloc, RoutesState>(builder: (context, state) {
