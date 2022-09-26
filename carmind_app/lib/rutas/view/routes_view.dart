@@ -70,7 +70,10 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
       return SlidingUpPanel(
         controller: panelController,
         onPanelOpened: () => routesBloc.add(OpenPanelEvent()),
-        onPanelClosed: () => routesBloc.add(UnSelectVehicle(context)),
+        onPanelClosed: () {
+          BlocProvider.of<HomeBloc>(context).add(ShowFab());
+          routesBloc.add(const UnSelectVehicle());
+        },
         maxHeight: 550,
         minHeight: 0,
         color: Colors.transparent,
@@ -113,7 +116,10 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
     if (showPanelHeader) {
       double scrollPosition = 0.385;
-      if (vehicle.usuario_en_uso == null) scrollPosition = 0.35;
+      if (vehicle.usuario_en_uso == null) {
+        BlocProvider.of<HomeBloc>(context).add(HideFab());
+        scrollPosition = 0.35;
+      }
       if (vehicle.imei != null) panelController.animatePanelToPosition(scrollPosition);
     }
   }

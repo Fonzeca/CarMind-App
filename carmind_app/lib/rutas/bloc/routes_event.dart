@@ -57,9 +57,7 @@ class SelectVehicleEvent extends RoutesEvent {
 }
 
 class UnSelectVehicle extends RoutesEvent {
-  final BuildContext context;
-
-  const UnSelectVehicle(this.context);
+  const UnSelectVehicle();
 }
 
 class SelectDateEvent extends RoutesEvent {

@@ -83,7 +83,6 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     });
 
     on<UnSelectVehicle>((event, emit) async {
-      BlocProvider.of<HomeBloc>(event.context).add(ShowFab());
       routesInfo = [];
       emit(state.copyWith(vehicle: VehicleInfoMap(), dateFrom: '', dateTo: '', polylines: {}, routeMarkers: {}, showPanelHeader: false));
     });
