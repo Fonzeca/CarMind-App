@@ -42,13 +42,13 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
       imeis = {"imeis": vehicles.map((v) => v.imei).toList()};
 
-      await _getVehiclePosition(event.context);
+      await _getVehiclePosition();
       _drawVehicleMarkers(event.context, null);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 5), (_) async {
-        await _getVehiclePosition(event.context);
+        await _getVehiclePosition();
         _drawVehicleMarkers(event.context, event.ticker);
       });
     });
@@ -121,14 +121,20 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     });
   }
 
-  Future<void> _getVehiclePosition(BuildContext context) async {
+  Future<void> _getVehiclePosition() async {
     List<VehicleInfoMap> vehiclesTrackinInfo = await api.getVehiclesTrackinInfo(imeis);
-    vehicles.forEach(((vehicle) {
-      VehicleInfoMap vehicleTrackinInfo = vehiclesTrackinInfo.firstWhere((v) => v.imei == vehicle.imei);
-      vehicle.latitud = vehicleTrackinInfo.latitud;
-      vehicle.longitud = vehicleTrackinInfo.longitud;
-      vehicle.engine_status = vehicleTrackinInfo.engine_status;
-    }));
+    List<VehicleInfoMap> vehicles = [];
+    for (var vehicle in this.vehicles) {
+      final int vehicleIndex = vehiclesTrackinInfo.indexWhere((v) => v.imei == vehicle.imei);
+      if (vehicleIndex != -1) {
+        VehicleInfoMap vehicleTrackinInfo = vehiclesTrackinInfo[vehicleIndex];
+        vehicle.latitud = vehicleTrackinInfo.latitud;
+        vehicle.longitud = vehicleTrackinInfo.longitud;
+        vehicle.engine_status = vehicleTrackinInfo.engine_status;
+        vehicles.add(vehicle);
+      }
+    }
+    this.vehicles = vehicles;
   }
 
   void _drawVehicleMarkers(BuildContext context, TickerProvider? provider) {
