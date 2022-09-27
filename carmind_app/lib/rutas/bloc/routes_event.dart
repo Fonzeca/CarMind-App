@@ -7,23 +7,25 @@ abstract class RoutesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OpenPanelEvent extends RoutesEvent {}
+class OpenPanelEvent extends RoutesEvent {
+  final bool showPanelHeader;
+
+  const OpenPanelEvent({required this.showPanelHeader});
+}
 
 class GetAllVehicles extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
   final StreamSink<List<Marker>> mapMarkerSink;
-  final List<Marker> markers;
 
-  const GetVehiclesPositions({required this.markers, required this.mapMarkerSink});
+  const GetVehiclesPositions({required this.mapMarkerSink});
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
-  final List<Marker> markers;
   final TickerProvider ticker;
   final StreamSink<List<Marker>> mapMarkerSink;
 
-  const UpdateVehiclesPositions({required this.markers, required this.ticker, required this.mapMarkerSink});
+  const UpdateVehiclesPositions({required this.ticker, required this.mapMarkerSink});
 }
 
 class GetVehicleRoutes extends RoutesEvent {
@@ -31,23 +33,16 @@ class GetVehicleRoutes extends RoutesEvent {
   final String from;
   final String to;
   final Completer<GoogleMapController> mapController;
+  final StreamSink<List<Marker>> mapMarkerSink;
+  final StreamSink<List<Polyline>> mapPolylineSink;
 
-  const GetVehicleRoutes({required this.imei, required this.from, required this.to, required this.mapController});
-}
-
-class DrawMarkersEvent extends RoutesEvent {
-  final Map<MarkerId, Marker>? vehicleMarkers;
-  final Map<MarkerId, Marker>? routeMarkers;
-
-  const DrawMarkersEvent({this.vehicleMarkers, this.routeMarkers});
-}
-
-class DrawRouteEvent extends RoutesEvent {
-  final Completer<GoogleMapController> mapController;
-  final Map<PolylineId, Polyline> polylines;
-  final LatLng? firstMarkerPosition;
-
-  const DrawRouteEvent({required this.polylines, required this.mapController, required this.firstMarkerPosition});
+  const GetVehicleRoutes(
+      {required this.imei,
+      required this.from,
+      required this.to,
+      required this.mapController,
+      required this.mapMarkerSink,
+      required this.mapPolylineSink});
 }
 
 class SelectVehicleEvent extends RoutesEvent {

@@ -13,14 +13,22 @@ import 'package:skeletons/skeletons.dart';
 
 class VehicleCardMap extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
+  final StreamSink<List<Marker>> mapMarkerSink;
+  final StreamSink<List<Polyline>> mapPolylineSink;
   final VehicleInfoMap vehicleInfo;
-  final List<RouteInfo> routes;
   final String? dateFrom;
   final String? dateTo;
   final bool isLoading;
 
   const VehicleCardMap(
-      {Key? key, required this.vehicleInfo, required this.routes, this.dateFrom, this.dateTo, required this.isLoading, required this.mapController})
+      {Key? key,
+      required this.vehicleInfo,
+      this.dateFrom,
+      this.dateTo,
+      required this.isLoading,
+      required this.mapController,
+      required this.mapMarkerSink,
+      required this.mapPolylineSink})
       : super(key: key);
 
   @override
@@ -32,11 +40,12 @@ class VehicleCardMap extends StatelessWidget {
         _Header(type: vehicleInfo.tipo!, name: vehicleInfo.nombre!),
         _Body(
             mapController: mapController,
+            mapMarkerSink: mapMarkerSink,
+            mapPolylineSink: mapPolylineSink,
             imei: vehicleInfo.imei!,
             patente: vehicleInfo.patente,
-            enUso: vehicleInfo.en_uso!,
+            engineStatus: vehicleInfo.engine_status!,
             choferActual: vehicleInfo.usuario_en_uso,
-            routes: routes,
             dateFrom: dateFrom,
             dateTo: dateTo,
             isLoading: isLoading),
@@ -101,10 +110,11 @@ class _Header extends StatelessWidget {
 
 class _Body extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
+  final StreamSink<List<Marker>> mapMarkerSink;
+  final StreamSink<List<Polyline>> mapPolylineSink;
   final String? patente;
   final String? choferActual;
-  final bool enUso;
-  final List<RouteInfo> routes;
+  final bool engineStatus;
   final String imei;
   final String? dateFrom;
   final String? dateTo;
@@ -113,22 +123,27 @@ class _Body extends StatelessWidget {
   _Body({
     Key? key,
     required this.mapController,
+    required this.mapMarkerSink,
+    required this.mapPolylineSink,
     required this.patente,
     required this.choferActual,
-    required this.enUso,
-    required this.routes,
+    required this.engineStatus,
     required this.imei,
     this.dateFrom,
     this.dateTo,
     required this.isLoading,
   }) : super(key: key);
 
+  final TextStyle textStyle = const TextStyle(fontSize: 18);
+  final String buscarEntreFechas = "Buscar entre fechas...";
+
   @override
   Widget build(BuildContext context) {
     final DateTime firstDate = DateTime(2000, 1, 1, 0, 0);
     final DateTime dateTimeNow = DateTime.now();
-    const textStyle = TextStyle(fontSize: 18);
-    const String buscarEntreFechas = "Buscar entre fechas...";
+
+    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
+
     return Container(
       padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
       color: Colors.white,
@@ -141,9 +156,9 @@ class _Body extends StatelessWidget {
               Text(patente != null ? "Patente: $patente" : "Patente: N/A", style: textStyle),
               const SizedBox(height: 4),
               Row(children: [
-                const Text("Motor:", style: textStyle),
+                Text("Motor:", style: textStyle),
                 const SizedBox(width: 4),
-                Icon(Icons.circle, color: enUso ? const Color(0xFFDC0404) : const Color(0xFF36A900), size: 14)
+                Icon(Icons.circle, color: engineStatus ? const Color(0xFF36A900) : const Color(0xFFDC0404), size: 14)
               ]),
               const SizedBox(height: 4),
               if (choferActual != null) Text("Chofer: $choferActual", style: textStyle),
@@ -157,8 +172,27 @@ class _Body extends StatelessWidget {
                 color: Colors.black26,
               ),
               const Text("Rutas", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
+              Row(children: [
+                const SizedBox(width: 10),
+                SvgPicture.asset(
+                  "assets/routes_gps.svg",
+                  color: Colors.black,
+                  height: 25,
+                  width: 25,
+                ),
+                Text('${routesBloc.totalKms} km'),
+                const Spacer(),
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 30,
+                ),
+                Text('${routesBloc.totalStops} paradas'),
+                const SizedBox(width: 10)
+              ]),
               CustomButton(
                   onPressed: () async {
+                    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
+
                     List<DateTime>? dateTimeFromTo = await showOmniDateTimeRangePicker(
                         type: OmniDateTimePickerType.dateAndTime,
                         context: context,
@@ -179,11 +213,16 @@ class _Body extends StatelessWidget {
 
                     if (dateTimeFromTo == null) return;
 
-                    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
                     final String dateFromPicked = '${DateFormat('yyyy-MM-dd HH:mm').format(dateTimeFromTo[0])}:00';
                     final String dateToPicked = '${DateFormat('yyyy-MM-dd HH:mm').format(dateTimeFromTo[1])}:00';
 
-                    routesBloc.add(GetVehicleRoutes(imei: imei, from: dateFromPicked, to: dateToPicked, mapController: mapController));
+                    routesBloc.add(GetVehicleRoutes(
+                        imei: imei,
+                        from: dateFromPicked,
+                        to: dateToPicked,
+                        mapController: mapController,
+                        mapMarkerSink: mapMarkerSink,
+                        mapPolylineSink: mapPolylineSink));
                   },
                   height: 30,
                   foreGroundColor: (dateFrom == null && dateTo == null) ? const Color(0xff989898) : const Color(0xff303030),
@@ -194,9 +233,9 @@ class _Body extends StatelessWidget {
                     const Icon(Icons.search_rounded)
                   ])),
               const SizedBox(height: 10),
-              (!isLoading && routes.isEmpty && (dateFrom != null && dateTo != null))
+              (!isLoading && routesBloc.routesInfo.isEmpty && (dateFrom != null && dateTo != null))
                   ? const _NoResultsFound()
-                  : Expanded(child: isLoading ? const _RoutesListLoading() : _RoutesList(mapController: mapController, routes: routes))
+                  : Expanded(child: isLoading ? const _RoutesListLoading() : _RoutesList(mapController: mapController, routes: routesBloc.routesInfo))
             ],
           ))
         ],

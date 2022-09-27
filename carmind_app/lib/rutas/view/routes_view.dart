@@ -30,7 +30,10 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
   final StreamController<List<Marker>> _mapMarkerSC = StreamController<List<Marker>>();
   StreamSink<List<Marker>> get mapMarkerSink => _mapMarkerSC.sink;
   Stream<List<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
-  final List<Marker> _markers = <Marker>[];
+
+  final StreamController<List<Polyline>> _mapPolylineSC = StreamController<List<Polyline>>();
+  StreamSink<List<Polyline>> get mapPolylineSink => _mapPolylineSC.sink;
+  Stream<List<Polyline>> get mapPolylineStream => _mapPolylineSC.stream;
 
   @override
   void dispose() {
@@ -43,8 +46,8 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
-    routesBloc.add(GetVehiclesPositions(markers: _markers, mapMarkerSink: mapMarkerSink));
-    routesBloc.add(UpdateVehiclesPositions(markers: _markers, mapMarkerSink: mapMarkerSink, ticker: this));
+    routesBloc.add(GetVehiclesPositions(mapMarkerSink: mapMarkerSink));
+    routesBloc.add(UpdateVehiclesPositions(mapMarkerSink: mapMarkerSink, ticker: this));
 
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
@@ -53,26 +56,32 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
       final googleMap = StreamBuilder<List<Marker>>(
           stream: mapMarkerStream,
-          builder: (context, snapshot) {
-            return GoogleMap(
-              zoomControlsEnabled: false,
-              polylines: Set<Polyline>.of(state.polylines.values),
-              markers: Set<Marker>.of(snapshot.data ?? [])..addAll(state.routeMarkers.values),
-              initialCameraPosition: initialPos,
-              onMapCreated: (GoogleMapController mapController) {
-                this.mapController.complete(mapController);
-                EasyLoading.dismiss();
-                routesBloc.isMapNotLoaded = false;
-              },
-            );
+          builder: (context, markers) {
+            return StreamBuilder<List<Polyline>>(
+                stream: mapPolylineStream,
+                builder: (context, polylines) {
+                  return GoogleMap(
+                    zoomControlsEnabled: false,
+                    polylines: Set<Polyline>.of(polylines.data ?? []),
+                    markers: Set<Marker>.of(markers.data ?? []),
+                    initialCameraPosition: initialPos,
+                    onMapCreated: (GoogleMapController mapController) {
+                      this.mapController.complete(mapController);
+                      EasyLoading.dismiss();
+                      routesBloc.isMapNotLoaded = false;
+                    },
+                  );
+                });
           });
 
       return SlidingUpPanel(
         controller: panelController,
-        onPanelOpened: () => routesBloc.add(OpenPanelEvent()),
+        onPanelOpened: () => routesBloc.add(const OpenPanelEvent(showPanelHeader: false)),
         onPanelClosed: () {
           BlocProvider.of<HomeBloc>(context).add(ShowFab());
           routesBloc.add(const UnSelectVehicle());
+          //mapMarkerSink.add();
+          //mapPolylineSink.add();
         },
         maxHeight: 550,
         minHeight: 0,
@@ -80,8 +89,9 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         panel: (state.vehicle.imei != null)
             ? VehicleCardMap(
                 mapController: mapController,
+                mapMarkerSink: mapMarkerSink,
+                mapPolylineSink: mapPolylineSink,
                 vehicleInfo: state.vehicle,
-                routes: routesBloc.routesInfo,
                 dateFrom: state.dateFrom,
                 dateTo: state.dateTo,
                 isLoading: state.areRoutesLoading)
