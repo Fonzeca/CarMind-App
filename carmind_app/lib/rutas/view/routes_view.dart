@@ -80,8 +80,8 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         onPanelClosed: () {
           BlocProvider.of<HomeBloc>(context).add(ShowFab());
           routesBloc.add(const UnSelectVehicle());
-          //mapMarkerSink.add();
-          //mapPolylineSink.add();
+          mapMarkerSink.add(routesBloc.vehiclesMarkers);
+          mapPolylineSink.add([]);
         },
         maxHeight: 550,
         minHeight: 0,
