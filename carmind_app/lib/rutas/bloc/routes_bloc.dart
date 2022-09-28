@@ -271,14 +271,14 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       double previousLat = 0;
       double previousLng = 0;
       for (int i = 0; i < points.length; i++) {
-        if (previousLat == points[i].latitud && previousLng == points[i].longitud) continue;
+        if (previousLat == points[i].latitud && previousLng == points[i].longitud && i + 1 != points.length) continue;
 
         speed = points[i].speed!;
         color = _speedToColor(speed);
 
         polyLinePoints.add(LatLng(points[i].latitud!, points[i].longitud!));
 
-        if (polyLinePoints.length >= 2 || color != previousColor || i + 1 == points.length) {
+        if (color != previousColor || i + 1 == points.length) {
           late Polyline singlePolyline;
           if (i + 1 == points.length) {
             singlePolyline = Polyline(polylineId: PolylineId('$id'), points: polyLinePoints, color: color, width: 3);

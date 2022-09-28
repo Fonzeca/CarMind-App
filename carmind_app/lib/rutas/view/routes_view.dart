@@ -99,25 +99,29 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
                 dateTo: state.dateTo,
                 isLoading: state.areRoutesLoading)
             : Container(),
-        body: Stack(
+        body: Column(
           children: [
-            googleMap,
-            Positioned(
-              top: 30,
-              left: 25,
-              height: 55,
-              width: width / 1.15,
-              child: TextButton(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                      overlayColor: MaterialStateProperty.all(Colors.transparent)),
-                  onPressed: () {
-                    showSearch(
-                        context: context,
-                        delegate: CustomSearchDelegate(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc, mapController: mapController));
-                  },
-                  child: _SearchBar(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc)),
-            )
+            Container(
+                padding: const EdgeInsets.only(top: 20),
+                color: carMindTopBar,
+                height: 100,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                      style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.95, 50)),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                          overlayColor: MaterialStateProperty.all(Colors.transparent)),
+                      onPressed: () {
+                        showSearch(
+                            context: context,
+                            delegate:
+                                CustomSearchDelegate(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc, mapController: mapController));
+                      },
+                      child: _SearchBar(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc)),
+                )),
+            SizedBox(height: MediaQuery.of(context).size.height - 100, child: googleMap),
           ],
         ),
       );
@@ -125,13 +129,13 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
   }
 
   void _movePanel(VehicleInfoMap vehicle, bool showPanelHeader) {
-    if (!showPanelHeader && (!panelController.isAttached || panelController.panelPosition > 0.385)) return;
+    if (!showPanelHeader && (!panelController.isAttached || panelController.panelPosition > 0.06)) return;
 
     if (showPanelHeader) {
-      double scrollPosition = 0.385;
+      double scrollPosition = 0.06;
       if (vehicle.usuario_en_uso == null) {
         BlocProvider.of<HomeBloc>(context).add(HideFab());
-        scrollPosition = 0.35;
+        scrollPosition = 0.06;
       }
       if (vehicle.imei != null && panelController.isAttached) panelController.animatePanelToPosition(scrollPosition);
     }

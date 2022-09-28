@@ -69,7 +69,7 @@ class _Header extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       height: 120,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 18),
       decoration: _buildBoxDecoration(),
       child: Column(
         children: [
@@ -77,7 +77,7 @@ class _Header extends StatelessWidget {
             width: size.width / 1.8,
             decoration: BoxDecoration(color: const Color(0xffBBB8B7), borderRadius: BorderRadius.circular(10)),
             height: 5,
-            margin: const EdgeInsets.only(bottom: 18),
+            margin: const EdgeInsets.only(bottom: 15),
           ),
           Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             if (type == 'Auto')
