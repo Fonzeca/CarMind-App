@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/formularios/formularios.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,8 +75,10 @@ class PreguntaF extends StatelessWidget with PreguntaInterface {
                             }
                           } on PlatformException catch (e) {
                             EasyLoading.showError(e.message ?? "Error en camara");
-                            FirebaseCrashlytics.instance
-                                .recordError('Detalles: ${e.details} Mensaje: ${e.message}', StackTrace.current, reason: 'Error en la cámara');
+                            if (!kDebugMode) {
+                              FirebaseCrashlytics.instance
+                                  .recordError('Detalles: ${e.details} Mensaje: ${e.message}', StackTrace.current, reason: 'Error en la cámara');
+                            }
                           }
                         }
                       : null,
