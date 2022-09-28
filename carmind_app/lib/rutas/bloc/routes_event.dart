@@ -16,16 +16,18 @@ class OpenPanelEvent extends RoutesEvent {
 class GetAllVehicles extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
+  final List<Marker> vehicleMarkers;
   final StreamSink<List<Marker>> mapMarkerSink;
 
-  const GetVehiclesPositions({required this.mapMarkerSink});
+  const GetVehiclesPositions({required this.mapMarkerSink, required this.vehicleMarkers});
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
+  final List<Marker> vehicleMarkers;
   final TickerProvider ticker;
   final StreamSink<List<Marker>> mapMarkerSink;
 
-  const UpdateVehiclesPositions({required this.ticker, required this.mapMarkerSink});
+  const UpdateVehiclesPositions({required this.vehicleMarkers, required this.ticker, required this.mapMarkerSink});
 }
 
 class GetVehicleRoutes extends RoutesEvent {

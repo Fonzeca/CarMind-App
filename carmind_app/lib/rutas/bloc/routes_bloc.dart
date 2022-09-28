@@ -40,9 +40,6 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
   List<RouteInfo> routesInfo = [];
 
-  final List<Marker> vehiclesMarkers = [];
-  List<Marker> _routeMarkers = [];
-
   RoutesBloc() : super(MapStateInitial()) {
     api = ApiClient(staticDio!);
 
@@ -63,18 +60,20 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<GetVehiclesPositions>((event, emit) async {
       await _getVehiclePosition();
-      _drawVehicleMarkers(null, event.mapMarkerSink);
+      _drawVehicleMarkers(event.vehicleMarkers, null, event.mapMarkerSink);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 3), (_) async {
         await _getVehiclePosition();
-        _drawVehicleMarkers(event.ticker, event.mapMarkerSink);
+        _drawVehicleMarkers(event.vehicleMarkers, event.ticker, event.mapMarkerSink);
       });
     });
 
     on<GetVehicleRoutes>((event, emit) async {
       emit(state.copyWith(areRoutesLoading: true, dateFrom: event.from, dateTo: event.to));
+      totalKms = 0;
+      totalStops = 0;
 
       final RoutePojo routePojo = RoutePojo();
       routePojo.imei = event.imei;
@@ -93,6 +92,8 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<UnSelectVehicle>((event, emit) async {
       routesInfo = [];
+      totalKms = 0;
+      totalStops = 0;
       emit(state.copyWith(vehicle: VehicleInfoMap(), dateFrom: '', dateTo: '', showPanelHeader: false));
     });
 
@@ -146,7 +147,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     this.vehicles = vehicles;
   }
 
-  void _drawVehicleMarkers(TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
+  void _drawVehicleMarkers(List<Marker> vehiclesMarkers, TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
       int markerIndex = vehiclesMarkers.indexWhere((marker) => marker.markerId == markerId);
@@ -170,7 +171,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             LatLng newPos = LatLng(lat, lng);
             vehiclesMarkers[markerIndex] = vehiclesMarkers[markerIndex].copyWith(positionParam: newPos, rotationParam: bearing);
 
-            mapMarkerSink.add([...vehiclesMarkers, ..._routeMarkers]);
+            mapMarkerSink.add([...vehiclesMarkers]);
           });
 
         animationController.forward();
@@ -181,7 +182,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             position: LatLng(vehicle.latitud!, vehicle.longitud!),
             onTap: () => add(SelectVehicleEvent(vehicle)));
         vehiclesMarkers.add(newVehicleMarker);
-        mapMarkerSink.add([...vehiclesMarkers, ..._routeMarkers]);
+        mapMarkerSink.add([...vehiclesMarkers]);
       }
     }
   }
@@ -190,7 +191,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       StreamSink<List<Polyline>> mapPolylineSink) async {
     if (routesInfo.isEmpty) return;
 
-    _routeMarkers = [];
+    List<Marker> routeMarkers = [];
     List<Polyline> polylines = [];
 
     for (int i = 0; i < routesInfo.length; i++) {
@@ -221,7 +222,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         if (i != 0) {
           //Se agrega el marker que despúes es dibujado cuando se renderiza la pantalla con el mapMarkerSink
           MarkerId markerId = MarkerId('$id');
-          _routeMarkers.add(Marker(markerId: markerId, icon: stopIcon, position: LatLng(routeDraw.originLatitude!, routeDraw.originLongitude!)));
+          routeMarkers.add(Marker(markerId: markerId, icon: stopIcon, position: LatLng(routeDraw.originLatitude!, routeDraw.originLongitude!)));
           id += 1;
         }
 
@@ -253,9 +254,9 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     controller.animateCamera(CameraUpdate.newLatLngBounds(boundsFromLatLngList(points), 90));
 
     //Se dibuja las banderas de inicio y fin
-    drawStartAndEndOfTrip(polylines, mapMarkerSink);
+    drawStartAndEndOfTrip(polylines, routeMarkers, mapMarkerSink);
 
-    mapMarkerSink.add(_routeMarkers);
+    mapMarkerSink.add(routeMarkers);
     mapPolylineSink.add(polylines);
 
     id = 0;
@@ -298,7 +299,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     }
   }
 
-  drawStartAndEndOfTrip(List<Polyline> polylines, mapMarkerSink) {
+  drawStartAndEndOfTrip(List<Polyline> polylines, List<Marker> routeMarkers, mapMarkerSink) {
     LatLng? startPosition;
     LatLng? endPosition;
 
@@ -333,7 +334,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       endTrip = endMarker;
       startAndEndMarkers.add(endMarker);
 
-      _routeMarkers.addAll(startAndEndMarkers);
+      routeMarkers.addAll(startAndEndMarkers);
     }
   }
 

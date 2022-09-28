@@ -40,7 +40,6 @@ class CarMindNavigationBar extends StatelessWidget {
 
     formularioBloc.add(const FormularioBuscarDataEvent());
     vehiculoBloc.add(GetCurrent(context));
-    //routesBloc.add(GetVehiclesPositions(context));
 
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
@@ -143,8 +142,6 @@ class CarMindNavigationBar extends StatelessWidget {
                         evaluacion: state.evaluacion ?? Evaluacion(),
                         vehiculo: state.vehiculo ?? Vehiculo(),
                       );
-                    //case 5:
-                    //  return MapView(routeDraw: state.routeDraw);
                   }
                   return Container();
                 },

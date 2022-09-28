@@ -35,9 +35,12 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
   StreamSink<List<Polyline>> get mapPolylineSink => _mapPolylineSC.sink;
   Stream<List<Polyline>> get mapPolylineStream => _mapPolylineSC.stream;
 
+  List<Marker> vehiclesMarkers = [];
+
   @override
   void dispose() {
     _mapMarkerSC.close();
+    _mapPolylineSC.close();
     super.dispose();
   }
 
@@ -46,8 +49,8 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
     final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
-    routesBloc.add(GetVehiclesPositions(mapMarkerSink: mapMarkerSink));
-    routesBloc.add(UpdateVehiclesPositions(mapMarkerSink: mapMarkerSink, ticker: this));
+    routesBloc.add(GetVehiclesPositions(vehicleMarkers: vehiclesMarkers, mapMarkerSink: mapMarkerSink));
+    routesBloc.add(UpdateVehiclesPositions(vehicleMarkers: vehiclesMarkers, mapMarkerSink: mapMarkerSink, ticker: this));
 
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
@@ -80,7 +83,7 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         onPanelClosed: () {
           BlocProvider.of<HomeBloc>(context).add(ShowFab());
           routesBloc.add(const UnSelectVehicle());
-          mapMarkerSink.add(routesBloc.vehiclesMarkers);
+          mapMarkerSink.add(vehiclesMarkers);
           mapPolylineSink.add([]);
         },
         maxHeight: 550,
@@ -130,7 +133,7 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         BlocProvider.of<HomeBloc>(context).add(HideFab());
         scrollPosition = 0.35;
       }
-      if (vehicle.imei != null) panelController.animatePanelToPosition(scrollPosition);
+      if (vehicle.imei != null && panelController.isAttached) panelController.animatePanelToPosition(scrollPosition);
     }
   }
 }
