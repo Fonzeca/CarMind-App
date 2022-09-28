@@ -9,6 +9,7 @@ import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 
 class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
   final OfflineManager offlineManager;
@@ -85,7 +86,9 @@ class OfflineHttpClientAdapter extends DefaultHttpClientAdapter {
 
   OfflineResponseError _createError(RequestOptions options, int statusCode, String errorText) {
     var err = OfflineResponseError(requestOptions: options, errorText: errorText, statusCode: statusCode);
-    FirebaseCrashlytics.instance.recordError(err, err.stackTrace);
+    if (!kDebugMode) {
+      FirebaseCrashlytics.instance.recordError(err, err.stackTrace);
+    }
     return err;
   }
 

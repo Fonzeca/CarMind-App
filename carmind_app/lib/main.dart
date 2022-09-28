@@ -36,7 +36,9 @@ void main() async {
     );
 
     await PushNotificationsService.initializeApp();
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    if (!kDebugMode) {
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    }
 
     final dir = await getApplicationSupportDirectory();
 

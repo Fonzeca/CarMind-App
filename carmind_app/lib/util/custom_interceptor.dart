@@ -5,6 +5,7 @@ import 'package:carmind_app/constants.dart';
 import 'package:carmind_app/home/bloc/home_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,8 +19,10 @@ class CustomInterceptor implements InterceptorsWrapper {
       GetIt.I.get<HomeBloc>().add(LogOutEvent());
     } else if (err.error is SocketException) {
       EasyLoading.showError(noInternet);
-      FirebaseCrashlytics.instance
-          .recordError('Ruta: ${err.requestOptions.path} Mensaje: ${err.error.toString()}', StackTrace.current, reason: noInternet);
+      if (!kDebugMode) {
+        FirebaseCrashlytics.instance
+            .recordError('Ruta: ${err.requestOptions.path} Mensaje: ${err.error.toString()}', StackTrace.current, reason: noInternet);
+      }
     } else if (err.response != null) {
       Response r = err.response!;
       if (r.statusCode != 200) {
