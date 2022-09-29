@@ -96,6 +96,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     GetIt.I.registerSingleton<HomeBloc>(HomeBloc());
     configDio(sharedPreferences);
+    GetIt.I.registerSingleton<RoutesBloc>(RoutesBloc());
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => GetIt.I.get<HomeBloc>()),
@@ -106,7 +107,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         BlocProvider(create: (context) => QrScannerBloc()),
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(create: (context) => RoutesBloc())
+        BlocProvider(create: (context) => GetIt.I.get<RoutesBloc>())
       ],
       child: MaterialApp(
         key: _materialAppKey,

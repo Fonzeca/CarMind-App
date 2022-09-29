@@ -16,18 +16,13 @@ class OpenPanelEvent extends RoutesEvent {
 class GetAllVehicles extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
-  final List<Marker> vehicleMarkers;
-  final StreamSink<List<Marker>> mapMarkerSink;
-
-  const GetVehiclesPositions({required this.mapMarkerSink, required this.vehicleMarkers});
+  const GetVehiclesPositions();
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
-  final List<Marker> vehicleMarkers;
   final TickerProvider ticker;
-  final StreamSink<List<Marker>> mapMarkerSink;
 
-  const UpdateVehiclesPositions({required this.vehicleMarkers, required this.ticker, required this.mapMarkerSink});
+  const UpdateVehiclesPositions({required this.ticker});
 }
 
 class GetVehicleRoutes extends RoutesEvent {
@@ -35,16 +30,13 @@ class GetVehicleRoutes extends RoutesEvent {
   final String from;
   final String to;
   final Completer<GoogleMapController> mapController;
-  final StreamSink<List<Marker>> mapMarkerSink;
-  final StreamSink<List<Polyline>> mapPolylineSink;
 
-  const GetVehicleRoutes(
-      {required this.imei,
-      required this.from,
-      required this.to,
-      required this.mapController,
-      required this.mapMarkerSink,
-      required this.mapPolylineSink});
+  const GetVehicleRoutes({
+    required this.imei,
+    required this.from,
+    required this.to,
+    required this.mapController,
+  });
 }
 
 class SelectVehicleEvent extends RoutesEvent {
@@ -79,4 +71,12 @@ class MoveCameraToRouteEvent extends RoutesEvent {
   final double? longitude;
 
   const MoveCameraToRouteEvent({required this.mapController, this.points, this.latitude, this.longitude});
+}
+
+class SelectStopEvent extends RoutesEvent {
+  final double lat;
+  final double lng;
+  final int selectedStopIndex;
+
+  const SelectStopEvent({required this.lat, required this.lng, required this.selectedStopIndex});
 }

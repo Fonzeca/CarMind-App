@@ -31,6 +31,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   Marker? endTrip;
 
   late BitmapDescriptor stopIcon;
+  late BitmapDescriptor stopIconRed;
   late BitmapDescriptor startTripIcon;
   late BitmapDescriptor endTripIcon;
 
@@ -39,6 +40,17 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   int id = 0;
 
   List<RouteInfo> routesInfo = [];
+
+  List<Marker> vehiclesMarkers = [];
+  List<Marker> routeMarkers = [];
+
+  final StreamController<List<Marker>> mapMarkerSC = StreamController<List<Marker>>();
+  StreamSink<List<Marker>> get mapMarkerSink => mapMarkerSC.sink;
+  Stream<List<Marker>> get mapMarkerStream => mapMarkerSC.stream;
+
+  final StreamController<List<Polyline>> mapPolylineSC = StreamController<List<Polyline>>();
+  StreamSink<List<Polyline>> get mapPolylineSink => mapPolylineSC.sink;
+  Stream<List<Polyline>> get mapPolylineStream => mapPolylineSC.stream;
 
   RoutesBloc() : super(MapStateInitial()) {
     api = ApiClient(staticDio!);
@@ -60,13 +72,13 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<GetVehiclesPositions>((event, emit) async {
       await _getVehiclePosition();
-      _drawVehicleMarkers(event.vehicleMarkers, null, event.mapMarkerSink);
+      _drawVehicleMarkers(null);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 3), (_) async {
         await _getVehiclePosition();
-        _drawVehicleMarkers(event.vehicleMarkers, event.ticker, event.mapMarkerSink);
+        _drawVehicleMarkers(event.ticker);
       });
     });
 
@@ -81,9 +93,9 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       routePojo.to = event.to;
 
       routesInfo = await api.getRoute(routePojo);
-      await _drawRoute(routesInfo, event.mapController, event.mapMarkerSink, event.mapPolylineSink);
+      bool isRouteDrown = await _drawRoute(routesInfo, event.mapController);
 
-      emit(state.copyWith(areRoutesLoading: false, showPanelHeader: true));
+      emit(state.copyWith(areRoutesLoading: false, showPanelHeader: isRouteDrown ? true : false, selectedStopIndex: -1));
     });
 
     on<SelectVehicleEvent>((event, emit) async {
@@ -94,7 +106,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       routesInfo = [];
       totalKms = 0;
       totalStops = 0;
-      emit(state.copyWith(vehicle: VehicleInfoMap(), dateFrom: '', dateTo: '', showPanelHeader: false));
+      emit(state.copyWith(vehicle: VehicleInfoMap(), dateFrom: '', dateTo: '', showPanelHeader: false, selectedStopIndex: -1));
     });
 
     on<MoveCameraToPointEvent>((event, emit) async {
@@ -111,12 +123,6 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
       List<LatLng> points = event.points ?? [];
 
-      //Si no se encuentran resultados en la búsqueda de la ruta, entonces dejamos el panel donde está y NO movemos la cámara
-      if ((event.latitude == null || event.longitude == null) && points.isEmpty) {
-        emit(state.copyWith(showPanelHeader: false));
-        return;
-      }
-
       if (points.isEmpty) {
         final CameraPosition originPosition = CameraPosition(target: LatLng(event.latitude!, event.longitude!), zoom: 25);
         controller.animateCamera(CameraUpdate.newCameraPosition(originPosition));
@@ -125,6 +131,28 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       }
 
       emit(state.copyWith(showPanelHeader: true));
+    });
+
+    on<SelectStopEvent>((event, emit) async {
+      for (int i = 0; i < routeMarkers.length; i++) {
+        if (routeMarkers[i].markerId == const MarkerId("startMarker") || routeMarkers[i].markerId == const MarkerId("endMarker")) continue;
+
+        if (routeMarkers[i].position.latitude == event.lat &&
+            routeMarkers[i].position.longitude == event.lng &&
+            routeMarkers[i].icon != stopIconRed) {
+          routeMarkers[i] = routeMarkers[i].copyWith(iconParam: stopIconRed);
+        } else {
+          routeMarkers[i] = routeMarkers[i].copyWith(iconParam: stopIcon);
+        }
+      }
+
+      mapMarkerSink.add(routeMarkers);
+
+      int selectedStopIndex = event.selectedStopIndex;
+
+      if (event.selectedStopIndex == state.selectedStopIndex) selectedStopIndex = -1;
+
+      emit(state.copyWith(showPanelHeader: true, selectedStopIndex: selectedStopIndex));
     });
 
     add(GetAllVehicles());
@@ -147,7 +175,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     this.vehicles = vehicles;
   }
 
-  void _drawVehicleMarkers(List<Marker> vehiclesMarkers, TickerProvider? provider, StreamSink<List<Marker>> mapMarkerSink) {
+  void _drawVehicleMarkers(TickerProvider? provider) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
       int markerIndex = vehiclesMarkers.indexWhere((marker) => marker.markerId == markerId);
@@ -171,7 +199,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             LatLng newPos = LatLng(lat, lng);
             vehiclesMarkers[markerIndex] = vehiclesMarkers[markerIndex].copyWith(positionParam: newPos, rotationParam: bearing);
 
-            mapMarkerSink.add([...vehiclesMarkers]);
+            mapMarkerSink.add(vehiclesMarkers);
           });
 
         animationController.forward();
@@ -182,17 +210,16 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
             position: LatLng(vehicle.latitud!, vehicle.longitud!),
             onTap: () => add(SelectVehicleEvent(vehicle)));
         vehiclesMarkers.add(newVehicleMarker);
-        mapMarkerSink.add([...vehiclesMarkers]);
+        mapMarkerSink.add(vehiclesMarkers);
       }
     }
   }
 
-  Future<void> _drawRoute(List<RouteInfo> routesInfo, Completer<GoogleMapController> mapController, StreamSink<List<Marker>> mapMarkerSink,
-      StreamSink<List<Polyline>> mapPolylineSink) async {
-    if (routesInfo.isEmpty) return;
+  Future<bool> _drawRoute(List<RouteInfo> routesInfo, Completer<GoogleMapController> mapController) async {
+    if (routesInfo.isEmpty) return false;
 
-    List<Marker> routeMarkers = [];
     List<Polyline> polylines = [];
+    routeMarkers = [];
 
     for (int i = 0; i < routesInfo.length; i++) {
       final RouteDraw routeDraw = RouteDraw();
@@ -222,7 +249,11 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         if (i != 0) {
           //Se agrega el marker que despúes es dibujado cuando se renderiza la pantalla con el mapMarkerSink
           MarkerId markerId = MarkerId('$id');
-          routeMarkers.add(Marker(markerId: markerId, icon: stopIcon, position: LatLng(routeDraw.originLatitude!, routeDraw.originLongitude!)));
+          routeMarkers.add(Marker(
+              markerId: markerId,
+              icon: stopIcon,
+              position: LatLng(routeDraw.originLatitude!, routeDraw.originLongitude!),
+              onTap: (() => add(SelectStopEvent(lat: routeDraw.originLatitude!, lng: routeDraw.originLongitude!, selectedStopIndex: i)))));
           id += 1;
         }
 
@@ -254,12 +285,14 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     controller.animateCamera(CameraUpdate.newLatLngBounds(boundsFromLatLngList(points), 90));
 
     //Se dibuja las banderas de inicio y fin
-    drawStartAndEndOfTrip(polylines, routeMarkers, mapMarkerSink);
+    drawStartAndEndOfTrip(polylines, routeMarkers);
 
     mapMarkerSink.add(routeMarkers);
     mapPolylineSink.add(polylines);
 
     id = 0;
+
+    return points.isNotEmpty;
   }
 
   void _addRoutePolylines(List<Polyline> polylines, List<Point> points) {
@@ -299,7 +332,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     }
   }
 
-  drawStartAndEndOfTrip(List<Polyline> polylines, List<Marker> routeMarkers, mapMarkerSink) {
+  drawStartAndEndOfTrip(List<Polyline> polylines, mapMarkerSink) {
     LatLng? startPosition;
     LatLng? endPosition;
 
@@ -385,6 +418,10 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     stopIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
       path: "assets/gps/stop.png",
       width: 50,
+    ));
+    stopIconRed = BitmapDescriptor.fromBytes(await getBytesFromAsset(
+      path: "assets/gps/stop-red.png",
+      width: 80,
     ));
     startTripIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
       path: "assets/gps/start.png",

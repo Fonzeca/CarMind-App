@@ -7,11 +7,12 @@ import 'package:carmind_app/rutas/rutas.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapView extends StatefulWidget {
-  MapView({Key? key}) : super(key: key);
+  const MapView({Key? key}) : super(key: key);
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -27,30 +28,27 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   final PanelController panelController = PanelController();
 
-  final StreamController<List<Marker>> _mapMarkerSC = StreamController<List<Marker>>();
-  StreamSink<List<Marker>> get mapMarkerSink => _mapMarkerSC.sink;
-  Stream<List<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
+  final RoutesBloc routeBloc = GetIt.I.get<RoutesBloc>();
 
-  final StreamController<List<Polyline>> _mapPolylineSC = StreamController<List<Polyline>>();
-  StreamSink<List<Polyline>> get mapPolylineSink => _mapPolylineSC.sink;
-  Stream<List<Polyline>> get mapPolylineStream => _mapPolylineSC.stream;
-
-  List<Marker> vehiclesMarkers = [];
+  @override
+  void initState() {
+    routeBloc.add(const GetVehiclesPositions());
+    routeBloc.add(UpdateVehiclesPositions(ticker: this));
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _mapMarkerSC.close();
-    _mapPolylineSC.close();
+    routeBloc.mapMarkerSC.close();
+    routeBloc.mapPolylineSC.close();
+    routeBloc.routeMarkers.clear();
+    routeBloc.vehiclesMarkers.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
-
-    routesBloc.add(GetVehiclesPositions(vehicleMarkers: vehiclesMarkers, mapMarkerSink: mapMarkerSink));
-    routesBloc.add(UpdateVehiclesPositions(vehicleMarkers: vehiclesMarkers, mapMarkerSink: mapMarkerSink, ticker: this));
 
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
@@ -58,10 +56,10 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
       _movePanel(state.vehicle, state.showPanelHeader);
 
       final googleMap = StreamBuilder<List<Marker>>(
-          stream: mapMarkerStream,
+          stream: routeBloc.mapMarkerStream,
           builder: (context, markers) {
             return StreamBuilder<List<Polyline>>(
-                stream: mapPolylineStream,
+                stream: routeBloc.mapPolylineStream,
                 builder: (context, polylines) {
                   return GoogleMap(
                     zoomControlsEnabled: false,
@@ -83,8 +81,8 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         onPanelClosed: () {
           BlocProvider.of<HomeBloc>(context).add(ShowFab());
           routesBloc.add(const UnSelectVehicle());
-          mapMarkerSink.add(vehiclesMarkers);
-          mapPolylineSink.add([]);
+          routeBloc.mapMarkerSink.add(routesBloc.vehiclesMarkers);
+          routeBloc.mapPolylineSink.add([]);
         },
         maxHeight: 550,
         minHeight: 0,
@@ -92,12 +90,11 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
         panel: (state.vehicle.imei != null)
             ? VehicleCardMap(
                 mapController: mapController,
-                mapMarkerSink: mapMarkerSink,
-                mapPolylineSink: mapPolylineSink,
                 vehicleInfo: state.vehicle,
                 dateFrom: state.dateFrom,
                 dateTo: state.dateTo,
-                isLoading: state.areRoutesLoading)
+                isLoading: state.areRoutesLoading,
+                selectedStopIndex: state.selectedStopIndex)
             : Container(),
         body: Column(
           children: [

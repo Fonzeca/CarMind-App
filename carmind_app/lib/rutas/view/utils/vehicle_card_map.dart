@@ -13,12 +13,11 @@ import 'package:skeletons/skeletons.dart';
 
 class VehicleCardMap extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
-  final StreamSink<List<Marker>> mapMarkerSink;
-  final StreamSink<List<Polyline>> mapPolylineSink;
   final VehicleInfoMap vehicleInfo;
   final String? dateFrom;
   final String? dateTo;
   final bool isLoading;
+  final int selectedStopIndex;
 
   const VehicleCardMap(
       {Key? key,
@@ -27,8 +26,7 @@ class VehicleCardMap extends StatelessWidget {
       this.dateTo,
       required this.isLoading,
       required this.mapController,
-      required this.mapMarkerSink,
-      required this.mapPolylineSink})
+      required this.selectedStopIndex})
       : super(key: key);
 
   @override
@@ -40,15 +38,14 @@ class VehicleCardMap extends StatelessWidget {
         _Header(type: vehicleInfo.tipo!, name: vehicleInfo.nombre!),
         _Body(
             mapController: mapController,
-            mapMarkerSink: mapMarkerSink,
-            mapPolylineSink: mapPolylineSink,
             imei: vehicleInfo.imei!,
             patente: vehicleInfo.patente,
             engineStatus: vehicleInfo.engine_status!,
             choferActual: vehicleInfo.usuario_en_uso,
             dateFrom: dateFrom,
             dateTo: dateTo,
-            isLoading: isLoading),
+            isLoading: isLoading,
+            selectedStopIndex: selectedStopIndex),
       ]),
     );
   }
@@ -110,8 +107,6 @@ class _Header extends StatelessWidget {
 
 class _Body extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
-  final StreamSink<List<Marker>> mapMarkerSink;
-  final StreamSink<List<Polyline>> mapPolylineSink;
   final String? patente;
   final String? choferActual;
   final bool engineStatus;
@@ -119,12 +114,11 @@ class _Body extends StatelessWidget {
   final String? dateFrom;
   final String? dateTo;
   final bool isLoading;
+  final int selectedStopIndex;
 
   _Body({
     Key? key,
     required this.mapController,
-    required this.mapMarkerSink,
-    required this.mapPolylineSink,
     required this.patente,
     required this.choferActual,
     required this.engineStatus,
@@ -132,6 +126,7 @@ class _Body extends StatelessWidget {
     this.dateFrom,
     this.dateTo,
     required this.isLoading,
+    required this.selectedStopIndex,
   }) : super(key: key);
 
   final TextStyle textStyle = const TextStyle(fontSize: 18);
@@ -217,15 +212,15 @@ class _Body extends StatelessWidget {
                     final String dateToPicked = '${DateFormat('yyyy-MM-dd HH:mm').format(dateTimeFromTo[1])}:00';
 
                     routesBloc.add(GetVehicleRoutes(
-                        imei: imei,
-                        from: dateFromPicked,
-                        to: dateToPicked,
-                        mapController: mapController,
-                        mapMarkerSink: mapMarkerSink,
-                        mapPolylineSink: mapPolylineSink));
+                      imei: imei,
+                      from: dateFromPicked,
+                      to: dateToPicked,
+                      mapController: mapController,
+                    ));
                   },
                   height: 30,
                   foreGroundColor: (dateFrom == null && dateTo == null) ? const Color(0xff989898) : const Color(0xff303030),
+                  backgroundColor: const Color(0xffEBEBEB),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Text((dateFrom == null && dateTo == null)
                         ? buscarEntreFechas
@@ -235,7 +230,10 @@ class _Body extends StatelessWidget {
               const SizedBox(height: 10),
               (!isLoading && routesBloc.routesInfo.isEmpty && (dateFrom != null && dateTo != null))
                   ? const _NoResultsFound()
-                  : Expanded(child: isLoading ? const _RoutesListLoading() : _RoutesList(mapController: mapController, routes: routesBloc.routesInfo))
+                  : Expanded(
+                      child: isLoading
+                          ? const _RoutesListLoading()
+                          : _RoutesList(mapController: mapController, routes: routesBloc.routesInfo, selectedStopIndex: selectedStopIndex))
             ],
           ))
         ],
@@ -255,6 +253,7 @@ class _NoResultsFound extends StatelessWidget {
       onPressed: () {},
       height: 50,
       foreGroundColor: const Color(0xff989898),
+      backgroundColor: const Color(0xffEBEBEB),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
         Text('No se encontraron resultados', style: TextStyle(fontSize: 16)),
       ]),
@@ -296,11 +295,13 @@ class _RoutesListLoading extends StatelessWidget {
 class _RoutesList extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
   final List<RouteInfo> routes;
+  final int selectedStopIndex;
 
   const _RoutesList({
     Key? key,
     required this.routes,
     required this.mapController,
+    required this.selectedStopIndex,
   }) : super(key: key);
 
   @override
@@ -348,6 +349,8 @@ class _RoutesList extends StatelessWidget {
           return CustomButton(
             onPressed: () {
               if (routes[index] is RouteStop) {
+                BlocProvider.of<RoutesBloc>(context)
+                    .add(SelectStopEvent(lat: routeDraw.originLatitude!, lng: routeDraw.originLongitude!, selectedStopIndex: index));
                 BlocProvider.of<RoutesBloc>(context).add(
                     MoveCameraToPointEvent(mapController: mapController, latitude: routeDraw.originLatitude!, longitude: routeDraw.originLongitude!));
               } else {
@@ -356,7 +359,8 @@ class _RoutesList extends StatelessWidget {
               }
             },
             height: 50,
-            foreGroundColor: const Color(0xff303030),
+            foreGroundColor: selectedStopIndex == index ? Colors.white : const Color(0xff303030),
+            backgroundColor: selectedStopIndex == index ? Colors.blue : const Color(0xffEBEBEB),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               leading,
               const SizedBox(width: 8),
