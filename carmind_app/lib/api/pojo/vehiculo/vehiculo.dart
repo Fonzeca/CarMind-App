@@ -6,7 +6,6 @@ part 'vehiculo.g.dart';
 
 @JsonSerializable()
 class Vehiculo extends Equatable {
-  @Id()
   int? id;
 
   String? nombre;
@@ -24,12 +23,61 @@ class Vehiculo extends Equatable {
   String? patente;
 
   String? imei;
+
   String? tipo;
+
   List<EvaluacionesPendientes>? pendientes;
 
   Vehiculo();
+  Vehiculo.fromDb(VehiculoDb db) {
+    id = db.id;
+    nombre = db.nombre;
+    en_uso = db.en_uso;
+    imei = db.imei;
+    marca = db.marca;
+    modelo = db.modelo;
+    linea = db.linea;
+    patente = db.patente;
+    if (db.pendientesDb.isNotEmpty) {
+      pendientes = db.pendientesDb.map((e) => EvaluacionesPendientes.fromDb(e)).toList();
+    }
+  }
 
-  Vehiculo.fromVehiculo(Vehiculo v) {
+  factory Vehiculo.fromJson(Map<String, dynamic> json) => _$VehiculoFromJson(json);
+  Map<String, dynamic> toJson() => _$VehiculoToJson(this);
+
+  @override
+  @ignore
+  List<Object?> get props => [id, nombre, en_uso, kilometraje, marca, modelo, linea, patente, imei, pendientes];
+}
+
+@Collection()
+class VehiculoDb {
+  VehiculoDb();
+
+  Id? id;
+
+  String? nombre;
+
+  bool? en_uso;
+
+  int? kilometraje;
+
+  String? marca;
+
+  String? modelo;
+
+  String? linea;
+
+  String? patente;
+
+  String? imei;
+
+  String? tipo;
+
+  final pendientesDb = IsarLinks<EvaluacionesPendientesDb>();
+
+  VehiculoDb.fromVehiculo(Vehiculo v, Isar isar) {
     id = v.id;
     nombre = v.nombre;
     en_uso = v.en_uso;
@@ -38,42 +86,26 @@ class Vehiculo extends Equatable {
     modelo = v.modelo;
     linea = v.linea;
     patente = v.patente;
-    pendientes = v.pendientes;
+    if (v.pendientes != null && v.pendientes!.isNotEmpty) {
+      var pendientesList = v.pendientes!.map((e) => EvaluacionesPendientesDb.fromEvaluacionesPendientes(e)).toList();
+      var ids = isar.evaluacionesPendientesDbs.putAllSync(pendientesList);
+      pendientesDb.addAll(pendientesList);
+
+      // pendientesDb.saveSync();
+    }
   }
 
-  factory Vehiculo.fromJson(Map<String, dynamic> json) => _$VehiculoFromJson(json);
-  Map<String, dynamic> toJson() => _$VehiculoToJson(this);
-
-  @override
-  List<Object?> get props => [id, nombre, en_uso, kilometraje, marca, modelo, linea, patente, imei, pendientes];
-}
-
-@Collection()
-class VehiculoDb extends Vehiculo {
-  VehiculoDb();
-
-  VehiculoDb.fromVehiculo(Vehiculo v) : super.fromVehiculo(v) {
-    pendientesDb.addAll(v.pendientes!);
-  }
-
-  @override
+  @ignore
   get pendientes {
     return pendientesDb.toList()
       ..sort(
         (a, b) => a.id!.compareTo(b.id!),
       );
   }
-
-  final pendientesDb = IsarLinks<EvaluacionesPendientes>();
 }
 
 @JsonSerializable()
-@Collection()
 class EvaluacionesPendientes extends Equatable {
-  @Id()
-  @JsonKey(ignore: true)
-  int? privateId;
-
   int? id;
 
   String? titulo;
@@ -86,9 +118,42 @@ class EvaluacionesPendientes extends Equatable {
 
   EvaluacionesPendientes();
 
+  EvaluacionesPendientes.fromDb(EvaluacionesPendientesDb db) {
+    id = db.id;
+    titulo = db.titulo;
+    pendiente = db.pendiente;
+    vencimiento = db.vencimiento;
+    intervaloDias = db.intervaloDias;
+  }
+
   factory EvaluacionesPendientes.fromJson(Map<String, dynamic> json) => _$EvaluacionesPendientesFromJson(json);
   Map<String, dynamic> toJson() => _$EvaluacionesPendientesToJson(this);
 
   @override
   List<Object?> get props => [id, titulo, pendiente, vencimiento, intervaloDias];
+}
+
+@Collection()
+class EvaluacionesPendientesDb {
+  Id? privateId;
+
+  int? id;
+
+  String? titulo;
+
+  bool? pendiente;
+
+  int? vencimiento;
+
+  int? intervaloDias;
+
+  EvaluacionesPendientesDb();
+
+  EvaluacionesPendientesDb.fromEvaluacionesPendientes(EvaluacionesPendientes e) {
+    id = e.id;
+    titulo = e.titulo;
+    pendiente = e.pendiente;
+    vencimiento = e.vencimiento;
+    intervaloDias = e.intervaloDias;
+  }
 }

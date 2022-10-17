@@ -14,34 +14,31 @@ class MockDb {
     // Open Isar in the UI isolate
     final isarDb = Isar.getInstance('isar-carmind')!;
 
-    await isarDb.writeTxn(
-      (isar) async {
+    isarDb.writeTxnSync(
+      () async {
         //Limpiamos todo, tambien los logs que quedaron como offline
         //Pero se supone que si estamos guardado data, es porque estamos online, y con los logs vacios ya.
-        await isar.clear();
+        isarDb.clearSync();
 
-        var vehis = data.vehiculos!.map((e) => VehiculoDb.fromVehiculo(e)).toList();
-        await isar.vehiculoDbs.putAll(vehis);
-        for (var v in vehis) {
-          await v.pendientesDb.save();
-          await isar.evaluacionesPendientess.putAll(v.pendientesDb.toList());
+        var vehiculosDb = data.vehiculos!.map((e) => VehiculoDb.fromVehiculo(e, isarDb)).toList();
+        isarDb.vehiculoDbs.putAllSync(vehiculosDb);
+        for (var vehi in vehiculosDb) {
+          vehi.pendientesDb.saveSync();
         }
 
-        var evs = data.evaluaciones!.map((e) => EvaluacionDb.fromEvaluacion(e)).toList();
-        await isar.evaluacionDbs.putAll(evs);
+        var evs = data.evaluaciones!.map((e) => EvaluacionDb.fromEvaluacion(e, isarDb)).toList();
+        isarDb.evaluacionDbs.putAllSync(evs);
         for (var ev in evs) {
-          await isar.preguntaPojoDbs.putAll(ev.preguntasDb.toList());
-          await ev.preguntasDb.save();
+          ev.preguntasDb.saveSync();
           for (var preg in ev.preguntasDb) {
             if (preg.opcionesDb.isNotEmpty) {
-              await isar.opcionPojos.putAll(preg.opcionesDb.toList());
-              await preg.opcionesDb.save();
+              preg.opcionesDb.saveSync();
             }
           }
         }
 
-        await isar.logEvaluacions.putAll(data.logEvaluacion!);
-        await isar.loggedUsers.put(data.loggedUser!, replaceOnConflict: true);
+        isarDb.logEvaluacions.putAllSync(data.logEvaluacion!);
+        isarDb.loggedUsers.putSync(data.loggedUser!);
         if (data.idVehiculoActual != null) {
           await sharedPreferences.reload();
           await sharedPreferences.setInt("current-offline", data.idVehiculoActual!);
@@ -66,7 +63,9 @@ class MockDb {
       pregunta.opcionesDb.loadSync();
     });
 
-    return ev;
+    var out = ev != null ? Evaluacion.fromDb(ev) : null;
+
+    return out;
   }
 
   Future<void> realizarEvaluacion(int id, EvaluacionTerminadaPojo pojo) async {
@@ -76,8 +75,8 @@ class MockDb {
       ..evaluacionId = id
       ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
 
-    db.writeTxnSync((isar) {
-      isar.logEvaluacionTerminadaPojoDbs.putSync(log);
+    db.writeTxnSync(() {
+      db.logEvaluacionTerminadaPojoDbs.putSync(log);
 
       log.respuestaDb.value = EvaluacionTerminadaPojoDb.fromEvaluacionTerminadaPojo(pojo);
       log.respuestaDb.saveSync();
@@ -132,7 +131,9 @@ class MockDb {
 
   Future<Vehiculo?> getVehiculoById(int id) async {
     var db = Isar.getInstance('isar-carmind')!;
-    return db.vehiculoDbs.get(id);
+
+    var v = await db.vehiculoDbs.get(id);
+    return Vehiculo.fromDb(v!);
   }
 
   Future<void> iniciarUso(int id) async {
@@ -143,8 +144,8 @@ class MockDb {
       ..vehiculoId = id
       ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
 
-    await db.writeTxn((isar) async {
-      await isar.logUsos.put(log);
+    await db.writeTxn(() async {
+      await db.logUsos.put(log);
     });
 
     sharedPreferences.setInt("current-offline", id);
@@ -158,8 +159,8 @@ class MockDb {
       ..vehiculoId = id
       ..fecha = DateFormat(dateTimeFormat).format(DateTime.now());
 
-    await db.writeTxn((isar) async {
-      await isar.logUsos.put(log);
+    await db.writeTxn(() async {
+      await db.logUsos.put(log);
     });
 
     sharedPreferences.remove("current-offline");
@@ -181,9 +182,10 @@ class MockDb {
 
     if (vehiculo != null) {
       vehiculo = await _proccessPrendientes(vehiculo);
+      return Vehiculo.fromDb(vehiculo);
+    } else {
+      return null;
     }
-
-    return vehiculo;
   }
 
   //-------------------------------------------------------------------------------------------------
@@ -195,8 +197,8 @@ class MockDb {
     //Obtenemos la lista de logs de este vehiculo
     var listLogs = lstLogsEvaluacionTerminada.where((element) => element.respuesta?.vehiculo_id! == vehiculo.id).toList();
 
-    List<EvaluacionesPendientes> listaPendientes = vehiculo.pendientes!;
-    List<EvaluacionesPendientes> nuevaLista = [];
+    List<EvaluacionesPendientesDb> listaPendientes = vehiculo.pendientes!;
+    List<EvaluacionesPendientesDb> nuevaLista = [];
 
     //Revisamos las evaluaciones asignadas al vehiculo
     for (var eva in listaPendientes) {
@@ -242,7 +244,7 @@ class MockDb {
     }
 
     //Le asignamos la lista neuva al vehiculo
-    vehiculo.pendientes = nuevaLista;
+    vehiculo.pendientesDb.addAll(nuevaLista);
     return vehiculo;
   }
 }

@@ -13,6 +13,7 @@ import 'package:carmind_app/util/custom_interceptor.dart';
 import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:carmind_app/util/offline_managers/offline_module.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -44,8 +45,7 @@ void main() async {
 
     // Open Isar in the UI isolate
     final isar = await Isar.open(
-      name: 'isar-carmind',
-      schemas: [
+      [
         LogUsoSchema,
         LoggedUserSchema,
         OpcionPojoSchema,
@@ -55,10 +55,11 @@ void main() async {
         PreguntaPojoDbSchema,
         RespuestaPojoDbSchema,
         RespuestaOpcionPojoSchema,
-        EvaluacionesPendientesSchema,
+        EvaluacionesPendientesDbSchema,
         EvaluacionTerminadaPojoDbSchema,
-        LogEvaluacionTerminadaPojoDbSchema
+        LogEvaluacionTerminadaPojoDbSchema,
       ],
+      name: 'isar-carmind',
       directory: dir.path,
     );
 
@@ -123,10 +124,20 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
 
   configDio(SharedPreferences sharedPreferences) async {
     staticDio = Dio();
+    try {
+      var offlineModule = OfflineModule(sharedPreferences: sharedPreferences, dio: staticDio!);
+      staticDio?.httpClientAdapter = offlineModule.httpClientAdapter;
+      staticDio?.interceptors.add(offlineModule.offlineInterceptor);
+    } catch (error) {
+      //Le damos para que use https
+      (staticDio?.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      };
 
-    var offlineModule = OfflineModule(sharedPreferences: sharedPreferences, dio: staticDio!);
-    staticDio?.httpClientAdapter = offlineModule.httpClientAdapter;
-    staticDio?.interceptors.add(offlineModule.offlineInterceptor);
+      if (!kDebugMode) FirebaseCrashlytics.instance.recordError(error, StackTrace.current, fatal: true);
+    }
+
     staticDio?.interceptors.add(CustomInterceptor());
   }
 }

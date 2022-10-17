@@ -44,22 +44,23 @@ class SyncManager {
     api = ApiClient(myDio);
 
     final isar = Isar.openSync(
-        name: 'isar-carmind',
-        schemas: [
-          LogUsoSchema,
-          LoggedUserSchema,
-          OpcionPojoSchema,
-          VehiculoDbSchema,
-          EvaluacionDbSchema,
-          LogEvaluacionSchema,
-          PreguntaPojoDbSchema,
-          RespuestaPojoDbSchema,
-          RespuestaOpcionPojoSchema,
-          EvaluacionesPendientesSchema,
-          EvaluacionTerminadaPojoDbSchema,
-          LogEvaluacionTerminadaPojoDbSchema
-        ],
-        directory: directoryIsar);
+      [
+        LogUsoSchema,
+        LoggedUserSchema,
+        OpcionPojoSchema,
+        VehiculoDbSchema,
+        EvaluacionDbSchema,
+        LogEvaluacionSchema,
+        PreguntaPojoDbSchema,
+        RespuestaPojoDbSchema,
+        RespuestaOpcionPojoSchema,
+        EvaluacionesPendientesDbSchema,
+        EvaluacionTerminadaPojoDbSchema,
+        LogEvaluacionTerminadaPojoDbSchema,
+      ],
+      name: 'isar-carmind',
+      directory: directoryIsar,
+    );
 
     service.on(SYNC_MEESSAGE_TOKEN_RENEWED).listen((event) {
       syncDataToCloud();
@@ -97,7 +98,7 @@ class SyncManager {
           await syncDataToCloud();
         }
       } catch (e) {
-        print("Dio error");
+        print("Dio error, debe seguir sin internet");
         //Si da error, hay que ver si es por token vencido o por falta de internet
         if (e is DioError) {
           if (e.error is SocketException) {
@@ -144,7 +145,7 @@ class SyncManager {
         res.opcionesDb.loadSync();
       }
     }
-    syncView.evaluacionesRealizadas = evaluacionesTermiandas;
+    syncView.evaluacionesRealizadas = evaluacionesTermiandas.map((e) => LogEvaluacionTerminadaPojo.fromDb(e)).toList();
 
     //Si no hay nada que sincronizar, solo lo ponemos online
     if (syncView.logUso!.isEmpty && syncView.evaluacionesRealizadas!.isEmpty) {
@@ -158,7 +159,7 @@ class SyncManager {
     });
 
     //Al estar todo ok, borramos la base de datos.
-    await db.writeTxn((isar) async {
+    await db.writeTxn(() async {
       await db.logUsos.clear();
       await db.logEvaluacionTerminadaPojoDbs.clear();
       await db.evaluacionTerminadaPojoDbs.clear();

@@ -6,8 +6,7 @@ part 'log_evaluacion.g.dart';
 @JsonSerializable()
 @Collection()
 class LogEvaluacion {
-  @Id()
-  int? log_id;
+  Id? log_id;
 
   int? evaluacion_id;
 

@@ -13,39 +13,41 @@ class EvaluacionTerminadaPojo extends Equatable {
 
   EvaluacionTerminadaPojo();
 
-  EvaluacionTerminadaPojo.fromSelf(EvaluacionTerminadaPojo ev) {
-    vehiculo_id = ev.vehiculo_id;
-    respuestas = ev.respuestas;
+  EvaluacionTerminadaPojo.fromDb(EvaluacionTerminadaPojoDb db) {
+    vehiculo_id = db.vehiculo_id;
+    respuestas = db.respuestasDb.map((e) => RespuestaPojo.fromDb(e)).toList();
   }
 
   factory EvaluacionTerminadaPojo.fromJson(Map<String, dynamic> json) => _$EvaluacionTerminadaPojoFromJson(json);
   Map<String, dynamic> toJson() => _$EvaluacionTerminadaPojoToJson(this);
 
   @override
-  // TODO: implement props
+  @ignore
   List<Object?> get props => [vehiculo_id, respuestas];
 }
 
 @Collection()
-class EvaluacionTerminadaPojoDb extends EvaluacionTerminadaPojo {
+class EvaluacionTerminadaPojoDb {
   EvaluacionTerminadaPojoDb();
 
-  @Id()
-  int? privateId;
+  Id? privateId;
 
-  EvaluacionTerminadaPojoDb.fromEvaluacionTerminadaPojo(EvaluacionTerminadaPojo e) : super.fromSelf(e) {
+  int? vehiculo_id;
+
+  final respuestasDb = IsarLinks<RespuestaPojoDb>();
+
+  EvaluacionTerminadaPojoDb.fromEvaluacionTerminadaPojo(EvaluacionTerminadaPojo e) {
+    vehiculo_id = e.vehiculo_id;
     respuestasDb.addAll(e.respuestas!.map((e) => RespuestaPojoDb.fromRespuestaPojo(e)));
   }
 
-  @override
+  @ignore
   get respuestas {
     return respuestasDb.toList()
       ..sort(
         (a, b) => a.pregunta_id!.compareTo(b.pregunta_id!),
       );
   }
-
-  final respuestasDb = IsarLinks<RespuestaPojoDb>();
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -62,35 +64,49 @@ class RespuestaPojo extends Equatable {
 
   RespuestaPojo();
 
-  RespuestaPojo.fromSelf(RespuestaPojo respuesta) {
-    pregunta_id = respuesta.pregunta_id;
-    tick_correcto = respuesta.tick_correcto;
-    base64_image = respuesta.base64_image;
-    texto = respuesta.texto;
-    opciones = respuesta.opciones;
+  RespuestaPojo.fromDb(RespuestaPojoDb db) {
+    pregunta_id = db.pregunta_id;
+    tick_correcto = db.tick_correcto;
+    base64_image = db.base64_image;
+    texto = db.texto;
+    opciones = db.opcionesDb.toList();
   }
 
   factory RespuestaPojo.fromJson(Map<String, dynamic> json) => _$RespuestaPojoFromJson(json);
   Map<String, dynamic> toJson() => _$RespuestaPojoToJson(this);
 
   @override
+  @ignore
   List<Object?> get props => [pregunta_id, tick_correcto, base64_image, texto, opciones];
 }
 
 @Collection()
-class RespuestaPojoDb extends RespuestaPojo {
+class RespuestaPojoDb {
   RespuestaPojoDb();
 
-  @Id()
-  int? privateId;
+  Id? privateId;
 
-  RespuestaPojoDb.fromRespuestaPojo(RespuestaPojo e) : super.fromSelf(e) {
+  int? pregunta_id;
+
+  bool? tick_correcto;
+
+  String? base64_image;
+
+  String? texto;
+
+  final opcionesDb = IsarLinks<RespuestaOpcionPojo>();
+
+  RespuestaPojoDb.fromRespuestaPojo(RespuestaPojo e) {
+    pregunta_id = e.pregunta_id;
+    tick_correcto = e.tick_correcto;
+    base64_image = e.base64_image;
+    texto = e.texto;
     if (e.opciones != null && e.opciones!.isNotEmpty) {
       opcionesDb.addAll(e.opciones!);
     }
   }
 
-  @override
+  @ignore
   get opciones {
     if (opcionesDb.isNotEmpty) {
       return opcionesDb.toList()
@@ -98,17 +114,14 @@ class RespuestaPojoDb extends RespuestaPojo {
           (a, b) => a.opcion_id!.compareTo(b.opcion_id!),
         );
     }
-    return super.opciones;
+    return [];
   }
-
-  final opcionesDb = IsarLinks<RespuestaOpcionPojo>();
 }
 
 @JsonSerializable(explicitToJson: true)
-@Collection()
+@Collection(inheritance: false)
 class RespuestaOpcionPojo extends Equatable {
-  @Id()
-  int? privateId;
+  Id? privateId;
 
   int? opcion_id;
 
@@ -125,5 +138,6 @@ class RespuestaOpcionPojo extends Equatable {
   Map<String, dynamic> toJson() => _$RespuestaOpcionPojoToJson(this);
 
   @override
+  @ignore
   List<Object?> get props => [opcion_id, tick_correcto];
 }
