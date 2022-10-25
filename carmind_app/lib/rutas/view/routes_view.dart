@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:carmind_app/api/api.dart';
 import 'package:carmind_app/constants.dart';
+import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/rutas/rutas.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class MapView extends StatefulWidget {
-  MapView({Key? key}) : super(key: key);
+  const MapView({Key? key}) : super(key: key);
 
   @override
   State<MapView> createState() => _MapViewState();
@@ -26,37 +28,62 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   final PanelController panelController = PanelController();
 
+  final RoutesBloc routeBloc = GetIt.I.get<RoutesBloc>();
+
+  @override
+  void initState() {
+    routeBloc.add(const GetVehiclesPositions());
+    routeBloc.add(UpdateVehiclesPositions(ticker: this));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    routeBloc.mapMarkerSC.close();
+    routeBloc.mapPolylineSC.close();
+    routeBloc.routeMarkers.clear();
+    routeBloc.vehiclesMarkers.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
 
-    routesBloc.add(UpdateVehiclesPositions(context, this));
     if (routesBloc.isMapNotLoaded) EasyLoading.show();
 
     return BlocBuilder<RoutesBloc, RoutesState>(builder: (context, state) {
       _movePanel(state.vehicle, state.showPanelHeader);
 
       final googleMap = StreamBuilder<List<Marker>>(
-          stream: routesBloc.mapMarkerStream,
-          builder: (context, snapshot) {
-            return GoogleMap(
-              zoomControlsEnabled: false,
-              polylines: Set<Polyline>.of(state.polylines.values),
-              markers: Set<Marker>.of(snapshot.data ?? [])..addAll(state.routeMarkers.values),
-              initialCameraPosition: initialPos,
-              onMapCreated: (GoogleMapController mapController) {
-                this.mapController.complete(mapController);
-                EasyLoading.dismiss();
-                routesBloc.isMapNotLoaded = false;
-              },
-            );
+          stream: routeBloc.mapMarkerStream,
+          builder: (context, markers) {
+            return StreamBuilder<List<Polyline>>(
+                stream: routeBloc.mapPolylineStream,
+                builder: (context, polylines) {
+                  return GoogleMap(
+                    zoomControlsEnabled: false,
+                    polylines: Set<Polyline>.of(polylines.data ?? []),
+                    markers: Set<Marker>.of(markers.data ?? []),
+                    initialCameraPosition: initialPos,
+                    onMapCreated: (GoogleMapController mapController) {
+                      this.mapController.complete(mapController);
+                      EasyLoading.dismiss();
+                      routesBloc.isMapNotLoaded = false;
+                    },
+                  );
+                });
           });
 
       return SlidingUpPanel(
         controller: panelController,
-        onPanelOpened: () => routesBloc.add(OpenPanelEvent()),
-        onPanelClosed: () => routesBloc.add(UnSelectVehicle(context)),
+        onPanelOpened: () => routesBloc.add(const OpenPanelEvent(showPanelHeader: false)),
+        onPanelClosed: () {
+          BlocProvider.of<HomeBloc>(context).add(ShowFab());
+          routesBloc.add(const UnSelectVehicle());
+          routeBloc.mapMarkerSink.add(routesBloc.vehiclesMarkers);
+          routeBloc.mapPolylineSink.add([]);
+        },
         maxHeight: 550,
         minHeight: 0,
         color: Colors.transparent,
@@ -64,30 +91,34 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
             ? VehicleCardMap(
                 mapController: mapController,
                 vehicleInfo: state.vehicle,
-                routes: routesBloc.routesInfo,
                 dateFrom: state.dateFrom,
                 dateTo: state.dateTo,
-                isLoading: state.areRoutesLoading)
+                isLoading: state.areRoutesLoading,
+                selectedStopIndex: state.selectedStopIndex)
             : Container(),
-        body: Stack(
+        body: Column(
           children: [
-            googleMap,
-            Positioned(
-              top: 30,
-              left: 25,
-              height: 55,
-              width: width / 1.15,
-              child: TextButton(
-                  style: ButtonStyle(
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
-                      overlayColor: MaterialStateProperty.all(Colors.transparent)),
-                  onPressed: () {
-                    showSearch(
-                        context: context,
-                        delegate: CustomSearchDelegate(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc, mapController: mapController));
-                  },
-                  child: _SearchBar(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc)),
-            )
+            Container(
+                padding: const EdgeInsets.only(top: 20),
+                color: carMindTopBar,
+                height: 100,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                      style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(Size(MediaQuery.of(context).size.width * 0.95, 50)),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                          overlayColor: MaterialStateProperty.all(Colors.transparent)),
+                      onPressed: () {
+                        showSearch(
+                            context: context,
+                            delegate:
+                                CustomSearchDelegate(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc, mapController: mapController));
+                      },
+                      child: _SearchBar(vehicleNames: routesBloc.vehicleNames, routesBloc: routesBloc)),
+                )),
+            SizedBox(height: MediaQuery.of(context).size.height - 100, child: googleMap),
           ],
         ),
       );
@@ -95,12 +126,15 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
   }
 
   void _movePanel(VehicleInfoMap vehicle, bool showPanelHeader) {
-    if (!showPanelHeader && (!panelController.isAttached || panelController.panelPosition > 0.385)) return;
+    if (!showPanelHeader && (!panelController.isAttached || panelController.panelPosition > 0.06)) return;
 
     if (showPanelHeader) {
-      double scrollPosition = 0.385;
-      if (vehicle.usuario_en_uso == null) scrollPosition = 0.35;
-      if (vehicle.imei != null) panelController.animatePanelToPosition(scrollPosition);
+      double scrollPosition = 0.06;
+      if (vehicle.usuario_en_uso == null) {
+        BlocProvider.of<HomeBloc>(context).add(HideFab());
+        scrollPosition = 0.06;
+      }
+      if (vehicle.imei != null && panelController.isAttached) panelController.animatePanelToPosition(scrollPosition);
     }
   }
 }
@@ -184,7 +218,8 @@ class CustomSearchDelegate extends SearchDelegate {
           onTap: () {
             close(context, null);
             final VehicleInfoMap vehicle = routesBloc.vehicles.firstWhere((v) => v.nombre == result);
-            routesBloc.add(SelectVehicleEvent(vehicle, context));
+            BlocProvider.of<HomeBloc>(context).add(HideFab());
+            routesBloc.add(SelectVehicleEvent(vehicle));
             routesBloc.add(MoveCameraToPointEvent(mapController: mapController, latitude: vehicle.latitud!, longitude: vehicle.longitud!));
           },
         );
@@ -211,7 +246,8 @@ class CustomSearchDelegate extends SearchDelegate {
           onTap: () {
             close(context, null);
             final VehicleInfoMap vehicle = routesBloc.vehicles.firstWhere((v) => v.nombre == result);
-            routesBloc.add(SelectVehicleEvent(vehicle, context));
+            BlocProvider.of<HomeBloc>(context).add(HideFab());
+            routesBloc.add(SelectVehicleEvent(vehicle));
             routesBloc.add(MoveCameraToPointEvent(mapController: mapController, latitude: vehicle.latitud!, longitude: vehicle.longitud!));
           },
         );

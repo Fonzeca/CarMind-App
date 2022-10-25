@@ -13,6 +13,7 @@ import 'package:carmind_app/util/custom_interceptor.dart';
 import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:carmind_app/util/offline_managers/offline_module.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -36,14 +37,15 @@ void main() async {
     );
 
     await PushNotificationsService.initializeApp();
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    if (!kDebugMode) {
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    }
 
     final dir = await getApplicationSupportDirectory();
 
     // Open Isar in the UI isolate
     final isar = await Isar.open(
-      name: 'isar-carmind',
-      schemas: [
+      [
         LogUsoSchema,
         LoggedUserSchema,
         OpcionPojoSchema,
@@ -53,10 +55,11 @@ void main() async {
         PreguntaPojoDbSchema,
         RespuestaPojoDbSchema,
         RespuestaOpcionPojoSchema,
-        EvaluacionesPendientesSchema,
+        EvaluacionesPendientesDbSchema,
         EvaluacionTerminadaPojoDbSchema,
-        LogEvaluacionTerminadaPojoDbSchema
+        LogEvaluacionTerminadaPojoDbSchema,
       ],
+      name: 'isar-carmind',
       directory: dir.path,
     );
 
@@ -94,6 +97,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     GetIt.I.registerSingleton<HomeBloc>(HomeBloc());
     configDio(sharedPreferences);
+    GetIt.I.registerSingleton<RoutesBloc>(RoutesBloc());
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => GetIt.I.get<HomeBloc>()),
@@ -104,7 +108,7 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
         BlocProvider(create: (context) => QrScannerBloc()),
         BlocProvider(create: (context) => VehiculoBloc()),
         BlocProvider(create: (context) => ProfileBloc()),
-        BlocProvider(create: (context) => RoutesBloc())
+        BlocProvider(create: (context) => GetIt.I.get<RoutesBloc>())
       ],
       child: MaterialApp(
         key: _materialAppKey,
@@ -120,10 +124,20 @@ class MyApp extends StatelessWidget with WidgetsBindingObserver {
 
   configDio(SharedPreferences sharedPreferences) async {
     staticDio = Dio();
+    try {
+      var offlineModule = OfflineModule(sharedPreferences: sharedPreferences, dio: staticDio!);
+      staticDio?.httpClientAdapter = offlineModule.httpClientAdapter;
+      staticDio?.interceptors.add(offlineModule.offlineInterceptor);
+    } catch (error) {
+      //Le damos para que use https
+      (staticDio?.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (client) {
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      };
 
-    var offlineModule = OfflineModule(sharedPreferences: sharedPreferences, dio: staticDio!);
-    staticDio?.httpClientAdapter = offlineModule.httpClientAdapter;
-    staticDio?.interceptors.add(offlineModule.offlineInterceptor);
+      if (!kDebugMode) FirebaseCrashlytics.instance.recordError(error, StackTrace.current, fatal: true);
+    }
+
     staticDio?.interceptors.add(CustomInterceptor());
   }
 }

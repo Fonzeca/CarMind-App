@@ -5,7 +5,6 @@ part 'evaluacion.g.dart';
 
 @JsonSerializable()
 class Evaluacion {
-  @Id()
   int? id;
 
   List<int>? vehiculo_id;
@@ -16,11 +15,11 @@ class Evaluacion {
 
   Evaluacion();
 
-  Evaluacion.fromSelf(Evaluacion ev) {
-    id = ev.id;
-    vehiculo_id = ev.vehiculo_id;
-    titulo = ev.titulo;
-    preguntas = ev.preguntas;
+  Evaluacion.fromDb(EvaluacionDb db) {
+    id = db.id;
+    vehiculo_id = db.vehiculo_id;
+    titulo = db.titulo;
+    preguntas = db.preguntasDb.map((e) => PreguntaPojo.fromDb(e)).toList();
   }
 
   factory Evaluacion.fromJson(Map<String, dynamic> json) => _$EvaluacionFromJson(json);
@@ -28,27 +27,39 @@ class Evaluacion {
 }
 
 @Collection()
-class EvaluacionDb extends Evaluacion {
+class EvaluacionDb {
   EvaluacionDb();
 
-  EvaluacionDb.fromEvaluacion(Evaluacion e) : super.fromSelf(e) {
-    preguntasDb.addAll(e.preguntas!.map((e) => PreguntaPojoDb.fromPreguntaPojo(e)));
+  Id? id;
+
+  List<int>? vehiculo_id;
+
+  String? titulo;
+
+  final preguntasDb = IsarLinks<PreguntaPojoDb>();
+
+  EvaluacionDb.fromEvaluacion(Evaluacion e, Isar isar) {
+    id = e.id;
+    vehiculo_id = e.vehiculo_id;
+    titulo = e.titulo;
+    if (e.preguntas != null && e.preguntas!.isNotEmpty) {
+      var preguntasList = e.preguntas!.map((e) => PreguntaPojoDb.fromPreguntaPojo(e, isar)).toList();
+      isar.preguntaPojoDbs.putAllSync(preguntasList);
+      preguntasDb.addAll(preguntasList);
+    }
   }
 
-  @override
+  @ignore
   get preguntas {
     return preguntasDb.toList()
       ..sort(
         (a, b) => a.id!.compareTo(b.id!),
       );
   }
-
-  final preguntasDb = IsarLinks<PreguntaPojoDb>();
 }
 
 @JsonSerializable()
 class PreguntaPojo {
-  @Id()
   int? id;
 
   String? descripcion;
@@ -58,12 +69,11 @@ class PreguntaPojo {
   List<OpcionPojo>? opciones;
 
   PreguntaPojo();
-
-  PreguntaPojo.fromSelf(PreguntaPojo preg) {
-    id = preg.id;
-    descripcion = preg.descripcion;
-    tipo = preg.tipo;
-    opciones = preg.opciones;
+  PreguntaPojo.fromDb(PreguntaPojoDb db) {
+    id = db.id;
+    descripcion = db.descripcion;
+    tipo = db.tipo;
+    opciones = db.opcionesDb.toList();
   }
 
   factory PreguntaPojo.fromJson(Map<String, dynamic> json) => _$PreguntaPojoFromJson(json);
@@ -71,29 +81,40 @@ class PreguntaPojo {
 }
 
 @Collection()
-class PreguntaPojoDb extends PreguntaPojo {
+class PreguntaPojoDb {
   PreguntaPojoDb();
 
-  PreguntaPojoDb.fromPreguntaPojo(PreguntaPojo p) : super.fromSelf(p) {
-    if (p.opciones != null && p.opciones!.isNotEmpty) opcionesDb.addAll(p.opciones!);
+  Id? id;
+
+  String? descripcion;
+
+  String? tipo;
+
+  final opcionesDb = IsarLinks<OpcionPojo>();
+
+  PreguntaPojoDb.fromPreguntaPojo(PreguntaPojo p, Isar isar) {
+    id = p.id;
+    descripcion = p.descripcion;
+    tipo = p.tipo;
+    if (p.opciones != null && p.opciones!.isNotEmpty) {
+      isar.opcionPojos.putAllSync(p.opciones!);
+      opcionesDb.addAll(p.opciones!);
+    }
   }
 
-  @override
+  @ignore
   get opciones {
     return opcionesDb.toList()
       ..sort(
         (a, b) => a.id!.compareTo(b.id!),
       );
   }
-
-  final opcionesDb = IsarLinks<OpcionPojo>();
 }
 
 @JsonSerializable()
 @Collection()
 class OpcionPojo {
-  @Id()
-  int? id;
+  Id? id;
 
   String? opcion;
 

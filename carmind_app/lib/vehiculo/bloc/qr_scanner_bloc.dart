@@ -1,6 +1,7 @@
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -40,8 +41,10 @@ class QrScannerBloc extends Bloc<QrScannerEvent, QrScannerState> {
         await api.iniciarUso(idVehiculo);
       } catch (e) {
         emit(QrScannerInitial());
-        FirebaseCrashlytics.instance
-            .recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar iniciar uso de un vehiculo');
+        if (!kDebugMode) {
+          FirebaseCrashlytics.instance
+              .recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar iniciar uso de un vehiculo');
+        }
         return;
       }
 

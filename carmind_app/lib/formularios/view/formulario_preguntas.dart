@@ -5,6 +5,7 @@ import 'package:carmind_app/formularios/formularios.dart';
 import 'package:carmind_app/home/home.dart';
 import 'package:carmind_app/vehiculo/vehiculo.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -216,8 +217,10 @@ class FormularioPreguntas extends StatelessWidget {
         realizarEvaluacionBloc.add(RestoreDataEvent(evaluacion, vehiculo, response.files![0]));
       } else {
         EasyLoading.showError(noMemoryError);
-        FirebaseCrashlytics.instance
-            .recordError('Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}', StackTrace.current, reason: noMemoryError);
+        if (!kDebugMode) {
+          FirebaseCrashlytics.instance
+              .recordError('Ruta: ${response.exception!.details} Mensaje: ${response.exception!.message}', StackTrace.current, reason: noMemoryError);
+        }
       }
     } else {
       realizarEvaluacionBloc.add(IniciarEvaluacionEvent(evaluacion, vehiculo));

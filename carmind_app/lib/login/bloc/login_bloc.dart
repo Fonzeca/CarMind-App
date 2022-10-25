@@ -8,6 +8,7 @@ import 'package:carmind_app/util/offline_managers/offline_manager.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
@@ -60,12 +61,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } on DioError catch (e) {
         removeToken();
         if (e.response != null && e.response!.statusCode == 400) {
-          FirebaseCrashlytics.instance
-              .recordError('Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}', StackTrace.current, reason: noInternet);
+          if (!kDebugMode) {
+            FirebaseCrashlytics.instance
+                .recordError('Ruta: ${e.requestOptions.path} Mensaje: ${e.error.toString()}', StackTrace.current, reason: noInternet);
+          }
         }
       } on Exception catch (e) {
         removeToken();
-        FirebaseCrashlytics.instance.recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar logearse');
+        if (!kDebugMode) {
+          FirebaseCrashlytics.instance.recordError('Detalles: ${e.toString()}', StackTrace.current, reason: 'Error al intentar logearse');
+        }
       }
     });
 

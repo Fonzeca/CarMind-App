@@ -6,171 +6,187 @@ part of 'vehiculo.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
 extension GetVehiculoDbCollection on Isar {
-  IsarCollection<VehiculoDb> get vehiculoDbs => getCollection();
+  IsarCollection<VehiculoDb> get vehiculoDbs => this.collection();
 }
 
 const VehiculoDbSchema = CollectionSchema(
-  name: 'VehiculoDb',
-  schema:
-      '{"name":"VehiculoDb","idName":"id","properties":[{"name":"en_uso","type":"Bool"},{"name":"hashCode","type":"Long"},{"name":"imei","type":"String"},{"name":"kilometraje","type":"Long"},{"name":"linea","type":"String"},{"name":"marca","type":"String"},{"name":"modelo","type":"String"},{"name":"nombre","type":"String"},{"name":"patente","type":"String"},{"name":"stringify","type":"Bool"},{"name":"tipo","type":"String"}],"indexes":[],"links":[{"name":"pendientesDb","target":"EvaluacionesPendientes"}]}',
-  idName: 'id',
-  propertyIds: {
-    'en_uso': 0,
-    'hashCode': 1,
-    'imei': 2,
-    'kilometraje': 3,
-    'linea': 4,
-    'marca': 5,
-    'modelo': 6,
-    'nombre': 7,
-    'patente': 8,
-    'stringify': 9,
-    'tipo': 10
+  name: r'VehiculoDb',
+  id: 7501981152251640766,
+  properties: {
+    r'en_uso': PropertySchema(
+      id: 0,
+      name: r'en_uso',
+      type: IsarType.bool,
+    ),
+    r'imei': PropertySchema(
+      id: 1,
+      name: r'imei',
+      type: IsarType.string,
+    ),
+    r'kilometraje': PropertySchema(
+      id: 2,
+      name: r'kilometraje',
+      type: IsarType.long,
+    ),
+    r'linea': PropertySchema(
+      id: 3,
+      name: r'linea',
+      type: IsarType.string,
+    ),
+    r'marca': PropertySchema(
+      id: 4,
+      name: r'marca',
+      type: IsarType.string,
+    ),
+    r'modelo': PropertySchema(
+      id: 5,
+      name: r'modelo',
+      type: IsarType.string,
+    ),
+    r'nombre': PropertySchema(
+      id: 6,
+      name: r'nombre',
+      type: IsarType.string,
+    ),
+    r'patente': PropertySchema(
+      id: 7,
+      name: r'patente',
+      type: IsarType.string,
+    ),
+    r'tipo': PropertySchema(
+      id: 8,
+      name: r'tipo',
+      type: IsarType.string,
+    )
   },
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {'pendientesDb': 0},
-  backlinkLinkNames: {},
+  estimateSize: _vehiculoDbEstimateSize,
+  serialize: _vehiculoDbSerialize,
+  deserialize: _vehiculoDbDeserialize,
+  deserializeProp: _vehiculoDbDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {
+    r'pendientesDb': LinkSchema(
+      id: -4737466920731331230,
+      name: r'pendientesDb',
+      target: r'EvaluacionesPendientesDb',
+      single: false,
+    )
+  },
+  embeddedSchemas: {},
   getId: _vehiculoDbGetId,
-  setId: _vehiculoDbSetId,
   getLinks: _vehiculoDbGetLinks,
-  attachLinks: _vehiculoDbAttachLinks,
-  serializeNative: _vehiculoDbSerializeNative,
-  deserializeNative: _vehiculoDbDeserializeNative,
-  deserializePropNative: _vehiculoDbDeserializePropNative,
-  serializeWeb: _vehiculoDbSerializeWeb,
-  deserializeWeb: _vehiculoDbDeserializeWeb,
-  deserializePropWeb: _vehiculoDbDeserializePropWeb,
-  version: 3,
+  attach: _vehiculoDbAttach,
+  version: '3.0.2',
 );
 
-int? _vehiculoDbGetId(VehiculoDb object) {
-  if (object.id == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.id;
+int _vehiculoDbEstimateSize(
+  VehiculoDb object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.imei;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
   }
+  {
+    final value = object.linea;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.marca;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.modelo;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.nombre;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.patente;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.tipo;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  return bytesCount;
 }
 
-void _vehiculoDbSetId(VehiculoDb object, int id) {
-  object.id = id;
+void _vehiculoDbSerialize(
+  VehiculoDb object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeBool(offsets[0], object.en_uso);
+  writer.writeString(offsets[1], object.imei);
+  writer.writeLong(offsets[2], object.kilometraje);
+  writer.writeString(offsets[3], object.linea);
+  writer.writeString(offsets[4], object.marca);
+  writer.writeString(offsets[5], object.modelo);
+  writer.writeString(offsets[6], object.nombre);
+  writer.writeString(offsets[7], object.patente);
+  writer.writeString(offsets[8], object.tipo);
 }
 
-List<IsarLinkBase> _vehiculoDbGetLinks(VehiculoDb object) {
-  return [object.pendientesDb];
-}
-
-void _vehiculoDbSerializeNative(
-    IsarCollection<VehiculoDb> collection,
-    IsarRawObject rawObj,
-    VehiculoDb object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.en_uso;
-  final _en_uso = value0;
-  final value1 = object.hashCode;
-  final _hashCode = value1;
-  final value2 = object.imei;
-  IsarUint8List? _imei;
-  if (value2 != null) {
-    _imei = IsarBinaryWriter.utf8Encoder.convert(value2);
-  }
-  dynamicSize += (_imei?.length ?? 0) as int;
-  final value3 = object.kilometraje;
-  final _kilometraje = value3;
-  final value4 = object.linea;
-  IsarUint8List? _linea;
-  if (value4 != null) {
-    _linea = IsarBinaryWriter.utf8Encoder.convert(value4);
-  }
-  dynamicSize += (_linea?.length ?? 0) as int;
-  final value5 = object.marca;
-  IsarUint8List? _marca;
-  if (value5 != null) {
-    _marca = IsarBinaryWriter.utf8Encoder.convert(value5);
-  }
-  dynamicSize += (_marca?.length ?? 0) as int;
-  final value6 = object.modelo;
-  IsarUint8List? _modelo;
-  if (value6 != null) {
-    _modelo = IsarBinaryWriter.utf8Encoder.convert(value6);
-  }
-  dynamicSize += (_modelo?.length ?? 0) as int;
-  final value7 = object.nombre;
-  IsarUint8List? _nombre;
-  if (value7 != null) {
-    _nombre = IsarBinaryWriter.utf8Encoder.convert(value7);
-  }
-  dynamicSize += (_nombre?.length ?? 0) as int;
-  final value8 = object.patente;
-  IsarUint8List? _patente;
-  if (value8 != null) {
-    _patente = IsarBinaryWriter.utf8Encoder.convert(value8);
-  }
-  dynamicSize += (_patente?.length ?? 0) as int;
-  final value9 = object.stringify;
-  final _stringify = value9;
-  final value10 = object.tipo;
-  IsarUint8List? _tipo;
-  if (value10 != null) {
-    _tipo = IsarBinaryWriter.utf8Encoder.convert(value10);
-  }
-  dynamicSize += (_tipo?.length ?? 0) as int;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeBool(offsets[0], _en_uso);
-  writer.writeLong(offsets[1], _hashCode);
-  writer.writeBytes(offsets[2], _imei);
-  writer.writeLong(offsets[3], _kilometraje);
-  writer.writeBytes(offsets[4], _linea);
-  writer.writeBytes(offsets[5], _marca);
-  writer.writeBytes(offsets[6], _modelo);
-  writer.writeBytes(offsets[7], _nombre);
-  writer.writeBytes(offsets[8], _patente);
-  writer.writeBool(offsets[9], _stringify);
-  writer.writeBytes(offsets[10], _tipo);
-}
-
-VehiculoDb _vehiculoDbDeserializeNative(IsarCollection<VehiculoDb> collection,
-    int id, IsarBinaryReader reader, List<int> offsets) {
+VehiculoDb _vehiculoDbDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
   final object = VehiculoDb();
   object.en_uso = reader.readBoolOrNull(offsets[0]);
   object.id = id;
-  object.imei = reader.readStringOrNull(offsets[2]);
-  object.kilometraje = reader.readLongOrNull(offsets[3]);
-  object.linea = reader.readStringOrNull(offsets[4]);
-  object.marca = reader.readStringOrNull(offsets[5]);
-  object.modelo = reader.readStringOrNull(offsets[6]);
-  object.nombre = reader.readStringOrNull(offsets[7]);
-  object.patente = reader.readStringOrNull(offsets[8]);
-  object.tipo = reader.readStringOrNull(offsets[10]);
-  _vehiculoDbAttachLinks(collection, id, object);
+  object.imei = reader.readStringOrNull(offsets[1]);
+  object.kilometraje = reader.readLongOrNull(offsets[2]);
+  object.linea = reader.readStringOrNull(offsets[3]);
+  object.marca = reader.readStringOrNull(offsets[4]);
+  object.modelo = reader.readStringOrNull(offsets[5]);
+  object.nombre = reader.readStringOrNull(offsets[6]);
+  object.patente = reader.readStringOrNull(offsets[7]);
+  object.tipo = reader.readStringOrNull(offsets[8]);
   return object;
 }
 
-P _vehiculoDbDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+P _vehiculoDbDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
       return (reader.readBoolOrNull(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
-    case 2:
       return (reader.readStringOrNull(offset)) as P;
-    case 3:
+    case 2:
       return (reader.readLongOrNull(offset)) as P;
+    case 3:
+      return (reader.readStringOrNull(offset)) as P;
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
@@ -181,402 +197,372 @@ P _vehiculoDbDeserializePropNative<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
-    case 9:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 10:
-      return (reader.readStringOrNull(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _vehiculoDbSerializeWeb(
-    IsarCollection<VehiculoDb> collection, VehiculoDb object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'en_uso', object.en_uso);
-  IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'imei', object.imei);
-  IsarNative.jsObjectSet(jsObj, 'kilometraje', object.kilometraje);
-  IsarNative.jsObjectSet(jsObj, 'linea', object.linea);
-  IsarNative.jsObjectSet(jsObj, 'marca', object.marca);
-  IsarNative.jsObjectSet(jsObj, 'modelo', object.modelo);
-  IsarNative.jsObjectSet(jsObj, 'nombre', object.nombre);
-  IsarNative.jsObjectSet(jsObj, 'patente', object.patente);
-  IsarNative.jsObjectSet(jsObj, 'stringify', object.stringify);
-  IsarNative.jsObjectSet(jsObj, 'tipo', object.tipo);
-  return jsObj;
+Id _vehiculoDbGetId(VehiculoDb object) {
+  return object.id ?? Isar.autoIncrement;
 }
 
-VehiculoDb _vehiculoDbDeserializeWeb(
-    IsarCollection<VehiculoDb> collection, dynamic jsObj) {
-  final object = VehiculoDb();
-  object.en_uso = IsarNative.jsObjectGet(jsObj, 'en_uso');
-  object.id = IsarNative.jsObjectGet(jsObj, 'id');
-  object.imei = IsarNative.jsObjectGet(jsObj, 'imei');
-  object.kilometraje = IsarNative.jsObjectGet(jsObj, 'kilometraje');
-  object.linea = IsarNative.jsObjectGet(jsObj, 'linea');
-  object.marca = IsarNative.jsObjectGet(jsObj, 'marca');
-  object.modelo = IsarNative.jsObjectGet(jsObj, 'modelo');
-  object.nombre = IsarNative.jsObjectGet(jsObj, 'nombre');
-  object.patente = IsarNative.jsObjectGet(jsObj, 'patente');
-  object.tipo = IsarNative.jsObjectGet(jsObj, 'tipo');
-  _vehiculoDbAttachLinks(
-      collection, IsarNative.jsObjectGet(jsObj, 'id'), object);
-  return object;
+List<IsarLinkBase<dynamic>> _vehiculoDbGetLinks(VehiculoDb object) {
+  return [object.pendientesDb];
 }
 
-P _vehiculoDbDeserializePropWeb<P>(Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case 'en_uso':
-      return (IsarNative.jsObjectGet(jsObj, 'en_uso')) as P;
-    case 'hashCode':
-      return (IsarNative.jsObjectGet(jsObj, 'hashCode') ??
-          double.negativeInfinity) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'imei':
-      return (IsarNative.jsObjectGet(jsObj, 'imei')) as P;
-    case 'kilometraje':
-      return (IsarNative.jsObjectGet(jsObj, 'kilometraje')) as P;
-    case 'linea':
-      return (IsarNative.jsObjectGet(jsObj, 'linea')) as P;
-    case 'marca':
-      return (IsarNative.jsObjectGet(jsObj, 'marca')) as P;
-    case 'modelo':
-      return (IsarNative.jsObjectGet(jsObj, 'modelo')) as P;
-    case 'nombre':
-      return (IsarNative.jsObjectGet(jsObj, 'nombre')) as P;
-    case 'patente':
-      return (IsarNative.jsObjectGet(jsObj, 'patente')) as P;
-    case 'stringify':
-      return (IsarNative.jsObjectGet(jsObj, 'stringify')) as P;
-    case 'tipo':
-      return (IsarNative.jsObjectGet(jsObj, 'tipo')) as P;
-    default:
-      throw 'Illegal propertyName';
-  }
-}
-
-void _vehiculoDbAttachLinks(IsarCollection col, int id, VehiculoDb object) {
-  object.pendientesDb
-      .attach(col, col.isar.evaluacionesPendientess, 'pendientesDb', id);
+void _vehiculoDbAttach(IsarCollection<dynamic> col, Id id, VehiculoDb object) {
+  object.id = id;
+  object.pendientesDb.attach(col,
+      col.isar.collection<EvaluacionesPendientesDb>(), r'pendientesDb', id);
 }
 
 extension VehiculoDbQueryWhereSort
     on QueryBuilder<VehiculoDb, VehiculoDb, QWhere> {
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhere> anyId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
 extension VehiculoDbQueryWhere
     on QueryBuilder<VehiculoDb, VehiculoDb, QWhereClause> {
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idEqualTo(int id) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: id,
-      includeLower: true,
-      upper: id,
-      includeUpper: true,
-    ));
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
   }
 
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idNotEqualTo(int id) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: id, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: id, includeUpper: false),
-      );
-    }
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idNotEqualTo(Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
   }
 
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idGreaterThan(int id,
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: id, includeLower: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
   }
 
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idLessThan(int id,
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: id, includeUpper: include),
-    );
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterWhereClause> idBetween(
-    int lowerId,
-    int upperId, {
+    Id lowerId,
+    Id upperId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerId,
-      includeLower: includeLower,
-      upper: upperId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
 extension VehiculoDbQueryFilter
     on QueryBuilder<VehiculoDb, VehiculoDb, QFilterCondition> {
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> en_usoIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'en_uso',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'en_uso',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      en_usoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'en_uso',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> en_usoEqualTo(
       bool? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'en_uso',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeEqualTo(
-      int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
-      hashCodeGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> hashCodeBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'hashCode',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'en_uso',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idEqualTo(
-      int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+      Id? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idGreaterThan(
-    int value, {
+    Id? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idLessThan(
-    int value, {
+    Id? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> idBetween(
-    int lower,
-    int upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'imei',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'imei',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'imei',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'imei',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'imei',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'imei',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'imei',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'imei',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'imei',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'imei',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> imeiIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'imei',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
       kilometrajeIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'kilometraje',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'kilometraje',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      kilometrajeIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'kilometraje',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
       kilometrajeEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'kilometraje',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'kilometraje',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
@@ -584,12 +570,13 @@ extension VehiculoDbQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'kilometraje',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'kilometraje',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
@@ -597,12 +584,13 @@ extension VehiculoDbQueryFilter
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'kilometraje',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'kilometraje',
+        value: value,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
@@ -612,1979 +600,2274 @@ extension VehiculoDbQueryFilter
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'kilometraje',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'kilometraje',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'linea',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'linea',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'linea',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'linea',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'linea',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'linea',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'linea',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'linea',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'linea',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> lineaIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'linea',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      lineaIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'linea',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'marca',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'marca',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'marca',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'marca',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'marca',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'marca',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'marca',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'marca',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'marca',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> marcaIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'marca',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      marcaIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'marca',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'modelo',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'modelo',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      modeloIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'modelo',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'modelo',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'modelo',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'modelo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'modelo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'modelo',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'modelo',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> modeloIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'modelo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      modeloIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'modelo',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'nombre',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'nombre',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      nombreIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'nombre',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'nombre',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'nombre',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'nombre',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'nombre',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'nombre',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'nombre',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> nombreIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nombre',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      nombreIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'nombre',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'patente',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'patente',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      patenteIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'patente',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
       patenteGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'patente',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'patente',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'patente',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'patente',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'patente',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'patente',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> patenteIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'patente',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
-      stringifyIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'stringify',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> stringifyEqualTo(
-      bool? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'stringify',
-      value: value,
-    ));
+      patenteIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'patente',
+        value: '',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'tipo',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'tipo',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'tipo',
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'tipo',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'tipo',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoContains(
       String value,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'tipo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'tipo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoMatches(
       String pattern,
       {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'tipo',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'tipo',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'tipo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> tipoIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'tipo',
+        value: '',
+      ));
+    });
   }
 }
+
+extension VehiculoDbQueryObject
+    on QueryBuilder<VehiculoDb, VehiculoDb, QFilterCondition> {}
 
 extension VehiculoDbQueryLinks
     on QueryBuilder<VehiculoDb, VehiculoDb, QFilterCondition> {
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition> pendientesDb(
-      FilterQuery<EvaluacionesPendientes> q) {
-    return linkInternal(
-      isar.evaluacionesPendientess,
-      q,
-      'pendientesDb',
-    );
+      FilterQuery<EvaluacionesPendientesDb> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'pendientesDb');
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pendientesDb', length, true, length, true);
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pendientesDb', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pendientesDb', 0, false, 999999, true);
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pendientesDb', 0, true, length, include);
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'pendientesDb', length, include, 999999, true);
+    });
+  }
+
+  QueryBuilder<VehiculoDb, VehiculoDb, QAfterFilterCondition>
+      pendientesDbLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(
+          r'pendientesDb', lower, includeLower, upper, includeUpper);
+    });
   }
 }
 
-extension VehiculoDbQueryWhereSortBy
+extension VehiculoDbQuerySortBy
     on QueryBuilder<VehiculoDb, VehiculoDb, QSortBy> {
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByEn_uso() {
-    return addSortByInternal('en_uso', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'en_uso', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByEn_usoDesc() {
-    return addSortByInternal('en_uso', Sort.desc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByHashCode() {
-    return addSortByInternal('hashCode', Sort.asc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByHashCodeDesc() {
-    return addSortByInternal('hashCode', Sort.desc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortById() {
-    return addSortByInternal('id', Sort.asc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'en_uso', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByImei() {
-    return addSortByInternal('imei', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imei', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByImeiDesc() {
-    return addSortByInternal('imei', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imei', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByKilometraje() {
-    return addSortByInternal('kilometraje', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kilometraje', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByKilometrajeDesc() {
-    return addSortByInternal('kilometraje', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kilometraje', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByLinea() {
-    return addSortByInternal('linea', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linea', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByLineaDesc() {
-    return addSortByInternal('linea', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linea', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByMarca() {
-    return addSortByInternal('marca', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'marca', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByMarcaDesc() {
-    return addSortByInternal('marca', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'marca', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByModelo() {
-    return addSortByInternal('modelo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelo', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByModeloDesc() {
-    return addSortByInternal('modelo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelo', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByNombre() {
-    return addSortByInternal('nombre', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nombre', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByNombreDesc() {
-    return addSortByInternal('nombre', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nombre', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByPatente() {
-    return addSortByInternal('patente', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patente', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByPatenteDesc() {
-    return addSortByInternal('patente', Sort.desc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByStringify() {
-    return addSortByInternal('stringify', Sort.asc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByStringifyDesc() {
-    return addSortByInternal('stringify', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patente', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByTipo() {
-    return addSortByInternal('tipo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tipo', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> sortByTipoDesc() {
-    return addSortByInternal('tipo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tipo', Sort.desc);
+    });
   }
 }
 
-extension VehiculoDbQueryWhereSortThenBy
+extension VehiculoDbQuerySortThenBy
     on QueryBuilder<VehiculoDb, VehiculoDb, QSortThenBy> {
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByEn_uso() {
-    return addSortByInternal('en_uso', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'en_uso', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByEn_usoDesc() {
-    return addSortByInternal('en_uso', Sort.desc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByHashCode() {
-    return addSortByInternal('hashCode', Sort.asc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByHashCodeDesc() {
-    return addSortByInternal('hashCode', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'en_uso', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByImei() {
-    return addSortByInternal('imei', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imei', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByImeiDesc() {
-    return addSortByInternal('imei', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'imei', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByKilometraje() {
-    return addSortByInternal('kilometraje', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kilometraje', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByKilometrajeDesc() {
-    return addSortByInternal('kilometraje', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kilometraje', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByLinea() {
-    return addSortByInternal('linea', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linea', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByLineaDesc() {
-    return addSortByInternal('linea', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linea', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByMarca() {
-    return addSortByInternal('marca', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'marca', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByMarcaDesc() {
-    return addSortByInternal('marca', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'marca', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByModelo() {
-    return addSortByInternal('modelo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelo', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByModeloDesc() {
-    return addSortByInternal('modelo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'modelo', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByNombre() {
-    return addSortByInternal('nombre', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nombre', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByNombreDesc() {
-    return addSortByInternal('nombre', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nombre', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByPatente() {
-    return addSortByInternal('patente', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patente', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByPatenteDesc() {
-    return addSortByInternal('patente', Sort.desc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByStringify() {
-    return addSortByInternal('stringify', Sort.asc);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByStringifyDesc() {
-    return addSortByInternal('stringify', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'patente', Sort.desc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByTipo() {
-    return addSortByInternal('tipo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tipo', Sort.asc);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QAfterSortBy> thenByTipoDesc() {
-    return addSortByInternal('tipo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'tipo', Sort.desc);
+    });
   }
 }
 
 extension VehiculoDbQueryWhereDistinct
     on QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> {
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByEn_uso() {
-    return addDistinctByInternal('en_uso');
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByHashCode() {
-    return addDistinctByInternal('hashCode');
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctById() {
-    return addDistinctByInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'en_uso');
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByImei(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('imei', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'imei', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByKilometraje() {
-    return addDistinctByInternal('kilometraje');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'kilometraje');
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByLinea(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('linea', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'linea', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByMarca(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('marca', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'marca', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByModelo(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('modelo', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'modelo', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByNombre(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('nombre', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'nombre', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByPatente(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('patente', caseSensitive: caseSensitive);
-  }
-
-  QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByStringify() {
-    return addDistinctByInternal('stringify');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'patente', caseSensitive: caseSensitive);
+    });
   }
 
   QueryBuilder<VehiculoDb, VehiculoDb, QDistinct> distinctByTipo(
       {bool caseSensitive = true}) {
-    return addDistinctByInternal('tipo', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'tipo', caseSensitive: caseSensitive);
+    });
   }
 }
 
 extension VehiculoDbQueryProperty
     on QueryBuilder<VehiculoDb, VehiculoDb, QQueryProperty> {
+  QueryBuilder<VehiculoDb, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
   QueryBuilder<VehiculoDb, bool?, QQueryOperations> en_usoProperty() {
-    return addPropertyNameInternal('en_uso');
-  }
-
-  QueryBuilder<VehiculoDb, int, QQueryOperations> hashCodeProperty() {
-    return addPropertyNameInternal('hashCode');
-  }
-
-  QueryBuilder<VehiculoDb, int?, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'en_uso');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> imeiProperty() {
-    return addPropertyNameInternal('imei');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'imei');
+    });
   }
 
   QueryBuilder<VehiculoDb, int?, QQueryOperations> kilometrajeProperty() {
-    return addPropertyNameInternal('kilometraje');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'kilometraje');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> lineaProperty() {
-    return addPropertyNameInternal('linea');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'linea');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> marcaProperty() {
-    return addPropertyNameInternal('marca');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'marca');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> modeloProperty() {
-    return addPropertyNameInternal('modelo');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'modelo');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> nombreProperty() {
-    return addPropertyNameInternal('nombre');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'nombre');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> patenteProperty() {
-    return addPropertyNameInternal('patente');
-  }
-
-  QueryBuilder<VehiculoDb, bool?, QQueryOperations> stringifyProperty() {
-    return addPropertyNameInternal('stringify');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'patente');
+    });
   }
 
   QueryBuilder<VehiculoDb, String?, QQueryOperations> tipoProperty() {
-    return addPropertyNameInternal('tipo');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'tipo');
+    });
   }
 }
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, unused_local_variable
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
 
-extension GetEvaluacionesPendientesCollection on Isar {
-  IsarCollection<EvaluacionesPendientes> get evaluacionesPendientess =>
-      getCollection();
+extension GetEvaluacionesPendientesDbCollection on Isar {
+  IsarCollection<EvaluacionesPendientesDb> get evaluacionesPendientesDbs =>
+      this.collection();
 }
 
-const EvaluacionesPendientesSchema = CollectionSchema(
-  name: 'EvaluacionesPendientes',
-  schema:
-      '{"name":"EvaluacionesPendientes","idName":"privateId","properties":[{"name":"hashCode","type":"Long"},{"name":"id","type":"Long"},{"name":"intervaloDias","type":"Long"},{"name":"pendiente","type":"Bool"},{"name":"stringify","type":"Bool"},{"name":"titulo","type":"String"},{"name":"vencimiento","type":"Long"}],"indexes":[],"links":[]}',
-  idName: 'privateId',
-  propertyIds: {
-    'hashCode': 0,
-    'id': 1,
-    'intervaloDias': 2,
-    'pendiente': 3,
-    'stringify': 4,
-    'titulo': 5,
-    'vencimiento': 6
+const EvaluacionesPendientesDbSchema = CollectionSchema(
+  name: r'EvaluacionesPendientesDb',
+  id: -7239735741203287752,
+  properties: {
+    r'id': PropertySchema(
+      id: 0,
+      name: r'id',
+      type: IsarType.long,
+    ),
+    r'intervaloDias': PropertySchema(
+      id: 1,
+      name: r'intervaloDias',
+      type: IsarType.long,
+    ),
+    r'pendiente': PropertySchema(
+      id: 2,
+      name: r'pendiente',
+      type: IsarType.bool,
+    ),
+    r'titulo': PropertySchema(
+      id: 3,
+      name: r'titulo',
+      type: IsarType.string,
+    ),
+    r'vencimiento': PropertySchema(
+      id: 4,
+      name: r'vencimiento',
+      type: IsarType.long,
+    )
   },
-  listProperties: {},
-  indexIds: {},
-  indexValueTypes: {},
-  linkIds: {},
-  backlinkLinkNames: {},
-  getId: _evaluacionesPendientesGetId,
-  setId: _evaluacionesPendientesSetId,
-  getLinks: _evaluacionesPendientesGetLinks,
-  attachLinks: _evaluacionesPendientesAttachLinks,
-  serializeNative: _evaluacionesPendientesSerializeNative,
-  deserializeNative: _evaluacionesPendientesDeserializeNative,
-  deserializePropNative: _evaluacionesPendientesDeserializePropNative,
-  serializeWeb: _evaluacionesPendientesSerializeWeb,
-  deserializeWeb: _evaluacionesPendientesDeserializeWeb,
-  deserializePropWeb: _evaluacionesPendientesDeserializePropWeb,
-  version: 3,
+  estimateSize: _evaluacionesPendientesDbEstimateSize,
+  serialize: _evaluacionesPendientesDbSerialize,
+  deserialize: _evaluacionesPendientesDbDeserialize,
+  deserializeProp: _evaluacionesPendientesDbDeserializeProp,
+  idName: r'privateId',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _evaluacionesPendientesDbGetId,
+  getLinks: _evaluacionesPendientesDbGetLinks,
+  attach: _evaluacionesPendientesDbAttach,
+  version: '3.0.2',
 );
 
-int? _evaluacionesPendientesGetId(EvaluacionesPendientes object) {
-  if (object.privateId == Isar.autoIncrement) {
-    return null;
-  } else {
-    return object.privateId;
+int _evaluacionesPendientesDbEstimateSize(
+  EvaluacionesPendientesDb object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  {
+    final value = object.titulo;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
   }
+  return bytesCount;
 }
 
-void _evaluacionesPendientesSetId(EvaluacionesPendientes object, int id) {
+void _evaluacionesPendientesDbSerialize(
+  EvaluacionesPendientesDb object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeLong(offsets[0], object.id);
+  writer.writeLong(offsets[1], object.intervaloDias);
+  writer.writeBool(offsets[2], object.pendiente);
+  writer.writeString(offsets[3], object.titulo);
+  writer.writeLong(offsets[4], object.vencimiento);
+}
+
+EvaluacionesPendientesDb _evaluacionesPendientesDbDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = EvaluacionesPendientesDb();
+  object.id = reader.readLongOrNull(offsets[0]);
+  object.intervaloDias = reader.readLongOrNull(offsets[1]);
+  object.pendiente = reader.readBoolOrNull(offsets[2]);
   object.privateId = id;
-}
-
-List<IsarLinkBase> _evaluacionesPendientesGetLinks(
-    EvaluacionesPendientes object) {
-  return [];
-}
-
-void _evaluacionesPendientesSerializeNative(
-    IsarCollection<EvaluacionesPendientes> collection,
-    IsarRawObject rawObj,
-    EvaluacionesPendientes object,
-    int staticSize,
-    List<int> offsets,
-    AdapterAlloc alloc) {
-  var dynamicSize = 0;
-  final value0 = object.hashCode;
-  final _hashCode = value0;
-  final value1 = object.id;
-  final _id = value1;
-  final value2 = object.intervaloDias;
-  final _intervaloDias = value2;
-  final value3 = object.pendiente;
-  final _pendiente = value3;
-  final value4 = object.stringify;
-  final _stringify = value4;
-  final value5 = object.titulo;
-  IsarUint8List? _titulo;
-  if (value5 != null) {
-    _titulo = IsarBinaryWriter.utf8Encoder.convert(value5);
-  }
-  dynamicSize += (_titulo?.length ?? 0) as int;
-  final value6 = object.vencimiento;
-  final _vencimiento = value6;
-  final size = staticSize + dynamicSize;
-
-  rawObj.buffer = alloc(size);
-  rawObj.buffer_length = size;
-  final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
-  final writer = IsarBinaryWriter(buffer, staticSize);
-  writer.writeLong(offsets[0], _hashCode);
-  writer.writeLong(offsets[1], _id);
-  writer.writeLong(offsets[2], _intervaloDias);
-  writer.writeBool(offsets[3], _pendiente);
-  writer.writeBool(offsets[4], _stringify);
-  writer.writeBytes(offsets[5], _titulo);
-  writer.writeLong(offsets[6], _vencimiento);
-}
-
-EvaluacionesPendientes _evaluacionesPendientesDeserializeNative(
-    IsarCollection<EvaluacionesPendientes> collection,
-    int id,
-    IsarBinaryReader reader,
-    List<int> offsets) {
-  final object = EvaluacionesPendientes();
-  object.id = reader.readLongOrNull(offsets[1]);
-  object.intervaloDias = reader.readLongOrNull(offsets[2]);
-  object.pendiente = reader.readBoolOrNull(offsets[3]);
-  object.privateId = id;
-  object.titulo = reader.readStringOrNull(offsets[5]);
-  object.vencimiento = reader.readLongOrNull(offsets[6]);
+  object.titulo = reader.readStringOrNull(offsets[3]);
+  object.vencimiento = reader.readLongOrNull(offsets[4]);
   return object;
 }
 
-P _evaluacionesPendientesDeserializePropNative<P>(
-    int id, IsarBinaryReader reader, int propertyIndex, int offset) {
-  switch (propertyIndex) {
-    case -1:
-      return id as P;
+P _evaluacionesPendientesDbDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 3:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 4:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 5:
       return (reader.readStringOrNull(offset)) as P;
-    case 6:
+    case 4:
       return (reader.readLongOrNull(offset)) as P;
     default:
-      throw 'Illegal propertyIndex';
+      throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-dynamic _evaluacionesPendientesSerializeWeb(
-    IsarCollection<EvaluacionesPendientes> collection,
-    EvaluacionesPendientes object) {
-  final jsObj = IsarNative.newJsObject();
-  IsarNative.jsObjectSet(jsObj, 'hashCode', object.hashCode);
-  IsarNative.jsObjectSet(jsObj, 'id', object.id);
-  IsarNative.jsObjectSet(jsObj, 'intervaloDias', object.intervaloDias);
-  IsarNative.jsObjectSet(jsObj, 'pendiente', object.pendiente);
-  IsarNative.jsObjectSet(jsObj, 'privateId', object.privateId);
-  IsarNative.jsObjectSet(jsObj, 'stringify', object.stringify);
-  IsarNative.jsObjectSet(jsObj, 'titulo', object.titulo);
-  IsarNative.jsObjectSet(jsObj, 'vencimiento', object.vencimiento);
-  return jsObj;
+Id _evaluacionesPendientesDbGetId(EvaluacionesPendientesDb object) {
+  return object.privateId ?? Isar.autoIncrement;
 }
 
-EvaluacionesPendientes _evaluacionesPendientesDeserializeWeb(
-    IsarCollection<EvaluacionesPendientes> collection, dynamic jsObj) {
-  final object = EvaluacionesPendientes();
-  object.id = IsarNative.jsObjectGet(jsObj, 'id');
-  object.intervaloDias = IsarNative.jsObjectGet(jsObj, 'intervaloDias');
-  object.pendiente = IsarNative.jsObjectGet(jsObj, 'pendiente');
-  object.privateId = IsarNative.jsObjectGet(jsObj, 'privateId');
-  object.titulo = IsarNative.jsObjectGet(jsObj, 'titulo');
-  object.vencimiento = IsarNative.jsObjectGet(jsObj, 'vencimiento');
-  return object;
+List<IsarLinkBase<dynamic>> _evaluacionesPendientesDbGetLinks(
+    EvaluacionesPendientesDb object) {
+  return [];
 }
 
-P _evaluacionesPendientesDeserializePropWeb<P>(
-    Object jsObj, String propertyName) {
-  switch (propertyName) {
-    case 'hashCode':
-      return (IsarNative.jsObjectGet(jsObj, 'hashCode') ??
-          double.negativeInfinity) as P;
-    case 'id':
-      return (IsarNative.jsObjectGet(jsObj, 'id')) as P;
-    case 'intervaloDias':
-      return (IsarNative.jsObjectGet(jsObj, 'intervaloDias')) as P;
-    case 'pendiente':
-      return (IsarNative.jsObjectGet(jsObj, 'pendiente')) as P;
-    case 'privateId':
-      return (IsarNative.jsObjectGet(jsObj, 'privateId')) as P;
-    case 'stringify':
-      return (IsarNative.jsObjectGet(jsObj, 'stringify')) as P;
-    case 'titulo':
-      return (IsarNative.jsObjectGet(jsObj, 'titulo')) as P;
-    case 'vencimiento':
-      return (IsarNative.jsObjectGet(jsObj, 'vencimiento')) as P;
-    default:
-      throw 'Illegal propertyName';
-  }
+void _evaluacionesPendientesDbAttach(
+    IsarCollection<dynamic> col, Id id, EvaluacionesPendientesDb object) {
+  object.privateId = id;
 }
 
-void _evaluacionesPendientesAttachLinks(
-    IsarCollection col, int id, EvaluacionesPendientes object) {}
-
-extension EvaluacionesPendientesQueryWhereSort
-    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QWhere> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterWhere>
+extension EvaluacionesPendientesDbQueryWhereSort on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QWhere> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterWhere>
       anyPrivateId() {
-    return addWhereClauseInternal(const IdWhereClause.any());
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryWhere on QueryBuilder<
-    EvaluacionesPendientes, EvaluacionesPendientes, QWhereClause> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterWhereClause> privateIdEqualTo(int privateId) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: privateId,
-      includeLower: true,
-      upper: privateId,
-      includeUpper: true,
-    ));
+extension EvaluacionesPendientesDbQueryWhere on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QWhereClause> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterWhereClause> privateIdEqualTo(Id privateId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: privateId,
+        upper: privateId,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterWhereClause> privateIdNotEqualTo(int privateId) {
-    if (whereSortInternal == Sort.asc) {
-      return addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: privateId, includeUpper: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: privateId, includeLower: false),
-      );
-    } else {
-      return addWhereClauseInternal(
-        IdWhereClause.greaterThan(lower: privateId, includeLower: false),
-      ).addWhereClauseInternal(
-        IdWhereClause.lessThan(upper: privateId, includeUpper: false),
-      );
-    }
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterWhereClause> privateIdNotEqualTo(Id privateId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: privateId, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: privateId, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: privateId, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: privateId, includeUpper: false),
+            );
+      }
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
           QAfterWhereClause>
-      privateIdGreaterThan(int privateId, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.greaterThan(lower: privateId, includeLower: include),
-    );
+      privateIdGreaterThan(Id privateId, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: privateId, includeLower: include),
+      );
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
           QAfterWhereClause>
-      privateIdLessThan(int privateId, {bool include = false}) {
-    return addWhereClauseInternal(
-      IdWhereClause.lessThan(upper: privateId, includeUpper: include),
-    );
+      privateIdLessThan(Id privateId, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: privateId, includeUpper: include),
+      );
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterWhereClause> privateIdBetween(
-    int lowerPrivateId,
-    int upperPrivateId, {
+    Id lowerPrivateId,
+    Id upperPrivateId, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addWhereClauseInternal(IdWhereClause.between(
-      lower: lowerPrivateId,
-      includeLower: includeLower,
-      upper: upperPrivateId,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerPrivateId,
+        includeLower: includeLower,
+        upper: upperPrivateId,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryFilter on QueryBuilder<
-    EvaluacionesPendientes, EvaluacionesPendientes, QFilterCondition> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> hashCodeEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> hashCodeGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> hashCodeLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'hashCode',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> hashCodeBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'hashCode',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+extension EvaluacionesPendientesDbQueryFilter on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QFilterCondition> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> idIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'id',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> idEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> idGreaterThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> idLessThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'id',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> idBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'id',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> intervaloDiasIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'intervaloDias',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'intervaloDias',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> intervaloDiasIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'intervaloDias',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> intervaloDiasEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'intervaloDias',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'intervaloDias',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> intervaloDiasGreaterThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'intervaloDias',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'intervaloDias',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> intervaloDiasLessThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'intervaloDias',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'intervaloDias',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> intervaloDiasBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'intervaloDias',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'intervaloDias',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> pendienteIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'pendiente',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'pendiente',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> pendienteIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'pendiente',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> pendienteEqualTo(bool? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'pendiente',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'pendiente',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> privateIdIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'privateId',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'privateId',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> privateIdEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'privateId',
-      value: value,
-    ));
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> privateIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'privateId',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> privateIdEqualTo(Id? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'privateId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> privateIdGreaterThan(
-    int value, {
+    Id? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'privateId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'privateId',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> privateIdLessThan(
-    int value, {
+    Id? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'privateId',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'privateId',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> privateIdBetween(
-    int lower,
-    int upper, {
+    Id? lower,
+    Id? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'privateId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'privateId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> stringifyIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'stringify',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
-      QAfterFilterCondition> stringifyEqualTo(bool? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'stringify',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'titulo',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'titulo',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> tituloIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'titulo',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloEqualTo(
     String? value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloGreaterThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloLessThan(
     String? value, {
-    bool caseSensitive = true,
     bool include = false,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloBetween(
     String? lower,
     String? upper, {
-    bool caseSensitive = true,
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'titulo',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'titulo',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> tituloEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
           QAfterFilterCondition>
       tituloContains(String value, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'titulo',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'titulo',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
           QAfterFilterCondition>
       tituloMatches(String pattern, {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'titulo',
-      value: pattern,
-      caseSensitive: caseSensitive,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'titulo',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> tituloIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'titulo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> tituloIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'titulo',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> vencimientoIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'vencimiento',
-      value: null,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'vencimiento',
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
+      QAfterFilterCondition> vencimientoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'vencimiento',
+      ));
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> vencimientoEqualTo(int? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'vencimiento',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'vencimiento',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> vencimientoGreaterThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'vencimiento',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'vencimiento',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> vencimientoLessThan(
     int? value, {
     bool include = false,
   }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'vencimiento',
-      value: value,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'vencimiento',
+        value: value,
+      ));
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes,
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb,
       QAfterFilterCondition> vencimientoBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'vencimiento',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'vencimiento',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryLinks on QueryBuilder<
-    EvaluacionesPendientes, EvaluacionesPendientes, QFilterCondition> {}
+extension EvaluacionesPendientesDbQueryObject on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QFilterCondition> {}
 
-extension EvaluacionesPendientesQueryWhereSortBy
-    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QSortBy> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByHashCode() {
-    return addSortByInternal('hashCode', Sort.asc);
-  }
+extension EvaluacionesPendientesDbQueryLinks on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QFilterCondition> {}
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByHashCodeDesc() {
-    return addSortByInternal('hashCode', Sort.desc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+extension EvaluacionesPendientesDbQuerySortBy on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QSortBy> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByIntervaloDias() {
-    return addSortByInternal('intervaloDias', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervaloDias', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByIntervaloDiasDesc() {
-    return addSortByInternal('intervaloDias', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervaloDias', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByPendiente() {
-    return addSortByInternal('pendiente', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendiente', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByPendienteDesc() {
-    return addSortByInternal('pendiente', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendiente', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByPrivateId() {
-    return addSortByInternal('privateId', Sort.asc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByPrivateIdDesc() {
-    return addSortByInternal('privateId', Sort.desc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByStringify() {
-    return addSortByInternal('stringify', Sort.asc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      sortByStringifyDesc() {
-    return addSortByInternal('stringify', Sort.desc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByTitulo() {
-    return addSortByInternal('titulo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'titulo', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByTituloDesc() {
-    return addSortByInternal('titulo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'titulo', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByVencimiento() {
-    return addSortByInternal('vencimiento', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'vencimiento', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       sortByVencimientoDesc() {
-    return addSortByInternal('vencimiento', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'vencimiento', Sort.desc);
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryWhereSortThenBy on QueryBuilder<
-    EvaluacionesPendientes, EvaluacionesPendientes, QSortThenBy> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      thenByHashCode() {
-    return addSortByInternal('hashCode', Sort.asc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      thenByHashCodeDesc() {
-    return addSortByInternal('hashCode', Sort.desc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+extension EvaluacionesPendientesDbQuerySortThenBy on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QSortThenBy> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenById() {
-    return addSortByInternal('id', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByIdDesc() {
-    return addSortByInternal('id', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByIntervaloDias() {
-    return addSortByInternal('intervaloDias', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervaloDias', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByIntervaloDiasDesc() {
-    return addSortByInternal('intervaloDias', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'intervaloDias', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByPendiente() {
-    return addSortByInternal('pendiente', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendiente', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByPendienteDesc() {
-    return addSortByInternal('pendiente', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pendiente', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByPrivateId() {
-    return addSortByInternal('privateId', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'privateId', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByPrivateIdDesc() {
-    return addSortByInternal('privateId', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'privateId', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      thenByStringify() {
-    return addSortByInternal('stringify', Sort.asc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
-      thenByStringifyDesc() {
-    return addSortByInternal('stringify', Sort.desc);
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByTitulo() {
-    return addSortByInternal('titulo', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'titulo', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByTituloDesc() {
-    return addSortByInternal('titulo', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'titulo', Sort.desc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByVencimiento() {
-    return addSortByInternal('vencimiento', Sort.asc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'vencimiento', Sort.asc);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QAfterSortBy>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QAfterSortBy>
       thenByVencimientoDesc() {
-    return addSortByInternal('vencimiento', Sort.desc);
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'vencimiento', Sort.desc);
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryWhereDistinct
-    on QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct> {
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
-      distinctByHashCode() {
-    return addDistinctByInternal('hashCode');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+extension EvaluacionesPendientesDbQueryWhereDistinct on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct> {
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct>
       distinctById() {
-    return addDistinctByInternal('id');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'id');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct>
       distinctByIntervaloDias() {
-    return addDistinctByInternal('intervaloDias');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'intervaloDias');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct>
       distinctByPendiente() {
-    return addDistinctByInternal('pendiente');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pendiente');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
-      distinctByPrivateId() {
-    return addDistinctByInternal('privateId');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
-      distinctByStringify() {
-    return addDistinctByInternal('stringify');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct>
       distinctByTitulo({bool caseSensitive = true}) {
-    return addDistinctByInternal('titulo', caseSensitive: caseSensitive);
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'titulo', caseSensitive: caseSensitive);
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, EvaluacionesPendientes, QDistinct>
+  QueryBuilder<EvaluacionesPendientesDb, EvaluacionesPendientesDb, QDistinct>
       distinctByVencimiento() {
-    return addDistinctByInternal('vencimiento');
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'vencimiento');
+    });
   }
 }
 
-extension EvaluacionesPendientesQueryProperty on QueryBuilder<
-    EvaluacionesPendientes, EvaluacionesPendientes, QQueryProperty> {
-  QueryBuilder<EvaluacionesPendientes, int, QQueryOperations>
-      hashCodeProperty() {
-    return addPropertyNameInternal('hashCode');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations> idProperty() {
-    return addPropertyNameInternal('id');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
-      intervaloDiasProperty() {
-    return addPropertyNameInternal('intervaloDias');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, bool?, QQueryOperations>
-      pendienteProperty() {
-    return addPropertyNameInternal('pendiente');
-  }
-
-  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
+extension EvaluacionesPendientesDbQueryProperty on QueryBuilder<
+    EvaluacionesPendientesDb, EvaluacionesPendientesDb, QQueryProperty> {
+  QueryBuilder<EvaluacionesPendientesDb, int, QQueryOperations>
       privateIdProperty() {
-    return addPropertyNameInternal('privateId');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'privateId');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, bool?, QQueryOperations>
-      stringifyProperty() {
-    return addPropertyNameInternal('stringify');
+  QueryBuilder<EvaluacionesPendientesDb, int?, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, String?, QQueryOperations>
+  QueryBuilder<EvaluacionesPendientesDb, int?, QQueryOperations>
+      intervaloDiasProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'intervaloDias');
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, bool?, QQueryOperations>
+      pendienteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pendiente');
+    });
+  }
+
+  QueryBuilder<EvaluacionesPendientesDb, String?, QQueryOperations>
       tituloProperty() {
-    return addPropertyNameInternal('titulo');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'titulo');
+    });
   }
 
-  QueryBuilder<EvaluacionesPendientes, int?, QQueryOperations>
+  QueryBuilder<EvaluacionesPendientesDb, int?, QQueryOperations>
       vencimientoProperty() {
-    return addPropertyNameInternal('vencimiento');
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'vencimiento');
+    });
   }
 }
 

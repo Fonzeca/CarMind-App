@@ -6,8 +6,7 @@ part 'logged_user.g.dart';
 @JsonSerializable()
 @Collection()
 class LoggedUser {
-  @Id()
-  int? id;
+  Id? id;
 
   String? nombre;
 

@@ -14,13 +14,19 @@ import 'package:skeletons/skeletons.dart';
 class VehicleCardMap extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
   final VehicleInfoMap vehicleInfo;
-  final List<RouteInfo> routes;
   final String? dateFrom;
   final String? dateTo;
   final bool isLoading;
+  final int selectedStopIndex;
 
   const VehicleCardMap(
-      {Key? key, required this.vehicleInfo, required this.routes, this.dateFrom, this.dateTo, required this.isLoading, required this.mapController})
+      {Key? key,
+      required this.vehicleInfo,
+      this.dateFrom,
+      this.dateTo,
+      required this.isLoading,
+      required this.mapController,
+      required this.selectedStopIndex})
       : super(key: key);
 
   @override
@@ -34,12 +40,12 @@ class VehicleCardMap extends StatelessWidget {
             mapController: mapController,
             imei: vehicleInfo.imei!,
             patente: vehicleInfo.patente,
-            enUso: vehicleInfo.en_uso!,
+            engineStatus: vehicleInfo.engine_status!,
             choferActual: vehicleInfo.usuario_en_uso,
-            routes: routes,
             dateFrom: dateFrom,
             dateTo: dateTo,
-            isLoading: isLoading),
+            isLoading: isLoading,
+            selectedStopIndex: selectedStopIndex),
       ]),
     );
   }
@@ -60,7 +66,7 @@ class _Header extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       height: 120,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 18),
       decoration: _buildBoxDecoration(),
       child: Column(
         children: [
@@ -68,7 +74,7 @@ class _Header extends StatelessWidget {
             width: size.width / 1.8,
             decoration: BoxDecoration(color: const Color(0xffBBB8B7), borderRadius: BorderRadius.circular(10)),
             height: 5,
-            margin: const EdgeInsets.only(bottom: 18),
+            margin: const EdgeInsets.only(bottom: 15),
           ),
           Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             if (type == 'Auto')
@@ -103,32 +109,36 @@ class _Body extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
   final String? patente;
   final String? choferActual;
-  final bool enUso;
-  final List<RouteInfo> routes;
+  final bool engineStatus;
   final String imei;
   final String? dateFrom;
   final String? dateTo;
   final bool isLoading;
+  final int selectedStopIndex;
 
   _Body({
     Key? key,
     required this.mapController,
     required this.patente,
     required this.choferActual,
-    required this.enUso,
-    required this.routes,
+    required this.engineStatus,
     required this.imei,
     this.dateFrom,
     this.dateTo,
     required this.isLoading,
+    required this.selectedStopIndex,
   }) : super(key: key);
+
+  final TextStyle textStyle = const TextStyle(fontSize: 18);
+  final String buscarEntreFechas = "Buscar entre fechas...";
 
   @override
   Widget build(BuildContext context) {
     final DateTime firstDate = DateTime(2000, 1, 1, 0, 0);
     final DateTime dateTimeNow = DateTime.now();
-    const textStyle = TextStyle(fontSize: 18);
-    const String buscarEntreFechas = "Buscar entre fechas...";
+
+    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
+
     return Container(
       padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
       color: Colors.white,
@@ -141,9 +151,9 @@ class _Body extends StatelessWidget {
               Text(patente != null ? "Patente: $patente" : "Patente: N/A", style: textStyle),
               const SizedBox(height: 4),
               Row(children: [
-                const Text("Motor:", style: textStyle),
+                Text("Motor:", style: textStyle),
                 const SizedBox(width: 4),
-                Icon(Icons.circle, color: enUso ? const Color(0xFFDC0404) : const Color(0xFF36A900), size: 14)
+                Icon(Icons.circle, color: engineStatus ? const Color(0xFF36A900) : const Color(0xFFDC0404), size: 14)
               ]),
               const SizedBox(height: 4),
               if (choferActual != null) Text("Chofer: $choferActual", style: textStyle),
@@ -157,8 +167,27 @@ class _Body extends StatelessWidget {
                 color: Colors.black26,
               ),
               const Text("Rutas", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500)),
+              Row(children: [
+                const SizedBox(width: 10),
+                SvgPicture.asset(
+                  "assets/routes_gps.svg",
+                  color: Colors.black,
+                  height: 25,
+                  width: 25,
+                ),
+                Text('${routesBloc.totalKms} km'),
+                const Spacer(),
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 30,
+                ),
+                Text('${routesBloc.totalStops} paradas'),
+                const SizedBox(width: 10)
+              ]),
               CustomButton(
                   onPressed: () async {
+                    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
+
                     List<DateTime>? dateTimeFromTo = await showOmniDateTimeRangePicker(
                         type: OmniDateTimePickerType.dateAndTime,
                         context: context,
@@ -179,14 +208,19 @@ class _Body extends StatelessWidget {
 
                     if (dateTimeFromTo == null) return;
 
-                    final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
                     final String dateFromPicked = '${DateFormat('yyyy-MM-dd HH:mm').format(dateTimeFromTo[0])}:00';
                     final String dateToPicked = '${DateFormat('yyyy-MM-dd HH:mm').format(dateTimeFromTo[1])}:00';
 
-                    routesBloc.add(GetVehicleRoutes(imei: imei, from: dateFromPicked, to: dateToPicked, mapController: mapController));
+                    routesBloc.add(GetVehicleRoutes(
+                      imei: imei,
+                      from: dateFromPicked,
+                      to: dateToPicked,
+                      mapController: mapController,
+                    ));
                   },
                   height: 30,
                   foreGroundColor: (dateFrom == null && dateTo == null) ? const Color(0xff989898) : const Color(0xff303030),
+                  backgroundColor: const Color(0xffEBEBEB),
                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Text((dateFrom == null && dateTo == null)
                         ? buscarEntreFechas
@@ -194,9 +228,12 @@ class _Body extends StatelessWidget {
                     const Icon(Icons.search_rounded)
                   ])),
               const SizedBox(height: 10),
-              (!isLoading && routes.isEmpty && (dateFrom != null && dateTo != null))
+              (!isLoading && routesBloc.routesInfo.isEmpty && (dateFrom != null && dateTo != null))
                   ? const _NoResultsFound()
-                  : Expanded(child: isLoading ? const _RoutesListLoading() : _RoutesList(mapController: mapController, routes: routes))
+                  : Expanded(
+                      child: isLoading
+                          ? const _RoutesListLoading()
+                          : _RoutesList(mapController: mapController, routes: routesBloc.routesInfo, selectedStopIndex: selectedStopIndex))
             ],
           ))
         ],
@@ -216,6 +253,7 @@ class _NoResultsFound extends StatelessWidget {
       onPressed: () {},
       height: 50,
       foreGroundColor: const Color(0xff989898),
+      backgroundColor: const Color(0xffEBEBEB),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
         Text('No se encontraron resultados', style: TextStyle(fontSize: 16)),
       ]),
@@ -257,11 +295,13 @@ class _RoutesListLoading extends StatelessWidget {
 class _RoutesList extends StatelessWidget {
   final Completer<GoogleMapController> mapController;
   final List<RouteInfo> routes;
+  final int selectedStopIndex;
 
   const _RoutesList({
     Key? key,
     required this.routes,
     required this.mapController,
+    required this.selectedStopIndex,
   }) : super(key: key);
 
   @override
@@ -309,6 +349,8 @@ class _RoutesList extends StatelessWidget {
           return CustomButton(
             onPressed: () {
               if (routes[index] is RouteStop) {
+                BlocProvider.of<RoutesBloc>(context)
+                    .add(SelectStopEvent(lat: routeDraw.originLatitude!, lng: routeDraw.originLongitude!, selectedStopIndex: index));
                 BlocProvider.of<RoutesBloc>(context).add(
                     MoveCameraToPointEvent(mapController: mapController, latitude: routeDraw.originLatitude!, longitude: routeDraw.originLongitude!));
               } else {
@@ -317,7 +359,8 @@ class _RoutesList extends StatelessWidget {
               }
             },
             height: 50,
-            foreGroundColor: const Color(0xff303030),
+            foreGroundColor: selectedStopIndex == index ? Colors.white : const Color(0xff303030),
+            backgroundColor: selectedStopIndex == index ? Colors.blue : const Color(0xffEBEBEB),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               leading,
               const SizedBox(width: 8),

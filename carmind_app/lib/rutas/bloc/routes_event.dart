@@ -7,19 +7,22 @@ abstract class RoutesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OpenPanelEvent extends RoutesEvent {}
+class OpenPanelEvent extends RoutesEvent {
+  final bool showPanelHeader;
+
+  const OpenPanelEvent({required this.showPanelHeader});
+}
+
+class GetAllVehicles extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
-  final BuildContext context;
-
-  const GetVehiclesPositions(this.context);
+  const GetVehiclesPositions();
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
-  final BuildContext context;
   final TickerProvider ticker;
 
-  const UpdateVehiclesPositions(this.context, this.ticker);
+  const UpdateVehiclesPositions({required this.ticker});
 }
 
 class GetVehicleRoutes extends RoutesEvent {
@@ -28,35 +31,22 @@ class GetVehicleRoutes extends RoutesEvent {
   final String to;
   final Completer<GoogleMapController> mapController;
 
-  const GetVehicleRoutes({required this.imei, required this.from, required this.to, required this.mapController});
-}
-
-class DrawMarkersEvent extends RoutesEvent {
-  final Map<MarkerId, Marker>? vehicleMarkers;
-  final Map<MarkerId, Marker>? routeMarkers;
-
-  const DrawMarkersEvent({this.vehicleMarkers, this.routeMarkers});
-}
-
-class DrawRouteEvent extends RoutesEvent {
-  final Completer<GoogleMapController> mapController;
-  final Map<PolylineId, Polyline> polylines;
-  final LatLng? firstMarkerPosition;
-
-  const DrawRouteEvent({required this.polylines, required this.mapController, required this.firstMarkerPosition});
+  const GetVehicleRoutes({
+    required this.imei,
+    required this.from,
+    required this.to,
+    required this.mapController,
+  });
 }
 
 class SelectVehicleEvent extends RoutesEvent {
   final VehicleInfoMap vehicle;
-  final BuildContext context;
 
-  const SelectVehicleEvent(this.vehicle, this.context);
+  const SelectVehicleEvent(this.vehicle);
 }
 
 class UnSelectVehicle extends RoutesEvent {
-  final BuildContext context;
-
-  const UnSelectVehicle(this.context);
+  const UnSelectVehicle();
 }
 
 class SelectDateEvent extends RoutesEvent {
@@ -81,4 +71,12 @@ class MoveCameraToRouteEvent extends RoutesEvent {
   final double? longitude;
 
   const MoveCameraToRouteEvent({required this.mapController, this.points, this.latitude, this.longitude});
+}
+
+class SelectStopEvent extends RoutesEvent {
+  final double lat;
+  final double lng;
+  final int selectedStopIndex;
+
+  const SelectStopEvent({required this.lat, required this.lng, required this.selectedStopIndex});
 }
