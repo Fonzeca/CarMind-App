@@ -94,9 +94,7 @@ class CarMindNavigationBar extends StatelessWidget {
                           label: "Rutas"),
                   ],
                   type: BottomNavigationBarType.fixed,
-                  currentIndex: (state.selectedNavButton == 3 && (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!))
-                      ? state.selectedNavButton
-                      : 0,
+                  currentIndex: state.selectedNavButton,
                   selectedItemColor: carMindAccentColor,
                   unselectedItemColor: Colors.white,
                   backgroundColor: Colors.black,

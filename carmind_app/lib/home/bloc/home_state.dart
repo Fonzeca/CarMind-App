@@ -52,8 +52,8 @@ class HomeState extends Equatable {
 
   factory HomeState.fromMap(Map<String, dynamic> map) {
     return HomeState(
-        map['selectedPageView']?.toInt() ?? 0,
-        map['selectedNavButton']?.toInt() ?? 0,
+        0,
+        0,
         map['showFab'] ?? false,
         map['showDejarDeUsarVehiculo'] ?? false,
         Vehiculo.fromJson(map['vehiculo']),
