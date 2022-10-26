@@ -39,10 +39,7 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    routeBloc.mapMarkerSC.close();
-    routeBloc.mapPolylineSC.close();
-    routeBloc.routeMarkers.clear();
-    routeBloc.vehiclesMarkers.clear();
+    routeBloc.add(ResetStateEvent());
     super.dispose();
   }
 

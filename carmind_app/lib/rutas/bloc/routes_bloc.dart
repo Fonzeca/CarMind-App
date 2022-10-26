@@ -44,11 +44,11 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   List<Marker> vehiclesMarkers = [];
   List<Marker> routeMarkers = [];
 
-  final StreamController<List<Marker>> mapMarkerSC = StreamController<List<Marker>>();
+  StreamController<List<Marker>> mapMarkerSC = StreamController<List<Marker>>();
   StreamSink<List<Marker>> get mapMarkerSink => mapMarkerSC.sink;
   Stream<List<Marker>> get mapMarkerStream => mapMarkerSC.stream;
 
-  final StreamController<List<Polyline>> mapPolylineSC = StreamController<List<Polyline>>();
+  StreamController<List<Polyline>> mapPolylineSC = StreamController<List<Polyline>>();
   StreamSink<List<Polyline>> get mapPolylineSink => mapPolylineSC.sink;
   Stream<List<Polyline>> get mapPolylineStream => mapPolylineSC.stream;
 
@@ -77,6 +77,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 3), (_) async {
+        if (routesInfo.isNotEmpty || state.areRoutesLoading) return;
         await _getVehiclePosition();
         _drawVehicleMarkers(event.ticker);
       });
@@ -155,7 +156,22 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       emit(state.copyWith(showPanelHeader: true, selectedStopIndex: selectedStopIndex));
     });
 
-    add(GetAllVehicles());
+    on<ResetStateEvent>((event, emit) {
+      totalKms = 0;
+      totalStops = 0;
+      id = 0;
+      mapMarkerSC.close();
+      mapMarkerSC = StreamController<List<Marker>>();
+      mapPolylineSC.close();
+      mapPolylineSC = StreamController<List<Polyline>>();
+      routeMarkers.clear();
+      vehiclesMarkers.clear();
+      routesInfo.clear();
+      vehiclesMarkers.clear();
+      routeMarkers.clear();
+      if (timer != null) timer!.cancel();
+      emit(MapStateInitial());
+    });
   }
 
   Future<void> _getVehiclePosition() async {
