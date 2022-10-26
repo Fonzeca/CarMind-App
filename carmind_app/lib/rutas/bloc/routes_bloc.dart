@@ -77,6 +77,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 3), (_) async {
+        if (routesInfo.isNotEmpty || state.areRoutesLoading) return;
         await _getVehiclePosition();
         _drawVehicleMarkers(event.ticker);
       });
@@ -155,7 +156,22 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
       emit(state.copyWith(showPanelHeader: true, selectedStopIndex: selectedStopIndex));
     });
 
-    add(GetAllVehicles());
+    on<ResetStateEvent>((event, emit) {
+      totalKms = 0;
+      totalStops = 0;
+      id = 0;
+      mapMarkerSC.close();
+      mapMarkerSC = StreamController<List<Marker>>();
+      mapPolylineSC.close();
+      mapPolylineSC = StreamController<List<Polyline>>();
+      routeMarkers.clear();
+      vehiclesMarkers.clear();
+      routesInfo.clear();
+      vehiclesMarkers.clear();
+      routeMarkers.clear();
+      if (timer != null) timer!.cancel();
+      emit(MapStateInitial());
+    });
   }
 
   Future<void> _getVehiclePosition() async {

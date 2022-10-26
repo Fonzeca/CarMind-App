@@ -36,16 +36,16 @@ class CarMindNavigationBar extends StatelessWidget {
     final VehiculoBloc vehiculoBloc = BlocProvider.of<VehiculoBloc>(context);
     final FormularioBloc formularioBloc = BlocProvider.of<FormularioBloc>(context);
     final RoutesBloc routesBloc = BlocProvider.of<RoutesBloc>(context);
-    final ProfileBloc profileBloc = BlocProvider.of<ProfileBloc>(context);
 
     formularioBloc.add(const FormularioBuscarDataEvent());
     vehiculoBloc.add(GetCurrent(context));
+    routesBloc.add(GetAllVehicles());
 
     this.context = context;
     return BlocListener<HomeBloc, HomeState>(
       listener: (context, state) {
         if (state is HomeLogoutState) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
         }
 
         if (vehiculoBloc.needToUpdate) {
@@ -66,33 +66,11 @@ class CarMindNavigationBar extends StatelessWidget {
         child: Scaffold(
             bottomNavigationBar: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
+                final ProfileBloc profileBloc = BlocProvider.of<ProfileBloc>(context);
+                final List<BottomNavigationBarItem> navButtons = _buildButtonsOfNavigationBar(profileBloc);
+
                 return BottomNavigationBar(
-                  items: [
-                    BottomNavigationBarItem(
-                        icon:
-                            Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: Colors.white)),
-                        activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor)),
-                        label: "Formularios"),
-                    BottomNavigationBarItem(
-                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white)),
-                        activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor)),
-                        label: "Vehículos"),
-                    BottomNavigationBarItem(
-                        icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
-                        activeIcon: Padding(
-                            padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
-                        label: "Perfil"),
-                    if (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!)
-                      BottomNavigationBarItem(
-                          icon: Padding(
-                              padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/routes_nav_icon.svg", color: Colors.white)),
-                          activeIcon: Padding(
-                              padding: const EdgeInsets.only(bottom: 3),
-                              child: SvgPicture.asset("assets/routes_nav_icon.svg", color: carMindAccentColor)),
-                          label: "Rutas"),
-                  ],
+                  items: navButtons,
                   type: BottomNavigationBarType.fixed,
                   currentIndex: state.selectedNavButton,
                   selectedItemColor: carMindAccentColor,
@@ -101,7 +79,6 @@ class CarMindNavigationBar extends StatelessWidget {
                   selectedFontSize: 14,
                   unselectedFontSize: 14,
                   onTap: (value) {
-                    if (routesBloc.timer != null) routesBloc.timer!.cancel();
                     switch (value) {
                       case 0:
                         formularioBloc.add(const FormularioBuscarDataEvent());
@@ -242,5 +219,32 @@ class CarMindNavigationBar extends StatelessWidget {
   onTapLogoutVehicle() async {
     Navigator.push(context!, MaterialPageRoute(builder: (context) => const CheckAnimation(texto: "Has dejado de usar el vehículo")));
     BlocProvider.of<VehiculoBloc>(context!).add(DejarUsar(context!));
+  }
+
+  List<BottomNavigationBarItem> _buildButtonsOfNavigationBar(ProfileBloc profileBloc) {
+    final List<BottomNavigationBarItem> buttons = [
+      BottomNavigationBarItem(
+          icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: Colors.white)),
+          activeIcon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/formulario.svg", color: carMindAccentColor)),
+          label: "Formularios"),
+      BottomNavigationBarItem(
+          icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: Colors.white)),
+          activeIcon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/vehiculo.svg", color: carMindAccentColor)),
+          label: "Vehículos"),
+      BottomNavigationBarItem(
+          icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: Colors.white)),
+          activeIcon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/profile.svg", color: carMindAccentColor)),
+          label: "Perfil")
+    ];
+
+    if (profileBloc.state.logged != null && profileBloc.state.logged!.administrador!) {
+      buttons.add(BottomNavigationBarItem(
+          icon: Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/routes_nav_icon.svg", color: Colors.white)),
+          activeIcon:
+              Padding(padding: const EdgeInsets.only(bottom: 3), child: SvgPicture.asset("assets/routes_nav_icon.svg", color: carMindAccentColor)),
+          label: "Rutas"));
+    }
+
+    return buttons;
   }
 }

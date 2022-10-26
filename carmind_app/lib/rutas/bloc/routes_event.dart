@@ -80,3 +80,5 @@ class SelectStopEvent extends RoutesEvent {
 
   const SelectStopEvent({required this.lat, required this.lng, required this.selectedStopIndex});
 }
+
+class ResetStateEvent extends RoutesEvent {}

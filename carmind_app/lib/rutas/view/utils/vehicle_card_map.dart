@@ -348,9 +348,9 @@ class _RoutesList extends StatelessWidget {
 
           return CustomButton(
             onPressed: () {
+              BlocProvider.of<RoutesBloc>(context)
+                  .add(SelectStopEvent(lat: routeDraw.originLatitude!, lng: routeDraw.originLongitude!, selectedStopIndex: index));
               if (routes[index] is RouteStop) {
-                BlocProvider.of<RoutesBloc>(context)
-                    .add(SelectStopEvent(lat: routeDraw.originLatitude!, lng: routeDraw.originLongitude!, selectedStopIndex: index));
                 BlocProvider.of<RoutesBloc>(context).add(
                     MoveCameraToPointEvent(mapController: mapController, latitude: routeDraw.originLatitude!, longitude: routeDraw.originLongitude!));
               } else {
