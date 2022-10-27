@@ -32,8 +32,8 @@ class _MapViewState extends State<MapView> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    routeBloc.add(const GetVehiclesPositions());
-    routeBloc.add(UpdateVehiclesPositions(ticker: this));
+    routeBloc.add(GetVehiclesPositions(mapController: mapController));
+    routeBloc.add(UpdateVehiclesPositions(ticker: this, mapController: mapController));
     super.initState();
   }
 

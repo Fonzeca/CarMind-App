@@ -16,13 +16,16 @@ class OpenPanelEvent extends RoutesEvent {
 class GetAllVehicles extends RoutesEvent {}
 
 class GetVehiclesPositions extends RoutesEvent {
-  const GetVehiclesPositions();
+  final Completer<GoogleMapController> mapController;
+
+  const GetVehiclesPositions({required this.mapController});
 }
 
 class UpdateVehiclesPositions extends RoutesEvent {
   final TickerProvider ticker;
+  final Completer<GoogleMapController> mapController;
 
-  const UpdateVehiclesPositions({required this.ticker});
+  const UpdateVehiclesPositions({required this.mapController, required this.ticker});
 }
 
 class GetVehicleRoutes extends RoutesEvent {

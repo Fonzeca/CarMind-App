@@ -30,6 +30,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   Marker? startTrip;
   Marker? endTrip;
 
+  late BitmapDescriptor carIcon;
   late BitmapDescriptor stopIcon;
   late BitmapDescriptor stopIconRed;
   late BitmapDescriptor startTripIcon;
@@ -72,14 +73,14 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
 
     on<GetVehiclesPositions>((event, emit) async {
       await _getVehiclePosition();
-      _drawVehicleMarkers(null);
+      _drawVehicleMarkers(null, event.mapController);
     });
 
     on<UpdateVehiclesPositions>((event, emit) async {
       timer = Timer.periodic(const Duration(seconds: 3), (_) async {
         if (routesInfo.isNotEmpty || state.areRoutesLoading) return;
         await _getVehiclePosition();
-        _drawVehicleMarkers(event.ticker);
+        _drawVehicleMarkers(event.ticker, event.mapController);
       });
     });
 
@@ -191,7 +192,7 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
     this.vehicles = vehicles;
   }
 
-  void _drawVehicleMarkers(TickerProvider? provider) {
+  void _drawVehicleMarkers(TickerProvider? provider, Completer<GoogleMapController> mapController) {
     for (VehicleInfoMap vehicle in vehicles) {
       MarkerId markerId = MarkerId(vehicle.imei!);
       int markerIndex = vehiclesMarkers.indexWhere((marker) => marker.markerId == markerId);
@@ -221,10 +222,14 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
         animationController.forward();
       } else {
         Marker newVehicleMarker = Marker(
+            consumeTapEvents: true,
             markerId: markerId,
-            icon: BitmapDescriptor.defaultMarker,
+            icon: carIcon,
             position: LatLng(vehicle.latitud!, vehicle.longitud!),
-            onTap: () => add(SelectVehicleEvent(vehicle)));
+            onTap: () {
+              add(SelectVehicleEvent(vehicle));
+              add(MoveCameraToPointEvent(mapController: mapController, latitude: vehicle.latitud!, longitude: vehicle.longitud!));
+            });
         vehiclesMarkers.add(newVehicleMarker);
         mapMarkerSink.add(vehiclesMarkers);
       }
@@ -431,6 +436,10 @@ class RoutesBloc extends Bloc<RoutesEvent, RoutesState> {
   }
 
   _seticons() async {
+    carIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
+      path: "assets/gps/car.png",
+      width: 50,
+    ));
     stopIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset(
       path: "assets/gps/stop.png",
       width: 50,
